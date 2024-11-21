@@ -88,7 +88,7 @@ const TypingTestStats = () => {
         scales: {
             y: {
                 beginAtZero: true,
-                max: 110, // Assuming percentages and WPM are capped at 100%
+                max: 150, // Assuming percentages and WPM are capped at 100%
             },
         },
     };
