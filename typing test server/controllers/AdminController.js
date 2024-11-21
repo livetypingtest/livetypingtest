@@ -267,7 +267,8 @@ route.post("/send-notification", async (req, res) => {
         // Find users with fcmToken
         const users = await notificationModel.find({ fcmToken: { $exists: true, $ne: null } });
         const tokens = users.map((user) => user.fcmToken);
-
+        
+        // console.log(tokens)
         if (tokens.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -275,14 +276,7 @@ route.post("/send-notification", async (req, res) => {
             });
         }
 
-         // Get the local file path for the image
-         const imageUrl = req.file ? `/assets/notification/${req.file.filename}` : null; // Store relative path
 
-        //  console.log(imageUrl)
-
-        const obj = {
-            message : message
-        }
 
         const payload = {
             notification: {
@@ -296,7 +290,7 @@ route.post("/send-notification", async (req, res) => {
             tokens: tokens,
             notification: payload.notification,
         }).catch((error) => {
-            // console.error("Error in sendEachForMulticast:", error);
+            console.error("Error in sendEachForMulticast:", error);
             throw error; // Re-throw to catch in the main try-catch
         });
         
@@ -306,7 +300,7 @@ route.post("/send-notification", async (req, res) => {
         response.responses.forEach((resp, idx) => {
             if (!resp.success) {
                 failedTokens.push(tokens[idx]);
-                // console.error("Error sending to token:", tokens[idx], resp.error);
+                console.error("Error sending to token:", tokens[idx], resp.error);
             }
         });
 

@@ -34,7 +34,7 @@ const UserModule = () => {
             },
             body: JSON.stringify({ token, userId: localStorage.getItem('userToken') }) // Replace with dynamic user ID
         });
-        // console.log("Token saved:", token);
+        console.log("Token saved:", token);
         } else {
         console.log("No registration token available. Request permission to generate one.");
         }
@@ -50,7 +50,7 @@ const UserModule = () => {
     useEffect(()=>{
         // Handle foreground messages
         onMessage(messaging, (payload) => {
-            // console.log("Message received. ", payload);
+            console.log("Message received. ", payload);
             // Display notification in the app
             dynamicToast({ message: `${payload.notification.title}`, body : `${payload.notification.body}`, timer : 5000, icon: 'info' })
         });
