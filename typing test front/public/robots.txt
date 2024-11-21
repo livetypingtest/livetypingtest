@@ -1,0 +1,9 @@
+# User-Side Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+
+# Point to the sitemap
+Sitemap: https://typing-test-steel.vercel.app

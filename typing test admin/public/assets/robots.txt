@@ -1,0 +1,6 @@
+# Admin Panel Robots.txt
+User-agent: *
+Disallow: /
+
+# Optional: Add exceptions if needed
+# Allow: /admin/login

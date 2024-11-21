@@ -1,0 +1,82 @@
+@media screen and (max-width : 767px) {
+    .alluser-table {
+        overflow-x: scroll;
+    }
+    .profile-card .sec-1 {
+        flex-direction: column;
+    }
+    .profile-card{
+        flex-direction: column;
+        gap: 12px;
+    }
+    .profile-data{
+        align-items: center;
+    }
+    .profile-content table td {
+        font-size: 12px;
+    }
+    .profile-content table th {
+        font-size: 14px;
+    }
+    .profile-card.data{
+        padding: 20px 20px;
+    }
+    .profile-card.data .profile-content{
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+    .profile-card.data .profile-content div{
+        width: 50%;
+    }
+    .auth-input .auth{
+        width: 100%;
+    }
+    .para-switcher{
+        flex-direction: column;
+        gap: 22px;
+    }
+    .switcher button{
+        padding: 10px 15px;
+    }
+    .display-para-sec{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .display-para-sec .para-btns{
+        width: 100% !important;
+        flex-direction: row;
+    }
+    .display-para-sec .add-para{
+        width: 100%;
+    }
+    .leaderboard-table {
+        overflow-x: scroll;
+    }
+    .stac-head{
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .navbar-collapse{
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .left-side {
+        padding-bottom: 15px;
+        padding-right: 0;
+    }
+    .right-side{
+        order: -1;
+    }
+    .repeater-item{
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+    .admin-profile-layout .profile-sec2, .admin-profile-layout .profile-sec2 div{
+        flex-direction: column;
+    }
+    .display-para-sec .para-btns button{
+        height: 40px;
+        width: 40px;
+    }
+}
