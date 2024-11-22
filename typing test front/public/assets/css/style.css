@@ -1932,6 +1932,13 @@ button.google-sign-btn img {
   .main-input-cs{
     opacity: 0;
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
+    width: 100%;
+    font-size: 30px;
+    white-space: pre-wrap;
+    overflow: hidden;
+    resize: none;
+    line-height: 1.5;
   }
+  

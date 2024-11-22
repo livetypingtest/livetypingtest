@@ -32,6 +32,7 @@ const Lobby = () => {
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(false);
   const [prevInput, setPrevInput] = useState(false);
+  const [rows, setRows] = useState(window.innerWidth > 767 ? 8 : 14); // Initial number of rows for textarea
   const [prevInputWords, setPrevInputWords] = useState(false);
   const [difficulty, setDifficulty] = useState("easy");
   const [timeLimit, setTimeLimit] = useState(60); // Default 30 seconds
@@ -369,6 +370,7 @@ const Lobby = () => {
     setPrevInput('')
     setPrevInputWords('')
     setElapsedTime(0);
+    setRows(window.innerWidth > 767 ? 8 : 14)
     setTimerRunning(false);
     setStats({
       wpm: [],
@@ -511,7 +513,7 @@ const Lobby = () => {
       }
     } else if (event.type === 'keyup') {
       // Optionally handle keyup events if needed
-      console.log(`Key released: ${event.key}`);
+      // console.log(`Key released: ${event.key}`);
     }
   };
   
@@ -533,6 +535,20 @@ const Lobby = () => {
     };
     scrollToCurrentLine();
   }, [userInput]); // Run this whenever the userInput changes
+
+  // Dynamically adjust the textarea rows based on content
+  useEffect(() => {
+    if (typingAreaRef.current) {
+      const lineHeight = parseInt(
+        window.getComputedStyle(typingAreaRef.current).lineHeight,
+        10
+      );
+      const contentHeight = typingAreaRef.current.scrollHeight;
+      const newRows = Math.max(8, Math.ceil(contentHeight / lineHeight));
+      console.log(contentHeight, newRows)
+      setRows(newRows); // Update the rows dynamically
+    }
+  }, [userInput]);
 
   return (
     <>
@@ -632,32 +648,42 @@ const Lobby = () => {
               </div>
             </div>
             <div className="col-md-12">
-              <div className="typing-area" 
-                    tabIndex={0} // Make the div focusable
-                    onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
-                    onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
-                    onBlur={() => {setHasFocus(false), setRootFocus(false)}}
-                    onKeyDown={(e)=>blockRestrictedKeys(e)}
-                    onKeyUp={(e)=>blockRestrictedKeys(e)}
-                    ref={paragraphWrapperRef}
-                    >
-                <div 
-                    ref={paragraphRef}
-                    style={{
-                      position: "relative",
-                      whiteSpace: "pre-wrap", // Preserve spaces and line breaks
-                      fontSize: '30px'
-                    }}
+              <div
+                className="typing-area"
+                tabIndex={0} // Make the div focusable
+                onClick={() => {
+                  typingAreaRef.current.focus();
+                  setHasFocus(true);
+                }}
+                onFocus={() => setHasFocus(true)}
+                onBlur={() => setHasFocus(false)}
+                onKeyDown={blockRestrictedKeys}
+                ref={paragraphWrapperRef}
+              >
+                <div
+                  ref={paragraphWrapperRef}
+                  style={{
+                    position: "relative",
+                    whiteSpace: "pre-wrap", // Preserve spaces and line breaks
+                    fontSize: "30px",
+                  }}
                 >
-                  {currentParagraph && typeof currentParagraph === "string" 
-                    ? currentParagraph?.split("").map((char, index) => (
-                    <span
-                      key={index}
-                      className={`${userInput[index] === undefined ? 'text-light' : userInput[index] === char ? 'text-active' : 'text-wrong'} ${hasFocus && index === userInput?.length ? 'underline' : ''}`}
-                    >
-                      {char}
-                    </span>
-                  )) : null}
+                  {currentParagraph && typeof currentParagraph === "string"
+                    ? currentParagraph.split("").map((char, index) => (
+                        <span
+                          key={index}
+                          className={`${
+                            userInput[index] === undefined
+                              ? "text-light"
+                              : userInput[index] === char
+                              ? "text-active"
+                              : "text-wrong"
+                          } ${hasFocus && index === userInput?.length ? "underline" : ""}`}
+                        >
+                          {char}
+                        </span>
+                      ))
+                    : null}
                   {hasFocus && userInput?.length < currentParagraph?.length && (
                     <span
                       style={{
@@ -668,14 +694,14 @@ const Lobby = () => {
                       }}
                     />
                   )}
+                  <textarea
+                    ref={typingAreaRef}
+                    value={userInput}
+                    rows={rows} // Dynamically updated rows
+                    onChange={handleInputChange}
+                    className="main-input-cs"
+                  ></textarea>
                 </div>
-                <input
-                  ref={typingAreaRef}
-                  value={userInput}
-                  onChange={handleInputChange}
-                  className='main-input-cs'
-                  // style={{ opacity: 0, position: "absolute", bottom: 0, left: 0 }}
-                />
               </div>
               <div className='reset'><button onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>
             </div>
@@ -770,3 +796,50 @@ const Lobby = () => {
 }
 
 export default Lobby
+
+
+{/* <div className="typing-area" 
+                    tabIndex={0} // Make the div focusable
+                    onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
+                    onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
+                    onBlur={() => {setHasFocus(false), setRootFocus(false)}}
+                    onKeyDown={(e)=>blockRestrictedKeys(e)}
+                    onKeyUp={(e)=>blockRestrictedKeys(e)}
+                    ref={paragraphWrapperRef}
+                    >
+                <div 
+                    ref={paragraphRef}
+                    style={{
+                      position: "relative",
+                      whiteSpace: "pre-wrap", // Preserve spaces and line breaks
+                      fontSize: '30px'
+                    }}
+                >
+                  {currentParagraph && typeof currentParagraph === "string" 
+                    ? currentParagraph?.split("").map((char, index) => (
+                    <span
+                      key={index}
+                      className={`${userInput[index] === undefined ? 'text-light' : userInput[index] === char ? 'text-active' : 'text-wrong'} ${hasFocus && index === userInput?.length ? 'underline' : ''}`}
+                    >
+                      {char}
+                    </span>
+                  )) : null}
+                  {hasFocus && userInput?.length < currentParagraph?.length && (
+                    <span
+                      style={{
+                        borderLeft: "2px solid white",
+                        animation: "blink 1s infinite",
+                        marginLeft: "2px",
+                        display: "inline-block",
+                      }}
+                    />
+                  )}
+                <textarea
+                  ref={typingAreaRef}
+                  value={userInput}
+                  // rows={12}
+                  onChange={handleInputChange}
+                  className='main-input-cs'
+                ></textarea>
+                </div>
+              </div> */}
