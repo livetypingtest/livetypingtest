@@ -719,6 +719,15 @@ const Lobby = () => {
                     value={userInput}
                     rows={rows} // Dynamically updated rows
                     onChange={handleInputChange}
+                    onSelect={(e) => {
+                      const inputElement = e.target;
+                      const currentCursorPosition = inputElement.selectionStart;
+                  
+                      // Prevent cursor from going before the last character
+                      if (currentCursorPosition < userInput.length) {
+                        inputElement.setSelectionRange(userInput.length, userInput.length);
+                      }
+                    }}
                     className="main-input-cs"
                   ></textarea>
                 </div>

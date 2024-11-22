@@ -75,6 +75,25 @@ const SideBar = () => {
             </li>
             {/* USER PART */}
 
+            {/* CONTACTUS PART */}
+            <li className="nav-small-cap">
+                <i className="ti ti-dots nav-small-cap-icon fs-4" />
+                <span className="hide-menu">Contact</span>
+            </li>
+            <li className="sidebar-item-cs">
+                <NavLink
+                className={extractedPath === 'admin/contact' ? "sidebar-link-cs active" : "sidebar-link-cs"}
+                to='/admin/contact'
+                aria-expanded="false"
+                >
+                <span>
+                    <i class="fa-solid fa-message-middle"></i>
+                </span>
+                <span className="hide-menu">All Contacts</span>
+                </NavLink>
+            </li>
+            {/* CONTACTUS PART */}
+
             {/* PARAGRAPH PART */}
             <li className="nav-small-cap">
                 <i className="ti ti-dots nav-small-cap-icon fs-4" />
@@ -106,7 +125,7 @@ const SideBar = () => {
                 aria-expanded="false"
                 >
                 <span>
-                    <i class="fa-regular fa-list-check"></i>
+                    <i class="fa-solid fa-page"></i>
                 </span>
                 <span className="hide-menu">Manage Pages</span>
                 </NavLink>
