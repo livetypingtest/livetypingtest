@@ -5,11 +5,20 @@ import contactUsSchema from "../../../../../schemas/ContactUsSchema";
 import axios from 'axios'
 import {BASE_API_URL} from '../../../../../util/API_URL'
 import {dynamicToast} from '../../../../shared/Toast/DynamicToast'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import DynamicAlert from "../../../../shared/Toast/DynamicAlert";
 
 const Contact = () => {
 
   const [loader, setLoader] = useState(false)
+  const [alertDetail, setAlertDetail] = useState({
+    title : '',
+    message : '',
+    type : '',
+    navigateTo : '',
+    confirmBtn : false
+})
+const [showAlert, setShowAlert] = useState(false)
 
   // Formik Setup
   const formik = useFormik({
@@ -34,6 +43,24 @@ const Contact = () => {
       }
     },
   });
+
+  useEffect(()=>{
+    if(!localStorage.getItem('userToken')) {
+      setShowAlert(true)
+      setAlertDetail({
+        title: 'Login Required',
+        type: 'info',
+        message: 'Please log in or sign up to contact us or access this feature. We look forward to assisting you!',
+        navigateTo: '/signup',
+        confirmBtn: false
+      });      
+    }
+  }, [])
+
+  const handleAlertClose = () => {
+    localStorage.removeItem('newRecord'); // Clear local storage
+    setShowAlert(false); // Set showAlert to false
+};
 
   return (
     <>
@@ -86,6 +113,17 @@ const Contact = () => {
         </div>
       </section>
       <Footer />
+
+
+          <DynamicAlert
+            type={alertDetail.type}
+            title={alertDetail.title}
+            message={alertDetail.message}
+            trigger={showAlert} // This will trigger the alert
+            navigateTo={alertDetail.navigateTo}
+            confirmBtn={alertDetail.confirmBtn}
+            onClose={handleAlertClose} // Pass the onClose handler
+            />
     </>
   );
 };

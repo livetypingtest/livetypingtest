@@ -9,10 +9,12 @@ import { getToken, onMessage } from "firebase/messaging";
 import { ADMIN_API_URL, USER_API_URL } from '../util/API_URL';
 import { dynamicToast } from '../component/shared/Toast/DynamicToast';
 import { handleGetAboutData, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
+import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 
 
 const UserModule = () => {
 
+    useDynamicTitle()
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [pageLoader, setPageLoader] = useState(false)
@@ -103,6 +105,7 @@ const UserModule = () => {
         getGooleAnalyticsId();
     }, []);
 //  Google Analytics Setup-----------------------------------------------------------------------------------
+
 
 
     useEffect(()=>{

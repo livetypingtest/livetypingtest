@@ -3,9 +3,11 @@ import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import { handleLocalDataCalling } from '../redux/UserDataSlice';
 import { handleGetAboutData, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
+import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 
 const RootModule = () => {
 
+    useDynamicTitle()
     const dispatch = useDispatch();
 
     useEffect(()=>{

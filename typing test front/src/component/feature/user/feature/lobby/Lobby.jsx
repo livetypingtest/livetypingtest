@@ -468,7 +468,6 @@ const Lobby = () => {
   };
   // Chencking is the user Blocked -----------------------------------------------------------------
   
-  
   // Getting match history from local storage -----------------------------------------------------------------
   useEffect(() => {
     if(localStorage.getItem('matchHistory')) {
@@ -493,6 +492,7 @@ const Lobby = () => {
   };
   // Putting eye on caps lock -----------------------------------------------------------------
 
+  // Eye on Blocking The Restricted Keys To Press------------------------------------------------
   const blockRestrictedKeys = (event) => {
     if (event.type === 'keydown') {
       // Handle keydown event
@@ -516,27 +516,36 @@ const Lobby = () => {
       // console.log(`Key released: ${event.key}`);
     }
   };
+  // Eye on Blocking The Restricted Keys To Press------------------------------------------------
   
 
-  // useEffect(()=>{console.log(userInput)}, )
-
+  // Eye on Auto-Scrolling Of the Paragraph While Typing------------------------------------------------
   useEffect(() => {
-    // Adjust the scroll to ensure the current line stays at the top
     const scrollToCurrentLine = () => {
-      if (paragraphWrapperRef.current && typingAreaRef.current) {
-        const inputRect = typingAreaRef.current.getBoundingClientRect();
-        const wrapperRect = paragraphWrapperRef.current.getBoundingClientRect();
-        const offset = inputRect.top - wrapperRect.top;
-
-        if (offset > 0 || offset < 0) {
-          paragraphWrapperRef.current.scrollTop += offset;
+      if (typingAreaRef.current && paragraphWrapperRef.current) {
+        const inputElement = typingAreaRef.current;
+        const wrapperElement = paragraphWrapperRef.current;
+  
+        // Check if the input is not fully visible in the wrapper
+        const inputRect = inputElement.getBoundingClientRect();
+        const wrapperRect = wrapperElement.getBoundingClientRect();
+  
+        if (inputRect.top < wrapperRect.top || inputRect.bottom > wrapperRect.bottom) {
+          // Use scrollIntoView for better compatibility on mobile
+          inputElement.scrollIntoView({
+            behavior: "smooth", // Smooth scrolling
+            block: "nearest",   // Scroll to the nearest edge
+          });
         }
       }
     };
+  
     scrollToCurrentLine();
-  }, [userInput]); // Run this whenever the userInput changes
-
-  // Dynamically adjust the textarea rows based on content
+  }, [userInput]); // Re-run whenever userInput changes  
+  // Eye on Auto-Scrolling Of the Paragraph While Typing------------------------------------------------
+  
+  
+  // Eye on Dynamically adjust the textarea rows based on content------------------------------------------------
   useEffect(() => {
     if (typingAreaRef.current) {
       const lineHeight = parseInt(
@@ -560,6 +569,7 @@ const Lobby = () => {
       }
     }
   }, [userInput]); // Run this whenever userInput changes
+  // Eye on Dynamically adjust the textarea rows based on content------------------------------------------------
   
 
   return (
