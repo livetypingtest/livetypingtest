@@ -544,11 +544,23 @@ const Lobby = () => {
         10
       );
       const contentHeight = typingAreaRef.current.scrollHeight;
-      const newRows = Math.max(8, Math.ceil(contentHeight / lineHeight));
-      console.log(contentHeight, newRows)
-      setRows(newRows); // Update the rows dynamically
+      const targetRows = Math.max(8, Math.ceil(contentHeight / lineHeight));
+  
+      // Gradually increase rows
+      if (targetRows > rows) {
+        const interval = setInterval(() => {
+          setRows((prevRows) => {
+            const newRows = Math.min(prevRows + 1, targetRows); // Increment rows one by one
+            if (newRows === targetRows) clearInterval(interval); // Stop once target is reached
+            return newRows;
+          });
+        }, 100); // Adjust speed by changing the interval time (in ms)
+      } else if (targetRows < rows) {
+        setRows(targetRows); // Reduce rows immediately
+      }
     }
-  }, [userInput]);
+  }, [userInput]); // Run this whenever userInput changes
+  
 
   return (
     <>
@@ -651,13 +663,11 @@ const Lobby = () => {
               <div
                 className="typing-area"
                 tabIndex={0} // Make the div focusable
-                onClick={() => {
-                  typingAreaRef.current.focus();
-                  setHasFocus(true);
-                }}
-                onFocus={() => setHasFocus(true)}
-                onBlur={() => setHasFocus(false)}
-                onKeyDown={blockRestrictedKeys}
+                onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
+                onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
+                onBlur={() => {setHasFocus(false), setRootFocus(false)}}
+                onKeyDown={(e)=>blockRestrictedKeys(e)}
+                onKeyUp={(e)=>blockRestrictedKeys(e)}
                 ref={paragraphWrapperRef}
               >
                 <div
@@ -798,48 +808,3 @@ const Lobby = () => {
 export default Lobby
 
 
-{/* <div className="typing-area" 
-                    tabIndex={0} // Make the div focusable
-                    onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
-                    onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
-                    onBlur={() => {setHasFocus(false), setRootFocus(false)}}
-                    onKeyDown={(e)=>blockRestrictedKeys(e)}
-                    onKeyUp={(e)=>blockRestrictedKeys(e)}
-                    ref={paragraphWrapperRef}
-                    >
-                <div 
-                    ref={paragraphRef}
-                    style={{
-                      position: "relative",
-                      whiteSpace: "pre-wrap", // Preserve spaces and line breaks
-                      fontSize: '30px'
-                    }}
-                >
-                  {currentParagraph && typeof currentParagraph === "string" 
-                    ? currentParagraph?.split("").map((char, index) => (
-                    <span
-                      key={index}
-                      className={`${userInput[index] === undefined ? 'text-light' : userInput[index] === char ? 'text-active' : 'text-wrong'} ${hasFocus && index === userInput?.length ? 'underline' : ''}`}
-                    >
-                      {char}
-                    </span>
-                  )) : null}
-                  {hasFocus && userInput?.length < currentParagraph?.length && (
-                    <span
-                      style={{
-                        borderLeft: "2px solid white",
-                        animation: "blink 1s infinite",
-                        marginLeft: "2px",
-                        display: "inline-block",
-                      }}
-                    />
-                  )}
-                <textarea
-                  ref={typingAreaRef}
-                  value={userInput}
-                  // rows={12}
-                  onChange={handleInputChange}
-                  className='main-input-cs'
-                ></textarea>
-                </div>
-              </div> */}
