@@ -181,6 +181,19 @@ const TypingTestStats = () => {
         return sum / numbers.length; // Return the average
     };
 
+    //convert the timeer in proper format---------------------------------------------------------------
+  const convertSecondsToFormattedTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60); // Get the number of minutes
+    const seconds = totalSeconds % 60; // Get the remaining seconds
+
+    // Format the seconds to always be two digits
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+
+    // Return the formatted time
+    return `${minutes}:${formattedSeconds}`;
+  };
+  //convert the timeer in proper format---------------------------------------------------------------
+
 
     return(
         <>
@@ -207,7 +220,7 @@ const TypingTestStats = () => {
                             <div className="below-graph">
                                 <div>
                                     <h4>Test Type</h4>
-                                    <h1>time {time}</h1>
+                                    <h1>{level} {convertSecondsToFormattedTime(time)}</h1>
                                 </div>
                                 <div>
                                     <h4>Characters</h4>
