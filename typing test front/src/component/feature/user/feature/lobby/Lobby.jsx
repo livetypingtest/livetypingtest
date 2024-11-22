@@ -681,7 +681,7 @@ const Lobby = () => {
                 ref={paragraphWrapperRef}
               >
                 <div
-                  ref={paragraphWrapperRef}
+                  // ref={paragraphWrapperRef}
                   style={{
                     position: "relative",
                     whiteSpace: "pre-wrap", // Preserve spaces and line breaks
