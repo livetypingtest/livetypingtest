@@ -83,7 +83,7 @@ const ExistingData = () => {
     const updatedItem = items[index];
 
     // Validation: Check if any required field is empty
-    if (!updatedItem.id || !updatedItem.title || !updatedItem.content || !updatedItem.btnTitle || !updatedItem.buttonUrl) {
+    if (!updatedItem.title || !updatedItem.content ) {
         dynamicToast({ message: 'Please fill in all fields before saving', timer : 3000, icon: 'error' });
         return; // Stop execution if validation fails
     }

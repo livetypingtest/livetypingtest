@@ -621,11 +621,11 @@ const UserDataSlice = createSlice({
                     createdat: createdat,  // Update the createdat field
                 };
         
-                // Check if metaData exists and is an array, then push the new data
+                // Check if metaData exists and is an array, then concatenate the new data
                 if (Array.isArray(state.about.metaData)) {
-                    state.about.metaData.push(metaData[0]);
+                    state.about.metaData = [...state.about.metaData, ...metaData]; // Append all new metaData objects
                 } else {
-                    state.about.metaData = [metaData];  // Initialize metaData if not an array
+                    state.about.metaData = [...metaData];  // Initialize metaData if not already an array
                 }
         
                 // Reset error state

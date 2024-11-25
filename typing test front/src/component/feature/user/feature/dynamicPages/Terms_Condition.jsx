@@ -3,6 +3,7 @@ import Footer from "../../../../shared/footer/Footer"
 import Header from "../../../../shared/header/Header"
 import { useState } from "react";
 import {useSelector} from 'react-redux'
+import MetaUpdater from "../../../../../util/MetaUpdater";
 
 
 const Terms_Condition = () => {
@@ -47,6 +48,10 @@ const Terms_Condition = () => {
   
       return doc.body.innerHTML; // Return the processed HTML
   };
+
+  useEffect(() => {
+    MetaUpdater.updateMeta("Live Typing Test | Terms & Condition", "/assets/images/favicon.png");
+}, []);
 
   return (
     <>

@@ -57,14 +57,14 @@ const BlogInner = () => {
         <>
             <Helmet>
                 {/* Set the page title */}
-                <title>{displayData.seoTitle || 'Default Title'}</title>
+                <title>{displayData.seoTitle || 'Live Typingf Test '}</title>
                 {/* Meta description for SEO */}
-                <meta name="description" content={displayData.seoDescription || 'Default Description'} />
+                <meta name="description" content={displayData.seoDescription || 'Live Typingf Test '} />
                 {/* Open Graph tags for social media */}
-                <meta property="og:title" content={displayData.seoTitle || 'Default Title'} />
-                <meta property="og:description" content={displayData.seoDescription || 'Default Description'} />
+                <meta property="og:title" content={displayData.seoTitle || 'Live Typingf Test '} />
+                <meta property="og:description" content={displayData.seoDescription || 'Live Typingf Test '} />
                 <meta property="og:image" content={displayData?.featuredImage?.path || '/default-image.jpg'} />
-                <link rel="icon" href={displayData?.featuredImage?.path || '/default-favicon.ico'} />
+                {/* <link rel="icon" href={displayData?.featuredImage?.path || '/default-favicon.ico'} /> */}
             </Helmet>
             <Header />
             <section>

@@ -9,6 +9,7 @@ import html2canvas from 'html2canvas';
 import DynamicAlert from '../../../../shared/Toast/DynamicAlert';
 import Certificate from '../../../../shared/certificate/Certificate';
 import DownloadButton from '../../../../shared/certificate/DownloadCertificate';
+import MetaUpdater from '../../../../../util/MetaUpdater'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -194,6 +195,9 @@ const TypingTestStats = () => {
   };
   //convert the timeer in proper format---------------------------------------------------------------
 
+  useEffect(() => {
+    MetaUpdater.updateMeta("Live Typing Test | Statistics", "/assets/images/favicon.png");
+}, []);
 
     return(
         <>

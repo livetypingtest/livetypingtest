@@ -4,6 +4,7 @@ import { handleGetLeaderboardData, resetState } from '../../../redux/UserDataSli
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import { BASE_API_URL } from '../../../util/API_URL';
+import MetaUpdater from '../../../util/MetaUpdater';
 
 
 const LeaderBoard = () => {
@@ -95,6 +96,10 @@ const LeaderBoard = () => {
         // Update the display data
         setDisplayData(rankedData);
     };
+    
+    useEffect(() => {
+        MetaUpdater.updateMeta("Live Typing Test | Leaderboard", "/assets/images/favicon.png");
+    }, []);
 
     useEffect(()=>{
         updateDataOnLevels()
@@ -190,7 +195,7 @@ const LeaderBoard = () => {
                                             <tr>
                                                 <td>{index+1}</td>
                                                 <td><div className='profile'><img src={value?.profile ? `${value?.profile}` : "/assets/images/profile.png"}  alt="" />
-                                                    {value?.username}
+                                                    <p className='leaderboard-profile-font'>{value?.username}</p>
                                                     {/* Show badges based on the index, after the username */}
                                                     {index + 1 === 1 && <span className="badge-icon cs">🥇</span>}
                                                     {index + 1 === 2 && <span className="badge-icon cs">🥈</span>}

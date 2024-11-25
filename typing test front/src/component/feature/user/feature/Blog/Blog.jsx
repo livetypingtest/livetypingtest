@@ -5,6 +5,7 @@ import BlogPost from "./BlogPost"
 import {useSelector} from 'react-redux'
 import { useState } from "react"
 import { useEffect } from "react"
+import MetaUpdater from "../../../../../util/MetaUpdater"
 
 
 const Blog = () => {
@@ -24,6 +25,9 @@ const Blog = () => {
     }, [category, blogData, blogCategory]);
     
 
+    useEffect(() => {
+        MetaUpdater.updateMeta("Live Typing Test | Blog", "/assets/images/favicon.png");
+    }, []);
 
 
   return (

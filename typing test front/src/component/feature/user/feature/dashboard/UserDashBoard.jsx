@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom'
 import UpdatePassModal from './UpdatePassModal'
 import { handleUploadProfile, resetState } from '../../../../../redux/UserDataSlice'
 import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
-import { BASE_API_URL } from '../../../../../util/API_URL'
+import MetaUpdater from '../../../../../util/MetaUpdater'
 import DeleteUserModal from './DeleteUserModal'
 
 const UserDashBoard = () => {
@@ -207,6 +207,10 @@ useEffect(() => {
       
     }
   }, [ isProcessing, processingMsg ])
+
+  useEffect(() => {
+    MetaUpdater.updateMeta("Live Typing Test | Profile", "/assets/images/favicon.png");
+}, []);
 
 
   return (

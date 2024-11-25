@@ -3,6 +3,7 @@ import Footer from "../../../../shared/footer/Footer"
 import Header from "../../../../shared/header/Header"
 import {useSelector} from 'react-redux'
 import { useEffect } from "react"
+import MetaUpdater from "../../../../../util/MetaUpdater"
 
 
 const Privacy_Policy = () => {
@@ -47,6 +48,10 @@ const Privacy_Policy = () => {
   
       return doc.body.innerHTML; // Return the processed HTML
   };
+
+  useEffect(() => {
+    MetaUpdater.updateMeta("Live Typing Test | Privacy & Policy", "/assets/images/favicon.png");
+}, []);
 
   return (
     <>

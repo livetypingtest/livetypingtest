@@ -7,6 +7,7 @@ import DynamicAlert from '../../../../shared/Toast/DynamicAlert'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { resetState } from '../../../../../redux/UserDataSlice'
+import MetaUpdater from '../../../../../util/MetaUpdater'
 
 const UserAuth = () => {
 
@@ -41,6 +42,10 @@ const UserAuth = () => {
         setShowAlert(false); // Set showAlert to false
         dispatch(resetState())
     };
+
+    useEffect(() => {
+        MetaUpdater.updateMeta("Live Typing Test | Authentication", "/assets/images/favicon.png");
+    }, []);
 
   return (
     <>

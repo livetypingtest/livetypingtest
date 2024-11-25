@@ -7,6 +7,7 @@ import {BASE_API_URL} from '../../../../../util/API_URL'
 import {dynamicToast} from '../../../../shared/Toast/DynamicToast'
 import { useEffect, useState } from "react";
 import DynamicAlert from "../../../../shared/Toast/DynamicAlert";
+import MetaUpdater from "../../../../../util/MetaUpdater";
 
 const Contact = () => {
 
@@ -62,6 +63,10 @@ const [showAlert, setShowAlert] = useState(false)
     setShowAlert(false); // Set showAlert to false
 };
 
+useEffect(() => {
+  MetaUpdater.updateMeta("Live Typing Test | Contact", "/assets/images/favicon.png");
+}, []);
+
   return (
     <>
       <Header />
@@ -79,7 +84,7 @@ const [showAlert, setShowAlert] = useState(false)
                       {...formik.getFieldProps("name")}
                     />
                     {formik.touched.name && formik.errors.name && (
-                      <div className=" text-danger text-sm error">{formik.errors.name}</div>
+                      <div className=" text-danger custom-font text-sm error">{formik.errors.name}</div>
                     )}
                   </div>
 
@@ -90,7 +95,7 @@ const [showAlert, setShowAlert] = useState(false)
                       {...formik.getFieldProps("email")}
                     />
                     {formik.touched.email && formik.errors.email && (
-                      <div className="text-danger text-sm error">{formik.errors.email}</div>
+                      <div className="text-danger custom-font text-sm error">{formik.errors.email}</div>
                     )}
                   </div>
                 </div>
@@ -101,7 +106,7 @@ const [showAlert, setShowAlert] = useState(false)
                     {...formik.getFieldProps("message")}
                   />
                   {formik.touched.message && formik.errors.message && (
-                    <div className=" text-danger text-sm error">{formik.errors.message}</div>
+                    <div className="custom-font text-danger text-sm error">{formik.errors.message}</div>
                   )}
                 </div>
                 <button className="theme-btn sm" onClick={formik.handleSubmit}>

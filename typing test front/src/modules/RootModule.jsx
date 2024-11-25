@@ -7,7 +7,7 @@ import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 
 const RootModule = () => {
 
-    useDynamicTitle()
+    // useDynamicTitle()
     const dispatch = useDispatch();
 
     useEffect(()=>{

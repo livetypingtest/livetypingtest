@@ -306,5 +306,21 @@
     .main-input-cs{
        top: 0;
     }
+    .leaderboard-profile-font{
+        font-size: 14px;
+    }
+    .custom-width{
+        width: 100%;
+    }
+    .contact-div{
+        flex-direction: column;
+        gap: 20px;
+    }
+    .contact-section .auth input{
+        height: 25px;
+    }
+    .custom-font{
+        font-size: 12px;
+    }
     
 }

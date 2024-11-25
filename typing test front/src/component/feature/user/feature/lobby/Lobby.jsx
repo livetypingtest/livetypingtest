@@ -116,10 +116,11 @@ const Lobby = () => {
       const getIndex = getRandomIndex(paragraphs[timeField][difficulty]);
       setCurrentParagraph(paragraphs[timeField][difficulty][getIndex]?.para);
       // console.log(paragraphs[timeField][difficulty][getIndex]?.para)
-  } else {
-      // If no paragraph exists, generate a new one
-      setCurrentParagraph(generateTypingTestParagraph())
-  }
+  } 
+  // else {
+  //     // If no paragraph exists, generate a new one
+  //     setCurrentParagraph(generateTypingTestParagraph())
+  // }
   }
 
   useEffect(() => {
@@ -153,21 +154,28 @@ const Lobby = () => {
 
   // Update elapsed time and stop timer if time limit is reached------------------------------------
   useEffect(() => {
-    if (timerRunning) {
+    if (timerRunning && hasFocus) {
       const interval = setInterval(() => {
         setElapsedTime((prev) => {
           const newElapsedTime = prev + 1;
           if (newElapsedTime >= timeLimit) {
             setTimerRunning(false);
-            setTimeUp(true)
-            setShowModal(true)
+            setTimeUp(true);
+            setShowModal(true);
           }
           return newElapsedTime;
         });
       }, 1000);
+  
       return () => clearInterval(interval);
     }
-  }, [timerRunning, timeLimit]);
+  
+    // Clear the interval if the focus is lost
+    return () => {
+      clearInterval();
+    };
+  }, [timerRunning, hasFocus, timeLimit]);
+  
   // Update elapsed time and stop timer if time limit is reached------------------------------------
 
   // Handle paragraph difficulty change----------------------------------------------------------
@@ -520,28 +528,35 @@ const Lobby = () => {
   
 
   // Eye on Auto-Scrolling Of the Paragraph While Typing------------------------------------------------
-  useEffect(() => {
-    const scrollToCurrentLine = () => {
-      if (typingAreaRef.current && paragraphWrapperRef.current) {
-        const inputElement = typingAreaRef.current;
-        const wrapperElement = paragraphWrapperRef.current;
-  
-        // Check if the input is not fully visible in the wrapper
-        const inputRect = inputElement.getBoundingClientRect();
-        const wrapperRect = wrapperElement.getBoundingClientRect();
-  
-        if (inputRect.top < wrapperRect.top || inputRect.bottom > wrapperRect.bottom) {
-          // Use scrollIntoView for better compatibility on mobile
-          inputElement.scrollIntoView({
-            behavior: "smooth", // Smooth scrolling
-            block: "nearest",   // Scroll to the nearest edge
-          });
+    useEffect(() => {
+      const scrollToCurrentLine = () => {
+        if (typingAreaRef.current && paragraphWrapperRef.current) {
+          const inputElement = typingAreaRef.current;
+          const wrapperElement = paragraphWrapperRef.current;
+    
+          // Check if the input is not fully visible in the wrapper
+          const inputRect = inputElement.getBoundingClientRect();
+          const wrapperRect = wrapperElement.getBoundingClientRect();
+    
+          if (
+            inputRect.top < wrapperRect.top || // Input is above the wrapper
+            inputRect.bottom > wrapperRect.bottom // Input is below the wrapper
+          ) {
+            // Use scrollIntoView for better compatibility on mobile
+            inputElement.scrollIntoView({
+              behavior: "smooth", // Smooth scrolling
+              block: "nearest", // Scroll to the nearest edge
+              inline: "nearest",
+            });
+          }
         }
+      };
+    
+      // Only scroll if the component has focus
+      if (hasFocus) {
+        scrollToCurrentLine();
       }
-    };
-  
-    scrollToCurrentLine();
-  }, [userInput]); // Re-run whenever userInput changes  
+    }, [userInput, hasFocus]); // Include `hasFocus` in the dependency array
   // Eye on Auto-Scrolling Of the Paragraph While Typing------------------------------------------------
   
   
@@ -579,12 +594,12 @@ const Lobby = () => {
         homePageSEO && (
           <Helmet>
             {/* Set the page title */}
-            <title>{homePageSEO.seoTitle || 'Default Title'}</title>
+            <title>{homePageSEO.seoTitle || 'Live Typingf Test'}</title>
             {/* Meta description for SEO */}
-            <meta name="description" content={homePageSEO.seoDescription || 'Default Description'} />
+            <meta name="description" content={homePageSEO.seoDescription || 'Live Typingf Test'} />
             {/* Open Graph tags for social media */}
-            <meta property="og:title" content={homePageSEO.seoTitle || 'Default Title'} />
-            <meta property="og:description" content={homePageSEO.seoDescription || 'Default Description'} />
+            <meta property="og:title" content={homePageSEO.seoTitle || 'Live Typingf Test'} />
+            <meta property="og:description" content={homePageSEO.seoDescription || 'Live Typingf Test'} />
             <meta property="og:image" content={homePageSEO?.imageUrl || '/default-image.jpg'} />
             <link rel="icon" href={homePageSEO?.imageUrl || '/default-favicon.ico'} />
           </Helmet>
@@ -729,6 +744,9 @@ const Lobby = () => {
                       }
                     }}
                     className="main-input-cs"
+                    autoComplete="off" // Disable browser autocomplete
+                    autoCorrect="off" // Disable browser autocorrect
+                    spellCheck="false" // Disable spellchecking
                   ></textarea>
                 </div>
               </div>

@@ -50,84 +50,102 @@ const deleteImageFromS3 = async (imageKey) => {
     route.post("/", upload, async (req, res) => {
         const files = req.files;
         const { title, content, btnTitle, buttonUrls, date } = req.body; // Extract arrays from req.body
-
-        if (!files || files.length === 0) {
-        return res.status(400).send("No files uploaded.");
-        }
-
+    
         if (!title || !content || !btnTitle || !buttonUrls) {
-        return res.status(400).send("Missing required data.");
+            return res.status(400).send("Missing required data.");
         }
-
+    
         // Ensure the aboutData arrays are of the same length
         const numberOfItems = title.length;
         if (content.length !== numberOfItems || btnTitle.length !== numberOfItems || buttonUrls.length !== numberOfItems) {
-        return res.status(400).send("Mismatch in the length of data arrays.");
+            return res.status(400).send("Mismatch in the length of data arrays.");
         }
-
-        // Upload each image to S3 and then map the URL to the corresponding aboutData
+    
         try {
-        const uploadPromises = files.map((file, index) => {
-            const params = {
-            Bucket: process.env.AWS_BUCKET_NAME,
-            Key: `about/${Date.now()}-${file.originalname}`,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-            };
-
-            return s3Client.upload(params).promise().then((data) => {
-                // Construct the URL with the correct region
-                const region = process.env.AWS_REGION;  // Ensure you have this in your .env file
-                const s3Url = `https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`;
-                // Return the data for each image uploaded
-                return {
-                    imageUrl: s3Url,
-                    title: title[index],
-                    content: content[index],
+            // Initialize an array to store the final result
+            let uploadedData = [];
+    
+            // Loop over the incoming data (assuming one object per entry)
+            for (let i = 0; i < numberOfItems; i++) {
+                let imageUrl = null; // Default value if no image is provided
+    
+                // Check if the current entry has an associated file (image)
+                if (files && files[i]) {
+                    const file = files[i];
+                    const params = {
+                        Bucket: process.env.AWS_BUCKET_NAME,
+                        Key: `about/${Date.now()}-${file.originalname}`,
+                        Body: file.buffer,
+                        ContentType: file.mimetype,
+                    };
+    
+                    // Upload the image to S3
+                    try {
+                        const data = await s3Client.upload(params).promise();
+                        const region = process.env.AWS_REGION; // Ensure you have this in your .env file
+                        imageUrl = `https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`;
+                    } catch (error) {
+                        console.error(`Error uploading file: ${error}`);
+                    }
+                }
+    
+                // Push the data for this entry, with imageUrl set accordingly
+                uploadedData.push({
+                    imageUrl: imageUrl, // Will be null if no image was uploaded
+                    title: title[i],
+                    content: content[i],
                     button: {
-                    title: btnTitle[index],
-                    url: buttonUrls[index],
+                        title: btnTitle[i],
+                        url: buttonUrls[i],
                     },
-                };
+                    createdat: date,
                 });
-        });
-
-        // Wait for all uploads to complete
-        const uploadedData = await Promise.all(uploadPromises);
-
-        // Now, store the image URLs and other data in the database
-        const newMetaData = uploadedData.map((item) => ({
-            title: item.title,
-            content: item.content,
-            imageUrl: item.imageUrl,
-            button: {
-            title: item.button.title,
-            url: item.button.url,
-            },
-            createdat: date,
-        }));
-
-        // Find the first document (only one exists) and either update or create it
-        await DataModel.findOneAndUpdate(
-            {}, // No condition as there's only one document
-            { 
-                $push: { "about.metaData": { $each: newMetaData } }, // Append newMetaData to the existing array
-                $setOnInsert: { createdat: date } // Add createdAt if it's being created
-            },
-            { new: true, upsert: true } // Create it if not found
-        );        
-
-        res.status(200).json({
-            status : 200,
-            type : 'about',
-            result: {metaData : newMetaData, createdat : date},
-            message: "Data and images uploaded successfully!",
-        });
+            }
+    
+            // Store the image URLs (or null) and other data in the database
+            const newMetaData = uploadedData.map((item) => ({
+                title: item.title,
+                content: item.content,
+                imageUrl: item.imageUrl, // Image URL (or null) is directly added
+                button: {
+                    title: item.button.title,
+                    url: item.button.url,
+                },
+                createdat: item.createdat,
+            }));
+    
+            // Update the document and return the updated metadata with `_id`
+            const updatedData = await DataModel.findOneAndUpdate(
+                {}, // No condition as there's only one document
+                {
+                    $push: { "about.metaData": { $each: newMetaData } }, // Append newMetaData to the existing array
+                    $setOnInsert: { createdat: date }, // Add createdAt if it's being created
+                },
+                {
+                    new: true, // Return the updated document
+                    upsert: true, // Create it if not found
+                }
+            );
+    
+            // Extract the newly added data using its position
+            const addedMetaData = updatedData.about.metaData.slice(-newMetaData.length);
+    
+            res.status(200).json({
+                status: 200,
+                type: 'about',
+                result: {
+                    metaData: addedMetaData, // Send the recently added metadata
+                    createdat: date,
+                    createdId: updatedData._id, // Include the `_id` of the document
+                },
+                message: "Data and images uploaded successfully!",
+            });
         } catch (error) {
-        console.error(error);
-        res.status(500).send("Error uploading files to S3 or saving data to DB");
+            console.error(error);
+            res.status(500).send("Error uploading files to S3 or saving data to DB");
         }
-    });
+    });    
+    
 
     /// Route to handle the deletion of a metadata item
     route.delete("/:id", async (req, res) => {

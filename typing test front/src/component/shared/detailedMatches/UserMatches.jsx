@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import Certificate from "../certificate/Certificate";
+import MetaUpdater from "../../../util/MetaUpdater";
 
 const UserMatches = () => {
     const param = useParams();
@@ -89,6 +90,10 @@ const UserMatches = () => {
             handleDownload(); // Ensure download occurs after state is set
         }, 100); // Adjust the timeout duration as needed
     };
+
+    useEffect(() => {
+        MetaUpdater.updateMeta("Live Typing Test | Matches", "/assets/images/favicon.png");
+    }, []);
 
     return (
         <>

@@ -1350,6 +1350,7 @@ button.google-sign-btn img {
     width: 100%;
     border-radius: 18px;
     height: 230px;
+    object-fit: cover;
 }
 
 .blog-content {
@@ -1729,7 +1730,7 @@ button.google-sign-btn img {
 .contact-section .auth{
     border-radius: 10px;
     background: #1F1D21;
-    width: 49%;
+    width: 100%;
     height: 55px;
     flex-shrink: 0;
     outline: none;
@@ -1743,6 +1744,7 @@ button.google-sign-btn img {
     display: flex;
     justify-content: space-between;
     align-items:center ;
+    flex: 1;
 }
 .contact-section .auth-cs{
     width: 100%;
@@ -1942,3 +1944,10 @@ button.google-sign-btn img {
     line-height: 1.5;
   }
   
+.leaderboard-profile-font{
+    margin: 0;
+    font-size: 18px;
+}
+.custom-width{
+    width: 90%;
+}

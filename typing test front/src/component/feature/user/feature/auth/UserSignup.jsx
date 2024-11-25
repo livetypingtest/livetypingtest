@@ -149,7 +149,7 @@ const UserSignup = () => {
           <div className='width-90'><p className='font-idle text-center'>or</p></div>
         </div>
       </form>
-          <div className='d-flex justify-content-center width-90'>
+          <div className='d-flex justify-content-center custom-width'>
             <GoogleAuth onClick={()=>setIsGoogleSignup(true)} props={'Sign Up'} />
           </div>
     </>
