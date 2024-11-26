@@ -215,6 +215,8 @@ const Lobby = () => {
     let currentStreak = 0;
     let longestStreak = 0;
     let isCompleted = false;
+    let skippedChars = 0;
+    let isSkipping = false; 
     let timeOfCompletion = 0;
   
     // Split the input and current paragraph into words
@@ -244,11 +246,16 @@ const Lobby = () => {
         if (typedChar === char) {
           correctChars++;
           currentStreak++;
+          isSkipping = false;
         } else if (typedChar && typedChar !== " ") {
           incorrectChars++;
           longestStreak = Math.max(longestStreak, currentStreak); // Update longest streak
           currentStreak = 0; // Reset current streak
+        } else if (typedChar !== char && typedChar === " ") {
+          skippedChars++; // Increment the skippedChars counter
         }
+
+        
       }
     });
   
@@ -286,8 +293,21 @@ const Lobby = () => {
     const nonSpaceCharCount = currentParagraph.replace(/ /g, "").length;
   
     // Determine if the paragraph is completed
-    isCompleted = (correctChars + incorrectChars) >= nonSpaceCharCount;
+    isCompleted = (correctChars + skippedChars + incorrectChars) >= nonSpaceCharCount;
+
+
+  // Check if the user completed a word even if some characters were skipped
+  if (!isCompleted && currentWordIndex > 0) {
+    const typedWord = inputWords[currentWordIndex];
+    const validTypedWord = paragraphWords[currentWordIndex];
+    
+    if (typedWord && typedWord === validTypedWord) {
+      isCompleted = true;
+    }
+  }
+
     timeOfCompletion = (elapsedTime + 1);
+    // console.log(correctChars + skippedChars + incorrectChars, nonSpaceCharCount)
     if (isCompleted) {
   
       // Generate and append a new paragraph if the current one is completed
