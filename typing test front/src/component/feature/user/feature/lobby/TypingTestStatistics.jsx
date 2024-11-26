@@ -251,8 +251,8 @@ const TypingTestStats = () => {
             </section>
             <Footer />
 
-            <div style={{position : 'absolute', left : '-260%', top : '28%' }} >
                 <Certificate ref={certificateRef} props={stats} />
+            <div style={{position : 'absolute', left : '-260%', top : '28%' }} >
             </div>
 
             <DynamicAlert

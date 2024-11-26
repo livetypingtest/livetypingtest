@@ -4,6 +4,7 @@ import  { useEffect, useState, forwardRef } from 'react';
 import { useSelector } from 'react-redux';
 import Signature from '../svg/Signature';
 import LogoSvg from '../svg/LogoSvg';
+import Line from '../svg/Line';
 
 const Certificate = forwardRef((props, ref) => {
 
@@ -72,13 +73,19 @@ const Certificate = forwardRef((props, ref) => {
                         <h2> Certificate of Completion</h2>
                     </div>
                     </div>
-                    <div className="row pm-certificate-body">
+                    {/* <div className="row pm-certificate-body"> */}
                     <div className="pm-certificate-block">
                         <div className="col-xs-12 col-md-12">
                         <div className="row">
+                            <div className="pb-4 bg-theme d-flex justify-content-center">
+                            <Line />
+                            </div>
                             <div className="col-xs-2 col-md-2">{/* LEAVE EMPTY */}</div>
                             <div className="pm-certificate-name underline-cer margin-0 col-xs-8 text-center">
-                            <span className="pm-name-text bold">{data ? data?.username : ''}</span>
+                                <span className="pm-credits-text font-18  sans">
+                                    This Certification is hereby Awarded to:
+                                </span> <br />
+                            <span className="pm-name-text font-30 sans bold">{userData ? userData?.username : ''}</span>
                             </div>
                             <div className="col-xs-2 col-md-2">{/* LEAVE EMPTY */}</div>
                         </div>
@@ -88,20 +95,20 @@ const Certificate = forwardRef((props, ref) => {
                             <div className="col-xs-2 col-md-2">{/* LEAVE EMPTY */}</div>
                             <div className="pm-earned col-xs-8 text-center">
                             <span className="pm-earned-text padding-0 block cursive">
-                                has Scored
+                                Has Scored
                             </span>
                             <div className="show-score">
-                                <span className="pm-credits-text  bold sans">
+                                <span className="pm-credits-text font-18  bold sans">
                                     WPM : {data ? data.wpm : ''}
                                 </span>
-                                <span className="pm-credits-text  bold sans">
+                                <span className="pm-credits-text font-18 bold sans">
                                     Consistency : {data ? data.consistency : ''}
                                 </span>
-                                <span className="pm-credits-text  bold sans">
+                                <span className="pm-credits-text font-18 bold sans">
                                     Accuracy : {data ? data.accuracy : ''}
                                 </span>
-                                <span className="pm-credits-text  bold sans">
-                                    Level : {data ? data.level : ''}
+                                <span className="pm-credits-text font-18 bold sans">
+                                    Level : {data ? data.level?.toLocaleUpperCase() : ''}
                                 </span>
                             </div>
                             </div>
@@ -123,30 +130,30 @@ const Certificate = forwardRef((props, ref) => {
                     </div>
                     <div className="col-xs-12 col-md-12">
                         <div className="row">
-                            <div className="pm-certificate-footer">
+                            <div className="pm-certificate-footer mt-16">
                                 <div className="col-xs-4 pm-certified col-md-5 text-center">
                                     <span className="pm-credits-text block sans">
                                         Signature of Director
                                     </span>
                                     <div className=' underline-cer signature'><Signature /></div>
                                     {/* <span className="pm-empty-space block underline-cer" />  */}
-                                    <span className="bold block">
+                                    {/* <span className="bold block">
                                         Live Typing Test
-                                    </span>
+                                    </span> */}
                                 </div>
                                 <div className="col-xs-1 col-md-2"></div>
                                 <div className="col-xs-4 col-md-5 pm-certified col-xs-4 text-center">
                                     <span className="pm-credits-text block sans">Date Completed</span>
                                         
-                                    <span className="pm-empty-space block underline-cer">
-                                    <h6 style={{margin : 0}}>{data ? data.date : ''}</h6>
+                                    <span className="pm-empty-space block bold font-18 underline-cer">
+                                    <h6 className='bold font-18 sans' style={{margin : 0}}>{data ? data.date : ''}</h6>
                                     </span>
                                     {/* <span className="bold block">DOB: </span> */}
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {/* </div> */}
             </div>
         </div>
     </>

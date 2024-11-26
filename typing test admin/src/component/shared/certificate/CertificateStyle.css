@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Pinyon+Script|Rochester');
 
 .cursive {
-  font-family: 'Pinyon Script', cursive;
+  font-family: 'Suomi Slab Serif W01 Book', cursive;
 }
 
 .sans {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Suomi Slab Serif W01 Book';
 }
 
 .bold {
@@ -15,11 +15,17 @@
 .block {
   display: block;
 }
-
-.underline-cer {
-  border-bottom: 1px solid #777;
+.font-18{
+  font-size: 18px !important;
+}
+/* .underline-cer {
+  border-bottom: 5px double #71CAC7;
   padding: 5px;
   margin-bottom: 15px;
+} */
+
+.font-30{
+  font-size: 30px !important;
 }
 
 .margin-0 {
@@ -101,7 +107,7 @@
       position: relative;
       left: 50%;
       margin-left: -325px;
-      top: 70px;
+      top: 48px;
       margin-top: 0;
     }
 
@@ -136,6 +142,10 @@
       }
     }
 
+    .bg-theme{
+      color: #71CAC7 !important;
+    }
+
     .pm-course-title {
       .pm-earned-text {
         font-size: 20px;
@@ -160,16 +170,23 @@
       left: 50%;
       margin-left: -325px;
       bottom: -105px;
+      align-items: flex-end;
     }
   }
 }
-.show-score{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 12px;
+.show-score {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 12px;
+  background-color: #71cac770;
+  padding: 8px;
+  border-radius: 10px;
 }
 
+.mt-16{
+  margin-top: 16px !important;
+}
 .signature{
     display: flex;
     justify-content: center;
@@ -183,6 +200,6 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 2px;
+  gap: 16px;
 }
 
