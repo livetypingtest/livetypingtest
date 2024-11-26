@@ -10,6 +10,7 @@ import { ADMIN_API_URL, USER_API_URL } from '../util/API_URL';
 import { dynamicToast } from '../component/shared/Toast/DynamicToast';
 import { handleGetAboutData, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
 import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
+import { notificationToast } from '../component/shared/Toast/NotificationToats';
 
 
 const UserModule = () => {
@@ -54,7 +55,7 @@ const UserModule = () => {
         onMessage(messaging, (payload) => {
             // console.log("Message received. ", payload);
             // Display notification in the app
-            dynamicToast({ message: `${payload.notification.title}`, body : `${payload.notification.body}`, timer : 5000, icon: 'info' })
+            notificationToast({ message: `${payload.notification.title}`, body : `${payload.notification.body}`, url: `${payload.data.url}`, timer : 5000, icon: 'info' })
         });
 
         if ("serviceWorker" in navigator) {

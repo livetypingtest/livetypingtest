@@ -1,31 +1,42 @@
-import  { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-const NotificationToats = ({ title, body, url, imageUrl }) => {
-  const [isVisible, setIsVisible] = useState(false);
+const Toast = withReactContent(Swal);
 
-  useEffect(() => {
-    setIsVisible(true);
+const toastMixin = Swal.mixin({
+  toast: true,
+  icon: 'success',
+  title: 'General Title',
+  position: 'top-right',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  animation: true,
+  // Adding bounce effect using SweetAlert2 built-in animations
+  showClass: {
+    popup: 'swal2-show swal2-bounce-in',
+  },
+  hideClass: {
+    popup: 'swal2-hide swal2-bounce-out',
+  },
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  },
+});
 
-    // Hide the notification after 3 seconds
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-    }, 3000);
+// Dynamic toast function
+export const notificationToast = ({ message, body, url, icon, timer }) => {
+  // Construct the `html` content dynamically
+  const htmlContent = `
+    <p>${body ? body : ''}</p>
+    ${url ? `<a href="${url}" target="_blank" style="color: #007BFF;">${url}</a>` : ''}
+  `;
 
-    return () => clearTimeout(timer); // Cleanup timer on component unmount
-  }, []);
-
-  return (
-    <div className={`cs-notification ${isVisible ? "cs-notification-show" : ""}`}>
-      <div className="cs-notification-content">
-        <div className="cs-notification-text">
-          <h3 className="cs-notification-title">{title}</h3>
-          <p className="cs-notification-body">{body}</p>
-          {url && <a href={url} className="cs-notification-url">View Details</a>}
-        </div>
-        {imageUrl && <img src={imageUrl} alt="notification" className="cs-notification-image" />}
-      </div>
-    </div>
-  );
+  toastMixin.fire({
+    icon: icon || 'success', // Default to success if no icon is provided
+    title: message || 'Notification', // Default title
+    html: htmlContent, // Set the dynamically generated HTML content
+    timer: timer || 3000, // Default to 3 seconds if no timer is provided
+  });
 };
-
-export default NotificationToats;

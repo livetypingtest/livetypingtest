@@ -260,15 +260,72 @@ route.post('/para', async (req, res) => {
 });
 
 // Route to send notification to all users
-route.post("/send-notification", async (req, res) => {
-    const { title, message, url } = req.body;
+// route.post("/send-notification", async (req, res) => {
+//     const { title, message, url } = req.body;
     
+//     try {
+//         // Find users with fcmToken
+//         const users = await notificationModel.find({ fcmToken: { $exists: true, $ne: null } });
+//         const tokens = users.map((user) => user.fcmToken);
+        
+//         // console.log(tokens)
+//         if (tokens.length === 0) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'No valid tokens available to send notification to.'
+//             });
+//         }
+
+
+
+//         const payload = {
+//             notification: {
+//                 title,
+//                 body: message,
+//             }
+//         };
+
+//         // Send notifications to each device
+//         const response = await admin.messaging().sendEachForMulticast({
+//             tokens: tokens,
+//             notification: payload.notification,
+//         }).catch((error) => {
+//             console.error("Error in sendEachForMulticast:", error);
+//             throw error; // Re-throw to catch in the main try-catch
+//         });
+        
+
+//         // Check for individual failed tokens
+//         const failedTokens = [];
+//         response.responses.forEach((resp, idx) => {
+//             if (!resp.success) {
+//                 failedTokens.push(tokens[idx]);
+//                 console.error("Error sending to token:", tokens[idx], resp.error);
+//             }
+//         });
+
+//         res.status(200).json({ 
+//             success: true,
+//             message: "Notification processed with possible individual failures.",
+//             failedTokens: failedTokens,
+//             successCount: response.successCount,
+//             failureCount: response.failureCount
+//         });
+
+//     } catch (error) {
+//         console.error("Error sending notification:", error);
+//         res.status(500).json({ success: false, error: error.message });
+//     }
+// });
+
+route.post("/send-notification", async (req, res) => {
+    const { title, message, url } = req.body; // `url` will be included in the payload
+
     try {
         // Find users with fcmToken
         const users = await notificationModel.find({ fcmToken: { $exists: true, $ne: null } });
         const tokens = users.map((user) => user.fcmToken);
-        
-        // console.log(tokens)
+
         if (tokens.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -276,24 +333,26 @@ route.post("/send-notification", async (req, res) => {
             });
         }
 
-
-
+        // Define the payload
         const payload = {
             notification: {
                 title,
                 body: message,
-            }
+            },
+            data: {
+                url: url || 'https://livetypingtest.com', // Add the URL to the `data` property
+            },
         };
 
         // Send notifications to each device
         const response = await admin.messaging().sendEachForMulticast({
             tokens: tokens,
-            notification: payload.notification,
+            notification: payload.notification, // The title and body
+            data: payload.data, // Add custom data here
         }).catch((error) => {
             console.error("Error in sendEachForMulticast:", error);
             throw error; // Re-throw to catch in the main try-catch
         });
-        
 
         // Check for individual failed tokens
         const failedTokens = [];
@@ -304,12 +363,12 @@ route.post("/send-notification", async (req, res) => {
             }
         });
 
-        res.status(200).json({ 
+        res.status(200).json({
             success: true,
             message: "Notification processed with possible individual failures.",
             failedTokens: failedTokens,
             successCount: response.successCount,
-            failureCount: response.failureCount
+            failureCount: response.failureCount,
         });
 
     } catch (error) {
@@ -317,6 +376,7 @@ route.post("/send-notification", async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 
 route.put('/', async(req, res) => {
     if(req.headers.authorization){

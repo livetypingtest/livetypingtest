@@ -19,7 +19,10 @@ const Footer = () => {
                                     <li><a target='_blank' href='https://in.pinterest.com/livetypingtest/'><i class="fa-brands fa-lg fa-pinterest-p"></i> &nbsp; |</a></li>
                                     <li><a target='_blank' href='https://x.com/livetypingtest'><i class="fa-brands fa-lg fa-twitter"></i></a></li>
                                 </ul>
-                                <p className='m-0'>Design and Developed By <span>Aerozef Creations</span></p>
+                                <ul>
+                                    <li className='footer-design'><i class="fa-regular fa-copyright"></i> Copyright 2024 Live Typing Test - All Rights Reserved. </li>
+                                </ul>
+                                {/* <p className='m-0'>Design and Developed By <span>Aerozef Creations</span></p> */}
                             </div>
                             <div className="footer">
                                 <ul className='mb-3'>
@@ -28,9 +31,7 @@ const Footer = () => {
                                     <li><NavLink to='/privacy' >Privacy Policy &nbsp; |</NavLink></li>
                                     <li><NavLink to='/term-condition'>Terms & Condition</NavLink></li>
                                 </ul>
-                                <ul>
-                                    <li className='footer-design'><i class="fa-regular fa-copyright"></i> Copyright 2024 Live Typing Test - All Rights Reserved. </li>
-                                </ul>
+                                
                             </div>
                         </div>
                     </div>

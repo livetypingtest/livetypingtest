@@ -5,6 +5,7 @@ import { dynamicToast } from '../../shared/Toast/DynamicToast'
 const Notification = () => {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [url, setUrl] = useState("");
 
   const sendNotification = async () => {
     try {
@@ -13,14 +14,20 @@ const Notification = () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ title, message })
+        body: JSON.stringify({ title, message, url })
       });
 
       const data = await response.json();
       if (data.success) {
         dynamicToast({ message: `Notification sent successfully!`, timer : 5000, icon: 'success' })
+        setTitle('')
+        setUrl('')
+        setMessage('')
       } else {
         dynamicToast({ message: `Error sending notification!`, timer : 5000, icon: 'error' })
+        setTitle('')
+        setUrl('')
+        setMessage('')
       }
     } catch (error) {
       console.error("Error sending notification:", error);
@@ -43,6 +50,13 @@ const Notification = () => {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder="Notification Title"
+                            />
+                            <input
+                                type="url"
+                                className="form-control"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                                placeholder="Url"
                             />
                             <textarea
                                 value={message}
