@@ -586,6 +586,7 @@ const Lobby = () => {
   }, [userInput]); // Run this whenever userInput changes
   // Eye on Dynamically adjust the textarea rows based on content------------------------------------------------
   
+  // useEffect(()=>{console.log(hasFocus)})
 
   return (
     <>
@@ -697,6 +698,7 @@ const Lobby = () => {
               >
                 <div
                   // ref={paragraphWrapperRef}
+                  onClick={() => {setHasFocus(true), setRootFocus(true)}}
                   style={{
                     position: "relative",
                     whiteSpace: "pre-wrap", // Preserve spaces and line breaks
@@ -732,6 +734,7 @@ const Lobby = () => {
                   <textarea
                     ref={typingAreaRef}
                     value={userInput}
+                    onClick={() => {setHasFocus(true), setRootFocus(true)}}
                     rows={rows} // Dynamically updated rows
                     onChange={handleInputChange}
                     onSelect={(e) => {
