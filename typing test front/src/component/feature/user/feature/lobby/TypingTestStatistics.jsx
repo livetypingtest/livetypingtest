@@ -100,50 +100,37 @@ const TypingTestStats = () => {
     }
 
     const handleDownload = () => {
-
         if(localStorage.getItem('userToken')) {
             const input = certificateRef.current;
     
-        // Use html2canvas to capture the certificate as an image
-        html2canvas(input)
-        .then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
-            
-            // Set the PDF size based on the canvas
-            const imgWidth = 210; // Width in mm (A4 size)
-            const pageHeight = 295; // Height in mm (A4 size)
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
+            // Use html2canvas to capture the certificate as an image
+            html2canvas(input).then((canvas) => {
+                // Create an image file from the canvas
+                const imgData = canvas.toDataURL('image/png'); // 'image/png' for PNG format
     
-            let position = 0;
+                // Create a link element to trigger the download
+                const link = document.createElement('a');
+                link.href = imgData; // Set the image data as the href
+                link.download = 'certificate.png'; // Set the filename for the downloaded image
     
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-    
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-    
-            pdf.save('certificate.pdf'); // Save the PDF
-        })
-        .catch((error) => {
-            console.error('Error generating PDF:', error);
-        });
+                // Trigger the download
+                link.click();
+            }).catch((error) => {
+                console.error('Error generating image:', error);
+            });
         } else {
-            setShowAlert(true)
+            setShowAlert(true);
             setAlertDetail({
-                title : 'Access Denied!',
-                type : 'error',
-                message : 'To Download Certificate Please Signup/Signin',
-                navigateTo : '/signup',
-                confirmBtn : false
-            })
-        }   
+                title: 'Access Denied!',
+                type: 'error',
+                message: 'To Download Certificate Please Signup/Signin',
+                navigateTo: '/signup',
+                confirmBtn: false
+            });
+        }
     };
+    
+    
 
     useEffect(()=>{
         if(localStorage.getItem('newRecord')) {

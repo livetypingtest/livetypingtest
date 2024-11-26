@@ -42,29 +42,22 @@ const UserMatches = () => {
 
     const handleDownload = () => {
         const input = certificateRef.current;
-        html2canvas(input).then((canvas) => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
-            const imgWidth = 210; // A4 size width
-            const pageHeight = 295; // A4 size height
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
-
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-            }
-
-            pdf.save('certificate.pdf');
-        }).catch((error) => {
-            console.error('Error generating PDF:', error);
-        });
+    
+            // Use html2canvas to capture the certificate as an image
+            html2canvas(input).then((canvas) => {
+                // Create an image file from the canvas
+                const imgData = canvas.toDataURL('image/png'); // 'image/png' for PNG format
+    
+                // Create a link element to trigger the download
+                const link = document.createElement('a');
+                link.href = imgData; // Set the image data as the href
+                link.download = 'certificate.png'; // Set the filename for the downloaded image
+    
+                // Trigger the download
+                link.click();
+            }).catch((error) => {
+                console.error('Error generating image:', error);
+            });
     };
 
     const handleUpdateData = (data) => {
