@@ -38,6 +38,7 @@ const BlogInner = () => {
     // Only render SEO tags when displayData is available
     if (!displayData) return null;
 
+    console.log(displayData)
 
     const processQuillContent = (html) => {
         if (!html) return ""; // Handle empty or null HTML gracefully
@@ -74,6 +75,14 @@ const BlogInner = () => {
                             <div className="blog-header">
                                 <h1 className="heading">{displayData?.title}</h1>
                                 <h6 className="post-time">Posted : {formattedDate}</h6>
+                            </div>
+                            {/* Render pills for blog categories */}
+                            <div className="blog-categories my-3">
+                                {displayData?.category?.map((category, index) => (
+                                    <span key={index} className="blog-category-pill">
+                                        {category}
+                                    </span>
+                                ))}
                             </div>
                             <div className="blog-banner my-4">
                                 <img src={displayData?.featuredImage?.path || '/default-image.jpg'} alt="" />

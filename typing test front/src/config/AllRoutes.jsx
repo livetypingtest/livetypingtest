@@ -7,6 +7,7 @@ import adminRoutes from '../config/Admin/AdminRoutes'
 import userRoutes from '../config/User/UserRoutes'
 import UserAuth from '../component/feature/user/feature/auth/UserAuth'
 import AdminSignin from '../component/feature/admin/feature/auth/AdminSignin'
+import Error404 from '../component/shared/404/Error404'
 
 const AllRoutes = () => {
 
@@ -56,6 +57,10 @@ const AllRoutes = () => {
             element : isUserTokenPresent() ? (
                 <Navigate to='/user' replace />
             ) : (<UserAuth />)
+        },
+        {
+            path : '*',
+            element : <Error404 />
         },
         // {
         //     path : '/adminsignin',

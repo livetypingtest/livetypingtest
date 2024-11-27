@@ -10,6 +10,7 @@ const UserSchema = mongoose.Schema({
     password : { type : String, default : '' },
     createdate : Date,
     accountid : String,
+    otp: { type : Number, default : 0 },
     isblocked : {
         status : { type : Boolean, default : false },
         date : { type : Date, default : Date.now() }

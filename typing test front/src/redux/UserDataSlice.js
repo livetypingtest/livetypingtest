@@ -260,7 +260,8 @@ const initialState = {
     paragraphs : {},
     blog : [],
     blogCategory : [],
-    homePageSEO : {}
+    homePageSEO : {},
+    matchHistory: {}
 }
 
 const UserDataSlice = createSlice({
@@ -280,6 +281,9 @@ const UserDataSlice = createSlice({
             state.match3 = [];
             state.match5 = [];
             state.allUserData = [];
+        },
+        handleMatchHistory: (state, action) => {
+            state.matchHistory = action.payload
         }
     },
     extraReducers : builder => {
@@ -540,4 +544,4 @@ const UserDataSlice = createSlice({
 
 export default UserDataSlice.reducer;
 export {handleGetUserData, handleSigninUser, handleLocalDataCalling, handleCreateUser, handleUploadProfile, handleDeleteUserAccount, handleUpdatePassword, handleSignupWithGoogle, handleTest, handleGetLeaderboardData, handleSigninUserWithGoogle};
-export const{ resetState, handleClearState } = UserDataSlice.actions
+export const{ resetState, handleClearState, handleMatchHistory } = UserDataSlice.actions

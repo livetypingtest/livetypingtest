@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { handleSigninUser, resetState } from '../../../../../redux/UserDataSlice';
 import { NavLink, useNavigate } from 'react-router-dom';
 import GoogleAuth from './GoogleAuth';
+import ForgotPassModal from './ForgotPassModal';
 
 // Helper function to check if the input is an email
 const isEmail = (value) => {
@@ -129,7 +130,7 @@ const UserSignin = () => {
 
         <div className='d-flex align-items-center justify-content-between width-90'>
           <div><input type='checkbox' /> <label className='font-idle'> &nbsp; Remember Me</label></div>
-          <NavLink to='' className='font-idle'>Forgot Password?</NavLink>
+          <button data-bs-toggle="modal" data-bs-target="#forgotPassword" className='font-idle'>Forgot Password?</button>
         </div>
         <button type='submit' className='theme-btn lg width-90'>Sign In  { loader && <i className="fa-solid fa-circle-notch fa-spin " style={{ color: "#15131a" }} /> }</button>
         <div className='width-90'><p className='font-idle text-center'>or</p></div>
@@ -138,6 +139,8 @@ const UserSignin = () => {
         </div>
       </div>
       </form>
+
+      <ForgotPassModal />
     </>
     
   );

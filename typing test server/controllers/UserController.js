@@ -361,7 +361,6 @@ route.post('/signup', async(req, res) => {
                 accountid : accountID(),
                 authType : {google : false, email : true}
             }
-
             // sending mail--------------------
                 // Create a Nodemailer transporter using your Gmail account
                 const transporter = nodemailer.createTransport({
@@ -435,6 +434,117 @@ route.post('/updatepass/:id', async(req, res) => {
                 }
             }
         }
+    }
+});
+
+route.post('/forgotpass', async (req, res) => {
+    const { email, password } = req.body;
+    // console.log(req.body)
+
+    try {
+        const user = await userModel.findOne({ email: email });
+
+        if (user) {
+            // Hash the password before saving it to the database
+            const hashedPassword = sha(password)
+            await userModel.updateOne({ email: email }, { $set: { password: hashedPassword } });
+
+            if(!user?.isblocked.status) {
+                const ID = {id : user?._id};
+                const token = jwt.sign(ID, key)
+                res.send({ status : 200, token : token, message : "Logged in Successfully", type : 'signin' })
+            } else res.send({ status : 402, message : "Your Account is blocked", type : 'block-unblock' })
+
+        } else {
+            res.status(404).send({ status: 404, message: 'Email not found.', type: 'resetPassword' });
+        }
+    } catch (error) {
+        console.error('Error in /user/forgotpass:', error);
+        res.status(500).send({ status: 500, message: 'Server error. Please try again later.' });
+    }
+});
+
+route.post('/forgotpass/mail', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const isUserExist = await userModel.findOne({ email: email });
+        if (isUserExist) {
+            const generateOtp = randNum.generator({ min: 1000, max: 9999, integer: true });
+            const otp = generateOtp();
+
+            // Nodemailer transporter configuration
+            const transporter = nodemailer.createTransport({
+                host: "smtp-relay.brevo.com",
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.BREVO_SMTP_MAIL,
+                    pass: process.env.BREVO_SMTP_API_KEY,
+                },
+                tls: { rejectUnauthorized: false },
+            });
+
+            const htmlContent = `<html><body>
+                <table style="text-align: left">
+                    <tr><th>Your OTP to Reset Password is :</th></tr>
+                    <tr><th>${otp}</th></tr>
+                </table>
+            </body></html>`;
+
+            await transporter.sendMail({
+                from: `"Live Typing Test" <${process.env.BREVO_SENDER_MAIL}>`,
+                to: email,
+                subject: `Forgot Password LiveTypingTest`,
+                html: htmlContent,
+            });
+
+            // Save OTP in the database
+            await userModel.updateOne({ email: email }, { $set: { otp: otp } });
+
+            res.status(200).send({
+                status: 200,
+                type: 'forgotPassword',
+                message: 'OTP has been sent to your email.',
+            });
+        } else {
+            res.status(404).send({ status: 404, message: 'Email ID is invalid.', type: 'forgotPassword' });
+        }
+    } catch (error) {
+        console.error('Error in /user/forgotpass/mail:', error);
+        res.status(500).send({ status: 500, message: 'Server error. Please try again later.' });
+    }
+});
+
+route.post('/forgotpass/otp', async (req, res) => {
+    const { email, otp } = req.body;
+    try {
+        const user = await userModel.findOne({ email: email });
+        
+        console.log(user?.otp, otp)
+        if (user) {
+            if (user?.otp == otp) {
+                // Delete OTP after successful verification
+                await userModel.updateOne({ email: email }, { $unset: { otp: '' } });
+
+                res.status(200).send({
+                    status: 200,
+                    type: 'verifyOtp',
+                    message: 'OTP verified successfully.',
+                });
+            } else {
+                res.status(400).send({
+                    status: 400,
+                    type: 'verifyOtp',
+                    message: 'Invalid OTP. Please try again.',
+                });
+            }
+        } else {
+            res.status(404).send({ status: 404, message: 'Email not found.', type: 'verifyOtp' });
+        }
+    } catch (error) {
+        console.error('Error in /user/forgotpass/otp:', error);
+        res.status(500).send({ status: 500, message: 'Server error. Please try again later.' });
     }
 });
 

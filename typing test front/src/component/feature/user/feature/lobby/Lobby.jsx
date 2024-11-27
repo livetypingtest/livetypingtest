@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Header from '../../../../shared/header/Header'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleTest, resetState } from '../../../../../redux/UserDataSlice';
+import { handleMatchHistory, handleTest, resetState } from '../../../../../redux/UserDataSlice';
 import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
 import { easyWords, generateParagraph, hardWords, mediumWords } from './ParagraphGenerater';
 import DynamicAlert from '../../../../shared/Toast/DynamicAlert'
@@ -26,16 +26,17 @@ const Lobby = () => {
   const isError = useSelector(state => state.UserDataSlice.isError)
   const isProcessing = useSelector(state => state.UserDataSlice.isProcessing)
   const homePageSEO = useSelector(state => state.UserDataSlice.homePageSEO)
+  const matchHistory = useSelector(state => state.UserDataSlice.matchHistory)
 
-  const [time, setTime] = useState(60);
+  const [time, setTime] = useState(matchHistory?.state ? matchHistory?.time : 60);
   const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(false);
   const [prevInput, setPrevInput] = useState(false);
   const [rows, setRows] = useState(window.innerWidth > 767 ? 8 : 14); // Initial number of rows for textarea
   const [prevInputWords, setPrevInputWords] = useState(false);
-  const [difficulty, setDifficulty] = useState("easy");
-  const [timeLimit, setTimeLimit] = useState(60); // Default 30 seconds
+  const [difficulty, setDifficulty] = useState(matchHistory?.state ? matchHistory?.level : "easy");
+  const [timeLimit, setTimeLimit] = useState(matchHistory?.state ? matchHistory?.time : 60); // Default 30 seconds
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [currentParagraph, setCurrentParagraph] = useState();
@@ -114,6 +115,7 @@ const Lobby = () => {
   if (timeField && paragraphs?.[timeField]?.[difficulty]?.length > 0) {
       // Pick a random paragraph from existing ones
       const getIndex = getRandomIndex(paragraphs[timeField][difficulty]);
+      return paragraphs[timeField][difficulty][getIndex]?.para
       setCurrentParagraph(paragraphs[timeField][difficulty][getIndex]?.para);
       // console.log(paragraphs[timeField][difficulty][getIndex]?.para)
   } 
@@ -124,7 +126,8 @@ const Lobby = () => {
   }
 
   useEffect(() => {
-    settingTheParagraphs()
+    const paragraph = settingTheParagraphs()
+    setCurrentParagraph(paragraph)
   }, [paragraphs, time, difficulty]); // Dependencies: `paragraphs`, `time`, and `difficulty`
 
 
@@ -213,7 +216,7 @@ const Lobby = () => {
     let incorrectChars = 0;
     let extraChars = 0;
     let currentStreak = 0;
-    let longestStreak = 0;
+    let longestStreak = stats.longestStreak || 0;
     let isCompleted = false;
     let skippedChars = 0;
     let timeOfCompletion = 0;
@@ -274,6 +277,7 @@ const Lobby = () => {
     if (elapsedTime > 0) {
       const wordsTyped = input.trim().split(/\s+/).length; // Count non-empty words
       wpm = ((wordsTyped / elapsedTime) * 60).toFixed(2); // Words per minute
+      wpm = Math.min(wpm, elapsedTime > 5 ? wpm : 150);
     }
   
     // Calculate accuracy
@@ -283,12 +287,14 @@ const Lobby = () => {
       : 0;
   
     // Calculate consistency
-    const consistency = longestStreak > 0
-      ? Math.min(((longestStreak / currentParagraph.replace(/ /g, "").length) * 100).toFixed(2), 100)
-      : 0;
+    const completedChars = correctChars + incorrectChars + skippedChars;
+    const nonSpaceCharCount = currentParagraph.replace(/ /g, "").length;
+    const consistency = completedChars > 0
+        ? ((correctChars / nonSpaceCharCount) * 100).toFixed(2)
+        : 0;
   
     // Count non-space characters in the paragraph
-    const nonSpaceCharCount = currentParagraph.replace(/ /g, "").length;
+    // const nonSpaceCharCount = currentParagraph.replace(/ /g, "").length;
   
     // Determine if the paragraph is completed
     isCompleted = (correctChars + skippedChars + incorrectChars) >= nonSpaceCharCount;
@@ -298,7 +304,7 @@ const Lobby = () => {
     if (isCompleted) {
   
       // Generate and append a new paragraph if the current one is completed
-      const addExtraParagraph = generateTypingTestParagraph();
+      const addExtraParagraph = settingTheParagraphs();
       setCurrentParagraph((prevParagraph) => `${prevParagraph} ${addExtraParagraph}`);
     }
   
@@ -356,7 +362,7 @@ const Lobby = () => {
         date : new Date()
       }
       localStorage.setItem('stats', JSON.stringify(result))
-      localStorage.setItem('matchHistory', JSON.stringify({time : result.data.time, level : result.data.level}))
+      dispatch(handleMatchHistory({state: true, time : result.data.time, level : result.data.level}))
       if(localStorage.getItem('userToken')) {
           dispatch(handleTest(result))
       } else {
@@ -485,16 +491,10 @@ const Lobby = () => {
   
   // Getting match history from local storage -----------------------------------------------------------------
   useEffect(() => {
-    if(localStorage.getItem('matchHistory')) {
-      let data = localStorage.getItem('matchHistory')
-      data = JSON.parse(data)
-      const { time, level } = data
-      setTime(time)
-      setTimeLimit(time)
-      setDifficulty(level)
+    if(matchHistory.state) {
       setTime(()=>{
-        localStorage.removeItem('matchHistory')
-      }, 1000)
+        dispatch(handleMatchHistory({state: false}))
+      }, 2000)
     }
   }, [])
   // Getting match history from local storage -----------------------------------------------------------------
@@ -694,7 +694,7 @@ const Lobby = () => {
             </div>
             <div className="col-md-12">
               <div
-                className="typing-area"
+                className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
                 tabIndex={0} // Make the div focusable
                 onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
                 onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
@@ -703,14 +703,15 @@ const Lobby = () => {
                 onKeyUp={(e)=>blockRestrictedKeys(e)}
                 ref={paragraphWrapperRef}
               >
+                {/* Overlay for blur effect and user instruction */}
+                {!hasFocus && (
+                  <div className="typing-overlay">
+                    <p>Click here to continue typing!</p>
+                  </div>
+                )}
                 <div
-                  // ref={paragraphWrapperRef}
+                  className={`paragraph-container ${!hasFocus ? "text-blur" : ""}`}
                   onClick={() => {setHasFocus(true), setRootFocus(true)}}
-                  style={{
-                    position: "relative",
-                    whiteSpace: "pre-wrap", // Preserve spaces and line breaks
-                    fontSize: "30px",
-                  }}
                 >
                   {currentParagraph && typeof currentParagraph === "string"
                     ? currentParagraph.split("").map((char, index) => (
@@ -743,7 +744,13 @@ const Lobby = () => {
                     value={userInput}
                     onClick={() => {setHasFocus(true), setRootFocus(true)}}
                     rows={rows} // Dynamically updated rows
-                    onChange={handleInputChange}
+                    // onChange={handleInputChange}
+                    onChange={(e) => {
+                      // Restrict input processing if !hasFocus
+                      if (!hasFocus) return;
+              
+                      handleInputChange(e);
+                    }}
                     onSelect={(e) => {
                       const inputElement = e.target;
                       const currentCursorPosition = inputElement.selectionStart;

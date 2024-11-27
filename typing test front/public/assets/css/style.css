@@ -1705,7 +1705,7 @@ button.google-sign-btn img {
 
 .about-section{
     color: #fff;
-    padding: 80px 0px;
+    padding: 40px 0px;
 }
 
 .contact-section{
@@ -1950,4 +1950,82 @@ button.google-sign-btn img {
 }
 .custom-width{
     width: 90%;
+}
+
+
+/* Blur Effect Overlay */
+.typing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 26%); /* Semi-transparent dark background */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #15131a59;
+    z-index: 10;
+    border-radius: 8px;
+    backdrop-filter: blur(11px); /* Background blur effect */
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+  }
+  
+  /* Blur Effect for Text */
+  .text-blur {
+    /* filter: blur(5px); */
+    opacity: 0.5;
+  }
+
+  .paragraph-container {
+    position: relative;
+    white-space: pre-wrap; /* Preserve spaces and line breaks */
+    font-size: 30px;
+  }
+
+
+  .blog-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.blog-category-pill {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #71CAC7;
+    color: #1f1d21;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: default;
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+
+.blog-category-pill:hover {
+    background-color: #ddd;
+}
+
+.img-404 img{
+    width: 100%;
+}
+.img-404{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.custom-alert{
+    background-color: #ffc10729 !important;
+    border: 1px solid #ffc107;
+    color: #fff;
+}
+
+.cs-border{
+    border: 1px solid #fff;
 }

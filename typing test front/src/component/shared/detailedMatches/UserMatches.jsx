@@ -31,8 +31,24 @@ const UserMatches = () => {
         const match3 = rawUserData?.match_3?.filter(value => value.level === level) || [];
         const match5 = rawUserData?.match_5?.filter(value => value.level === level) || [];
 
-        setMatchData({ match1, match3, match5 });
-        setDisplayData(match1);
+        // Get the current date and the date for 7 days ago
+        const currentDate = new Date();
+        const sevenDaysAgo = new Date(currentDate.setDate(currentDate.getDate() - 7));
+
+        // Filter the matches by date within the last 7 days
+        const filterByDate = (matches) => {
+            return matches.filter((match) => {
+                const matchDate = new Date(match.matchdate);
+                return matchDate >= sevenDaysAgo;
+            });
+        };
+
+        setMatchData({
+            match1: filterByDate(match1),
+            match3: filterByDate(match3),
+            match5: filterByDate(match5)
+        });
+        setDisplayData(filterByDate(match1)); // Set initial display data to match1
     }, [rawUserData, level]);
 
     useEffect(() => {
@@ -95,6 +111,8 @@ const UserMatches = () => {
                 <div className="container py-5">
                     <div className="row">
                         <div className="col-md-12">
+                            <h4 className="font-active text-left mb-2">{level} Mode</h4>
+                            <p className="alert custom-alert mb-3"><i class="fa-regular fa-circle-exclamation" style={{color: '#FFD43B'}}></i> &nbsp; Please be advised that certificates will be deleted after 7 days. We encourage you to download your certificate before the expiration date.</p>
                             <div className="leaderboard-head">
                                 <div className="filter">
                                     <div className="filter-btn">
