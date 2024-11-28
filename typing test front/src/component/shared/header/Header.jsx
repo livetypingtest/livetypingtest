@@ -33,6 +33,10 @@ const Header = () => {
             MetaUpdater.updateMeta(`Live Typing Test | ${getPath[currentPath]}`, "/assets/images/favicon.png");
         }
     }
+    
+    const changeTitle = (title) => {
+        MetaUpdater.updateMeta(`Live Typing Test | ${title}`, "/assets/images/favicon.png");
+    }
 
     useEffect(()=>{
         changingTitleFunc()
@@ -58,12 +62,12 @@ const Header = () => {
                                 {checkUserToken ? (
                                     <>
                                         <NavLink to='/'><li>Start Live Test</li></NavLink>
-                                        <NavLink to='/leaderboard'><li>Leaderboard</li></NavLink>
-                                        <NavLink to='/blog'><li>Blogs</li></NavLink>
+                                        <NavLink onClick={()=>changeTitle('Leaderboard')} to='/leaderboard'><li>Leaderboard</li></NavLink>
+                                        <NavLink onClick={()=>changeTitle('Blog')} to='/blog'><li>Blogs</li></NavLink>
                                         <li className="dropdown">
-                                            <NavLink to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.s3url ? `${userData?.profileimage?.s3url}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
+                                            <NavLink onClick={()=>changeTitle('Profile')} to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.s3url ? `${userData?.profileimage?.s3url}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
                                             <ul className="dropdown-menu">
-                                                <NavLink to='/dashboard'><li>Profile</li></NavLink>
+                                                <NavLink onClick={()=>changeTitle('Profile')} to='/dashboard'><li>Profile</li></NavLink>
                                                 <NavLink to={`/signout/${'isSignout'}`}><li>Logout</li></NavLink>
                                             </ul>
                                         </li>
