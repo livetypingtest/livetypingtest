@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { handleGetUserData, handleLocalDataCalling, resetState } from '../redux/UserDataSlice';
 import PageDataLoader from '../component/shared/loader/PageDataLoader';
 import { messaging } from '../firebaseConfig'
@@ -11,12 +11,14 @@ import { dynamicToast } from '../component/shared/Toast/DynamicToast';
 import { handleGetAboutData, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
 import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 import { notificationToast } from '../component/shared/Toast/NotificationToats';
+import MetaUpdater from '../util/MetaUpdater';
 
 
 const UserModule = () => {
 
     useDynamicTitle()
     const navigate = useNavigate();
+    const location = useLocation();
     const dispatch = useDispatch();
     const [pageLoader, setPageLoader] = useState(false)
     const userData = useSelector(state => state.UserDataSlice.userData)

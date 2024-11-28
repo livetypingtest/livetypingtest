@@ -128,7 +128,7 @@ const Lobby = () => {
   useEffect(() => {
     const paragraph = settingTheParagraphs()
     setCurrentParagraph(paragraph)
-  }, [paragraphs, time, difficulty]); // Dependencies: `paragraphs`, `time`, and `difficulty`
+  }, [paragraphs, time, difficulty, matchHistory]); // Dependencies: `paragraphs`, `time`, and `difficulty`
 
 
   // Focus input on load--------------------------------------------------------------------------
@@ -492,11 +492,18 @@ const Lobby = () => {
   // Getting match history from local storage -----------------------------------------------------------------
   useEffect(() => {
     if(matchHistory.state) {
+        // Set difficulty and time based on matchHistory
+      setDifficulty(matchHistory?.level || 'easy');
+      setTime(matchHistory?.time || 60);
+      setTimeLimit(matchHistory?.time || 60);
+      const paragraph = settingTheParagraphs()
+      setCurrentParagraph(paragraph)
+      console.log(time, difficulty)
       setTime(()=>{
         dispatch(handleMatchHistory({state: false}))
-      }, 2000)
+      }, 4000)
     }
-  }, [])
+  }, [matchHistory])
   // Getting match history from local storage -----------------------------------------------------------------
   
   // Putting eye on caps lock -----------------------------------------------------------------
@@ -693,6 +700,12 @@ const Lobby = () => {
               </div>
             </div>
             <div className="col-md-12">
+              {/* Overlay for blur effect and user instruction */}
+              {!hasFocus && (
+                <div className="typing-overlay" onClick={() => {setHasFocus(true), setRootFocus(true)}}>
+                  <p>Click here to continue typing!</p>
+                </div>
+              )}
               <div
                 className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
                 tabIndex={0} // Make the div focusable
@@ -703,12 +716,6 @@ const Lobby = () => {
                 onKeyUp={(e)=>blockRestrictedKeys(e)}
                 ref={paragraphWrapperRef}
               >
-                {/* Overlay for blur effect and user instruction */}
-                {!hasFocus && (
-                  <div className="typing-overlay">
-                    <p>Click here to continue typing!</p>
-                  </div>
-                )}
                 <div
                   className={`paragraph-container ${!hasFocus ? "text-blur" : ""}`}
                   onClick={() => {setHasFocus(true), setRootFocus(true)}}
@@ -767,7 +774,7 @@ const Lobby = () => {
                   ></textarea>
                 </div>
               </div>
-              <div className='reset'><button onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>
+              <div className='reset'><button className='z-10' onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>
             </div>
             <div className="row align-items-center">
               <div className="col-md-7">

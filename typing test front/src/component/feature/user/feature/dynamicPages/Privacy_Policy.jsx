@@ -29,10 +29,10 @@ const Privacy_Policy = () => {
             }).format(parsedDate)
           );
         } else {
-          console.error('Invalid date format:', rawDate);
+          console.error('Invalid date format:', );
         }
       }
-      console.log('Invalid date format:', privacyData); 
+      console.log('Invalid date format:'); 
     }, [privacyData]);
 
     const processQuillContent = (html) => {

@@ -322,5 +322,9 @@
     .custom-font{
         font-size: 12px;
     }
+    .blog-category-pill{
+        padding: 5px 10px;
+        font-size: 12px;
+    }
     
 }

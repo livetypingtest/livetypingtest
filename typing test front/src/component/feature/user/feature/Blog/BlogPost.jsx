@@ -34,7 +34,7 @@ const BlogPost = (props) => {
 
   return (
     <>
-        <div className="blog-post my-3">
+        <div className="blog-post my-3" key={permalink}>
             <div className="blog-img"><NavLink to={`${isToken ? '/' : '/'}blog/${permalink}`}><img src={`${featuredImage?.path}`} alt="" /></NavLink></div>
             <div className="blog-content">
                 <NavLink className="text-dec-none" to={`${isToken ? '/' : '/'}blog/${permalink}`}><h1 >{title}</h1></NavLink>

@@ -130,7 +130,7 @@ const UserSignin = () => {
 
         <div className='d-flex align-items-center justify-content-between width-90'>
           <div><input type='checkbox' /> <label className='font-idle'> &nbsp; Remember Me</label></div>
-          <button data-bs-toggle="modal" data-bs-target="#forgotPassword" className='font-idle'>Forgot Password?</button>
+          <button type='button' data-bs-toggle="modal" data-bs-target="#forgotPassword" className='font-idle'>Forgot Password?</button>
         </div>
         <button type='submit' className='theme-btn lg width-90'>Sign In  { loader && <i className="fa-solid fa-circle-notch fa-spin " style={{ color: "#15131a" }} /> }</button>
         <div className='width-90'><p className='font-idle text-center'>or</p></div>

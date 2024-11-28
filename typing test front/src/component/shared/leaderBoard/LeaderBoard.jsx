@@ -5,11 +5,13 @@ import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import { BASE_API_URL } from '../../../util/API_URL';
 import MetaUpdater from '../../../util/MetaUpdater';
+import { useLocation } from 'react-router-dom';
 
 
 const LeaderBoard = () => {
 
     const dispatch = useDispatch();
+    const location = useLocation();
     const [onLoadLimit, setOnLoadLimit] = useState(50)
     const rawAllUserData = useSelector(state => state.UserDataSlice.allUserData)
     const isProcessing = useSelector(state => state.UserDataSlice.isProcessing)
@@ -99,7 +101,7 @@ const LeaderBoard = () => {
     
     useEffect(() => {
         MetaUpdater.updateMeta("Live Typing Test | Leaderboard", "/assets/images/favicon.png");
-    }, []);
+    }, [location]);
 
     useEffect(()=>{
         updateDataOnLevels()
@@ -192,7 +194,7 @@ const LeaderBoard = () => {
                                 <tbody>
                                     {
                                         displayData?.length !== 0 ? displayData?.map((value, index) => (
-                                            <tr>
+                                            <tr key={index}>
                                                 <td>{index+1}</td>
                                                 <td><div className='profile'><img src={value?.profile ? `${value?.profile}` : "/assets/images/profile.png"}  alt="" />
                                                     <p className='leaderboard-profile-font'>{value?.username}</p>

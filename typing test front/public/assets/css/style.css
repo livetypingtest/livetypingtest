@@ -1956,22 +1956,29 @@ button.google-sign-btn img {
 /* Blur Effect Overlay */
 .typing-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgb(0 0 0 / 26%); /* Semi-transparent dark background */
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    width: 84%;
+    height: 50%;
+    background: rgb(0 0 0 / 26%);
     color: white;
-    display: flex;
+    display: flex
+;
     justify-content: center;
     align-items: center;
     background-color: #15131a59;
     z-index: 10;
     border-radius: 8px;
-    backdrop-filter: blur(11px); /* Background blur effect */
+    backdrop-filter: blur(11px);
     text-align: center;
     font-size: 18px;
     padding: 10px;
+  }
+
+  .z-10{
+    z-index: 10;
+    position: relative;
   }
   
   /* Blur Effect for Text */
@@ -1983,7 +1990,13 @@ button.google-sign-btn img {
   .paragraph-container {
     position: relative;
     white-space: pre-wrap; /* Preserve spaces and line breaks */
-    font-size: 30px;
+    /* font-family: "Roboto Mono", "Roboto Mono", Vazirmatn, monospace;
+  font-style: normal;
+  font-weight: 400; */
+  font-size: 30px;
+  /* line-height: 48px; */
+
+
   }
 
 

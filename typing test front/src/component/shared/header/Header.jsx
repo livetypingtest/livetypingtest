@@ -1,16 +1,42 @@
 import { useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import GoogleADs from '../googleAds/GoogleADs';
 import { useSelector } from 'react-redux';
+import MetaUpdater from '../../../util/MetaUpdater';
+import { useEffect } from 'react';
 
 
 const Header = () => {
+    const location = useLocation();
     const checkUserToken = useMemo(() => !!localStorage.getItem('userToken'), []);
     const checkAdminToken = useMemo(() => !!localStorage.getItem('adminToken'), []);
     const userData = useSelector(state => state.UserDataSlice.userData);
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => setIsOpen(!isOpen);
+
+
+    const changingTitleFunc = () => {
+        if(location) {
+            const currentPath = location?.pathname
+            const getPath = {
+                '/dashnoard' : 'Profile',
+                '/leaderboard' : 'Leaderboard',
+                '/blog' : 'Blog',
+                '/contact' : 'Contact',
+                '/about' : 'About',
+                '/signup' : 'Authentication',
+                '/privacy' : 'Privacy & Policy',
+                '/term-condition' : 'Terms & Condition',
+            }
+
+            MetaUpdater.updateMeta(`Live Typing Test | ${getPath[currentPath]}`, "/assets/images/favicon.png");
+        }
+    }
+
+    useEffect(()=>{
+        changingTitleFunc()
+    }, [])
 
     return (
         <>

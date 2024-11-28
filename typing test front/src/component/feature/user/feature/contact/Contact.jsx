@@ -8,10 +8,12 @@ import {dynamicToast} from '../../../../shared/Toast/DynamicToast'
 import { useEffect, useState } from "react";
 import DynamicAlert from "../../../../shared/Toast/DynamicAlert";
 import MetaUpdater from "../../../../../util/MetaUpdater";
+import { useLocation } from "react-router-dom";
 
 const Contact = () => {
 
   const [loader, setLoader] = useState(false)
+  const location = useLocation()
   const [alertDetail, setAlertDetail] = useState({
     title : '',
     message : '',
@@ -65,7 +67,7 @@ const [showAlert, setShowAlert] = useState(false)
 
 useEffect(() => {
   MetaUpdater.updateMeta("Live Typing Test | Contact", "/assets/images/favicon.png");
-}, []);
+}, [location]);
 
   return (
     <>

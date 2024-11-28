@@ -14,7 +14,7 @@ const Terms_Condition = () => {
   useEffect(() => {
     if (termData?.createdat) {
       // Try converting the date string to a JavaScript Date object
-      const rawDate = termData.createdat;
+      const rawDate = termData?.createdat;
       
       // Check if the rawDate is valid and then parse it
         const parsedDate = new Date(rawDate);
@@ -29,10 +29,10 @@ const Terms_Condition = () => {
             }).format(parsedDate)
           );
         } else {
-          console.error('Invalid date format:', rawDate);
+          console.error('Invalid date format:');
         }
       }
-      console.log('Invalid date format:', termData); 
+      console.log('Invalid date format:'); 
     }, [termData]);
 
     const processQuillContent = (html) => {
