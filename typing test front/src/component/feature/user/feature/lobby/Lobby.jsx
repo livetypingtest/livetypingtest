@@ -205,12 +205,12 @@ const Lobby = () => {
     calculateStats(input); // Update typing stats
   
     // Auto-scroll logic
-    const wrapper = paragraphWrapperRef.current;
-    if (wrapper) {
-      const lineHeight = parseInt(getComputedStyle(wrapper).lineHeight, 10); // Get the line height
-      const currentLine = Math.floor(input.length / wrapper.offsetWidth); // Estimate the current line
-      wrapper.scrollTop = currentLine * lineHeight; // Scroll to the current line
-    }
+    // const wrapper = paragraphWrapperRef.current;
+    // if (wrapper) {
+    //   const lineHeight = parseInt(getComputedStyle(wrapper).lineHeight, 10); // Get the line height
+    //   const currentLine = Math.floor(input.length / wrapper.offsetWidth); // Estimate the current line
+    //   wrapper.scrollTop = currentLine * lineHeight; // Scroll to the current line
+    // }
   };  
   // Handle input change----------------------------------------------------------------------
 
