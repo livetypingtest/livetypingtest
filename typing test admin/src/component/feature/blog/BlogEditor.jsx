@@ -11,6 +11,7 @@ import Quill from 'quill';
 
 // Ensure the Code Block module is included
 import 'quill/dist/quill.snow.css'; // import Quill's default CSS styles
+import DynamicTitle from '../../shared/helmet/DynamicTitle';
 
 // Register the CodeBlock module with Quill
 const CodeBlock = Quill.import('formats/code-block');
@@ -235,6 +236,8 @@ const BlogEditor = () => {
 
     return (
         <>
+
+        <DynamicTitle title={"Live Typing Test | Blog Edito"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Blog Edito"}  />
             <section>
                 <div className="container  pb-5 pt-7">
                     <div className="row align-items-center">

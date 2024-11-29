@@ -5,6 +5,7 @@ import { dynamicToast } from '../../shared/Toast/DynamicToast'
 import { BASE_API_URL } from '../../../util/API_URL'
 import UpdatePassModal from './UpdatePassModal'
 import { handleAdminProfileUpload, resetState } from '../../../redux/AdminDataSlice'
+import DynamicTitle from '../../shared/helmet/DynamicTitle'
 
 const AdminProfile = () => {
 
@@ -102,6 +103,8 @@ const AdminProfile = () => {
 
   return (
     <>
+    <DynamicTitle title={"Live Typing Test | Profile"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Profile"}  />
+
         <section>
             <div className="container pt-7 pb-5">
                 <div className="row pt-7">

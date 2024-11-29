@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ADMIN_API_URL } from '../../../util/API_URL';
 import GoogleAnalytics from '../googleAnalytics/GoogleAnalytics'
+import DynamicTitle from '../../shared/helmet/DynamicTitle';
 
 
 
@@ -39,6 +40,8 @@ const ManageAds = () => {
 
   return (
     <>
+        <DynamicTitle title={"Live Typing Test | Google ads"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Google ads"}  />
+
         <section>
             <div className="container pt-7 pb-5">
                 <div className="row">

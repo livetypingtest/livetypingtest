@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { handlePostAboutData, resetState } from '../../../redux/DynamicPagesDataSlice';
 import ExistingData from "./ExistingData";
+import DynamicTitle from "../../shared/helmet/DynamicTitle";
 
 const ImageTextRepeater = () => {
   const [items, setItems] = useState([{
@@ -131,7 +132,10 @@ const ImageTextRepeater = () => {
   }, [isFullfilled])
 
   return (
+    
     <section>
+    <DynamicTitle title={"Live Typing Test | About"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | About"}  />
+
       <div className="container pt-7">
         <div className="row">
           <div className="col-md-12">

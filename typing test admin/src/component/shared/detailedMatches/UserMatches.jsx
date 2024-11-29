@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import Certificate from "../certificate/Certificate";
+import DynamicTitle from "../helmet/DynamicTitle";
 
 const UserMatches = () => {
     const param = useParams();
@@ -77,6 +78,7 @@ const UserMatches = () => {
 
     return (
         <>
+    <DynamicTitle title={"Live Typing Test | Matches"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Matches"}  />
 
             <section>
                 <div className="container pt-7">

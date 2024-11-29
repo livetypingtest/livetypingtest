@@ -9,6 +9,7 @@ import DeleteUserModal from "../modals/DeleteUserModal";
 import axios from "axios";
 import Pagination from '../../../shared/pagination/Pagination';
 import * as XLSX from 'xlsx';
+import DynamicTitle from "../../../shared/helmet/DynamicTitle";
 
 const AllUsers = () => {
     const dispatch = useDispatch();
@@ -123,6 +124,8 @@ const AllUsers = () => {
 
     return (
         <>
+    <DynamicTitle title={"Live Typing Test | Users"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Users"}  />
+
             <section>
                 <div className="container pb-5 pt-7">
                     <div className="row">

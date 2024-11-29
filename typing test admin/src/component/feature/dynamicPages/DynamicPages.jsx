@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import {NavLink} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import DeletePageDataModal from './modal/DeletePageDataModal'
+import DynamicTitle from '../../shared/helmet/DynamicTitle'
 
 const DynamicPages = () => {
     
@@ -57,6 +58,8 @@ const DynamicPages = () => {
   return (
     <>
         <section>
+    <DynamicTitle title={"Live Typing Test | Pages"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Pages"}  />
+
             <div className="container pt-7 pb-5">
                 <div className="row">
                     <div className="col-md-12">

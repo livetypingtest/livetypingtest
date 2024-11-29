@@ -307,30 +307,27 @@ route.post('/signup/google', async(req, res) => {
                     },
                 });
 
-                const message = {
-                    line1: "Thank you for joining LiveTypingTest! We're delighted to have you on board.",
-                    line2: "If you have any questions or need support, feel free to reach out to us anytime.",
-                    line3: "Wishing you a fantastic journey with us!",
-                    designation: "Best Regards",
-                }
-            
-                const htmlContent = `<html><body>
-                    <table style="text-align: left">
-                        <tr><th>${message.line1}</th></tr>
-                        <tr><th>${message.line2}</th></tr>
-                        <tr><th>${message.line3}</th></tr>
-                        <tr><th>${message.designation}</th></tr>
-                        <tr><th>Admin</th></tr>
-                    </table>
-                    </body></html>`;
-                
-                    await transporter.sendMail({
+                // Read the HTML file asynchronously
+                fs.readFile(path.join(__dirname, '../utils/', 'welcomeEmail.html'), 'utf8', (err, htmlContent) => {
+                    if (err) {
+                        console.log("Error reading HTML file: ", err);
+                        return res.status(500).send({ status: 500, message: "Internal Server Error" });
+                    }
+
+                    // Send the email with the HTML content
+                    transporter.sendMail({
                         from: `"Live Typing Test" <${process.env.BREVO_SENDER_MAIL}>`,
                         to: email,
                         subject: `Welcome to LiveTypingTest! 🎉`,
-                        html: htmlContent
+                        html: htmlContent // Use the HTML content from the file
+                    }, async (error, info) => {
+                        if (error) {
+                            console.log("Error sending email: ", error);
+                            return res.status(500).send({ status: 500, message: "Failed to send email" });
+                        }
                     });
-                // sending mail--------------------
+                });
+                // sending mail --------------------
 
 
                 // console.log(finalData)
@@ -376,38 +373,37 @@ route.post('/signup', async(req, res) => {
                     },
                 });
 
-                const message = {
-                    line1: "Thank you for joining LiveTypingTest! We're delighted to have you on board.",
-                    line2: "If you have any questions or need support, feel free to reach out to us anytime.",
-                    line3: "Wishing you a fantastic journey with us!",
-                    designation: "Best Regards",
-                }
-            
-                const htmlContent = `<html><body>
-                    <table style="text-align: left">
-                        <tr><th>${message.line1}</th></tr>
-                        <tr><th>${message.line2}</th></tr>
-                        <tr><th>${message.line3}</th></tr>
-                        <tr><th>${message.designation}</th></tr>
-                        <tr><th>Admin</th></tr>
-                    </table>
-                    </body></html>`;
-                
-                    await transporter.sendMail({
+                // Read the HTML file asynchronously
+                fs.readFile(path.join(__dirname, '../utils/', 'welcomeEmail.html'), 'utf8', (err, htmlContent) => {
+                    if (err) {
+                        console.log("Error reading HTML file: ", err);
+                        return res.status(500).send({ status: 500, message: "Internal Server Error" });
+                    }
+
+                    // Send the email with the HTML content
+                    transporter.sendMail({
                         from: `"Live Typing Test" <${process.env.BREVO_SENDER_MAIL}>`,
                         to: email,
                         subject: `Welcome to LiveTypingTest! 🎉`,
-                        html: htmlContent
+                        html: htmlContent // Use the HTML content from the file
+                    }, async (error, info) => {
+                        if (error) {
+                            console.log("Error sending email: ", error);
+                            return res.status(500).send({ status: 500, message: "Failed to send email" });
+                        }
                     });
-                // sending mail--------------------
+                });
+                // sending mail --------------------
 
+                // Create the new user
+                await userModel.create(finalData);
+                const getUser = await userModel.findOne({ email : email });
+                await notificationModel.create({ userId: getUser?._id, fcmToken: '' });
+                const ID = { id: getUser?._id };
+                const token = jwt.sign(ID, key);
 
-            await userModel.create(finalData)
-            const getUser = await userModel.findOne({ email : email })
-            await notificationModel.create({userId : getUser?._id, fcmToken : ''})
-            const ID = {id : getUser?._id};
-            const token = jwt.sign(ID, key)
-            res.send({ status : 200, message : "Account Created Successfully", type : 'signup', token : token })
+                // Send the success response
+                res.send({ status: 200, message: "Account Created Successfully", type: 'signup', token:token });
         } else res.send({ status : 402, message : "Email ID Exist", type : 'signup' }) 
     } else res.send({ status : 402, message : "username exist", type : 'signup' })
 

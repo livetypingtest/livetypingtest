@@ -5,6 +5,7 @@ import Min1Paragraphs from './Min1Paragraphs'
 import Min3Paragraphs from './Min3Paragraphs'
 import Min5Paragraphs from './Min5Paragraphs'
 import { useSelector } from 'react-redux'
+import DynamicTitle from '../../shared/helmet/DynamicTitle'
 
 
 const Paragraphs = () => {
@@ -25,6 +26,7 @@ const Paragraphs = () => {
 
   return (
     <>
+    <DynamicTitle title={"Live Typing Test | Paragraph"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Paragraph"}  />
 
         <section>
             <div className="container pt-7">

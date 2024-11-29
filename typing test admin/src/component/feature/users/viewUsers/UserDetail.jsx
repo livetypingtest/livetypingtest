@@ -5,6 +5,7 @@ import { NavLink, useParams } from "react-router-dom";
 import DeleteUserModal from "../modals/DeleteUserModal";
 import { dynamicToast } from "../../../shared/Toast/DynamicToast";
 import UpdatePassModal from "../modals/UpdatePassModal";
+import DynamicTitle from "../../../shared/helmet/DynamicTitle";
 
 const UserDetail = () => {
 
@@ -235,6 +236,7 @@ const UserDetail = () => {
 
   return (
     <>
+    <DynamicTitle title={`Live Typing Test | ${rawUserData?.username}`} icon={"/assets/images/favicon.png"} description={`Live Typing Test | ${rawUserData?.username}`}  />
       
       <section>
         <div className="container pt-7">

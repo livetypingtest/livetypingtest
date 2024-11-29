@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { handleDeleteBulkContactData, handleDeleteSingleContactData, handleGetContactData } from '../../../redux/DynamicPagesDataSlice';
+import DynamicTitle from '../../shared/helmet/DynamicTitle';
 
 const Contacts = () => {
     const contactData = useSelector(state => state.DynamicPagesDataSlice.contact);
@@ -50,6 +51,7 @@ const Contacts = () => {
 
     return (
         <>
+        <DynamicTitle title={"Live Typing Test | Contact"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Contact"}  />
             <section>
                 <div className="container pt-7 pb-5">
                     <div className="row pt-7">

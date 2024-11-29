@@ -7,6 +7,7 @@ import DeleteBlogModal from "./modal/DeleteBlogModal";
 import axios from "axios";
 import { ADMIN_API_URL } from "../../../util/API_URL";
 import { handleAddBlogPostToState } from "../../../redux/AdminDataSlice";
+import DynamicTitle from "../../shared/helmet/DynamicTitle";
 
 
 const BlogPage = () => {
@@ -47,6 +48,7 @@ const BlogPage = () => {
 
     return (
         <>
+            <DynamicTitle title={"Live Typing Test | Blog"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Blog"}  />
             <section>
                 <div className="container pt-7">
                     <div className="row">

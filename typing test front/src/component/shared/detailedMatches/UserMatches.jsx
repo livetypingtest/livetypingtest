@@ -69,23 +69,27 @@ const UserMatches = () => {
     const handleDownload = () => {
         const input = certificateRef.current;
     
-            // Use html2canvas to capture the certificate as an image
-            html2canvas(input).then((canvas) => {
-                // Create an image file from the canvas
-                const imgData = canvas.toDataURL('image/png'); // 'image/png' for PNG format
+        // Use html2canvas to capture the certificate as an image
+        html2canvas(input, {
+            scale: 2, // Increase rendering scale for better quality
+            useCORS: true, // Ensure cross-origin images are loaded correctly
+            logging: false, // Disable console logs from html2canvas
+        }).then((canvas) => {
+            // Create an image file from the canvas
+            const imgData = canvas.toDataURL('image/png'); // 'image/png' for PNG format
     
-                // Create a link element to trigger the download
-                const link = document.createElement('a');
-                link.href = imgData; // Set the image data as the href
-                link.download = 'certificate.png'; // Set the filename for the downloaded image
+            // Create a link element to trigger the download
+            const link = document.createElement('a');
+            link.href = imgData; // Set the image data as the href
+            link.download = 'certificate.png'; // Set the filename for the downloaded image
     
-                // Trigger the download
-                link.click();
-            }).catch((error) => {
-                console.error('Error generating image:', error);
-            });
+            // Trigger the download
+            link.click();
+        }).catch((error) => {
+            console.error('Error generating image:', error);
+        });
     };
-
+    
     const handleUpdateData = (data) => {
         const matchData = {
             wpm: data?.wpm,

@@ -322,14 +322,17 @@ route.post("/send-notification", async (req, res) => {
     const { title, message, url } = req.body; // `url` will be included in the payload
 
     try {
+
         // Find users with fcmToken
         const users = await notificationModel.find({ fcmToken: { $exists: true, $ne: null } });
-        const tokens = users.map((user) => user.fcmToken);
+
+        // Remove duplicate tokens (just in case)
+        const tokens = [...new Set(users.map((user) => user.fcmToken))];
 
         if (tokens.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'No valid tokens available to send notification to.'
+                message: 'No valid tokens available to send notification to.',
             });
         }
 
@@ -347,11 +350,8 @@ route.post("/send-notification", async (req, res) => {
         // Send notifications to each device
         const response = await admin.messaging().sendEachForMulticast({
             tokens: tokens,
-            notification: payload.notification, // The title and body
-            data: payload.data, // Add custom data here
-        }).catch((error) => {
-            console.error("Error in sendEachForMulticast:", error);
-            throw error; // Re-throw to catch in the main try-catch
+            notification: payload.notification,
+            data: payload.data,
         });
 
         // Check for individual failed tokens
@@ -363,20 +363,19 @@ route.post("/send-notification", async (req, res) => {
             }
         });
 
+        // Respond with success and failure counts
         res.status(200).json({
             success: true,
-            message: "Notification processed with possible individual failures.",
+            message: "Notifications sent successfully.",
             failedTokens: failedTokens,
             successCount: response.successCount,
             failureCount: response.failureCount,
         });
-
     } catch (error) {
         console.error("Error sending notification:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
-
 
 route.put('/', async(req, res) => {
     if(req.headers.authorization){

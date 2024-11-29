@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {ADMIN_API_URL} from '../../../util/API_URL';
 import { dynamicToast } from '../../shared/Toast/DynamicToast'
+import DynamicTitle from "../../shared/helmet/DynamicTitle";
 
 const Notification = () => {
   const [title, setTitle] = useState("");
@@ -37,6 +38,7 @@ const Notification = () => {
 
   return (
         <>
+    <DynamicTitle title={"Live Typing Test | Notification"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Notification"}  />
 
         <section>
             <div className="container pb-5 pt-7">

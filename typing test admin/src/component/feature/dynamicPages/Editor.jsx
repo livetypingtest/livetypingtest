@@ -4,6 +4,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Quill theme
 import { useEffect, useState } from 'react';
 import { handlePostTermData, handlePostPrivacyData, resetState } from '../../../redux/DynamicPagesDataSlice';
+import DynamicTitle from '../../shared/helmet/DynamicTitle';
 
 const Editor = () => {
     const { page } = useParams();
@@ -71,6 +72,8 @@ const Editor = () => {
 
     return (
         <section>
+    <DynamicTitle title={"Live Typing Test | Editor"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Editor"}  />
+
             <div className="container pt-7 pb-5">
                 <div className="row">
                     <div className="col-md-12">

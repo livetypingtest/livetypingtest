@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { handleGetLeaderboardData, resetState } from '../../../redux/UserDataSlice';
 import { NavLink } from 'react-router-dom';
 import { BASE_API_URL } from '../../../util/API_URL';
+import DynamicTitle from '../helmet/DynamicTitle';
 
 
 const LeaderBoard = () => {
@@ -132,6 +133,7 @@ const LeaderBoard = () => {
 
   return (
     <>
+    <DynamicTitle title={"Live Typing Test | Leaderboard"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Leaderboard"}  />
 
         <section>
             <div className="container pt-7">

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { emailSchema, usernameSchema } from '../../../schemas/UserSigninSchema';
 import { handleSigninAdmin, resetState } from '../../../redux/AdminDataSlice';
+import DynamicTitle from '../../shared/helmet/DynamicTitle'
 
 
 // Helper function to check if the input is an email
@@ -137,6 +138,9 @@ const AdminSignin = () => {
           </div>
         </div>
       </section> */}
+
+    <DynamicTitle title={"Live Typing Test | Authentication"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Authentication"}  />
+
 
       <div
         className="page-wrapper"

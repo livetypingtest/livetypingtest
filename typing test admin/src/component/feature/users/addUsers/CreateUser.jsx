@@ -4,6 +4,7 @@ import {useFormik} from 'formik'
 import { useEffect, useState } from "react";
 import { handleCreateUser, resetState } from "../../../../redux/AdminDataSlice";
 import UserSignupSchema from '../../../../schemas/UserSignupSchema'
+import DynamicTitle from "../../../shared/helmet/DynamicTitle";
 
 const CreateUser = () => {
 
@@ -68,6 +69,8 @@ const CreateUser = () => {
 
   return (
     <>
+    <DynamicTitle title={"Live Typing Test | Add User"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Add User"}  />
+
         <section>
             <div className="container pb-5 pt-7">
                 <div className="row">

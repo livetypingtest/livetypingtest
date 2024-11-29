@@ -3,6 +3,7 @@ import {NavLink} from 'react-router-dom'
 import { dynamicToast } from "../../shared/Toast/DynamicToast";
 import { useSelector } from 'react-redux';
 import HomePageSEO from "../SEO/HomePageSEO";
+import DynamicTitle from "../../shared/helmet/DynamicTitle";
 
 const AdminDashBoard = () => {
     const adminData = useSelector(state => state.AdminDataSlice.adminData);
@@ -29,7 +30,9 @@ const AdminDashBoard = () => {
     }, []);
 
     return (
+        
         <section>
+        <DynamicTitle title={"Live Typing Test | Dashboard"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Dashboard"}  />
             <div className="container pt-7">
                 <div className="row">
                     <div className="col-sm-3 col-6 col-lg-3 col-xl-3">

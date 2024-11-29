@@ -6,6 +6,7 @@ import axios from "axios";
 import { BASE_API_URL } from "../../../util/API_URL";
 import {dynamicToast} from '../../shared/Toast/DynamicToast'
 import ReactQuill from "react-quill";
+import DynamicTitle from "../../shared/helmet/DynamicTitle";
 
 const DetailContact = () => {
 
@@ -76,6 +77,8 @@ const DetailContact = () => {
     
   return (
     <>
+    <DynamicTitle title={"Live Typing Test | Contact"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Contact"}  />
+
         <section>
             <div className="container pb-5 pt-7" >
                 <div className="row pt-7">
