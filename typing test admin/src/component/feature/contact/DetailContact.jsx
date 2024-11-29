@@ -122,8 +122,8 @@ const DetailContact = () => {
                                             value={content}
                                             onChange={handleContentChange}
                                             placeholder="Write your blog post here..."
-                                            modules={DetailContact.modules}
-                                            formats={DetailContact.formats}
+                                            modules={modules}
+                                            formats={formats}
                                         />
                                     </div>
                                         <button onClick={handleSendReply} className="btn btn-md mt-3 btn-primary">Send &nbsp; <i class="fa-regular fa-paper-plane-top"></i> </button>
@@ -147,20 +147,21 @@ export default DetailContact
 
 
 // Quill Editor Modules and Formats (optional: define outside the component for better readability)
-DetailContact.modules = {
+const modules = {
     toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['bold', 'italic', 'underline'],
-        [{ 'color': [] }, { 'background': [] }],
-        ['link', 'image', 'video'],
-        ['clean']
-    ]
-};
+      [{ header: '1' }, { header: '2' }, { font: [] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'], // Add 'code-block' to toolbar
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      ['link', 'image', 'video'],
+      ['clean'], // remove formatting
+    ],
+  };
 
-DetailContact.formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video', 'color', 'background'
-];
+  const formats = [
+    'header', 'font', 'list', 'bullet', 'bold', 'italic', 'underline',
+    'strike', 'blockquote', 'code-block', 'color', 'background',
+    'align', 'link', 'image', 'video',
+  ];

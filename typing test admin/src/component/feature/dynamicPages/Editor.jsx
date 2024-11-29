@@ -101,8 +101,8 @@ const Editor = () => {
                                     value={content.content}
                                     onChange={handleContentChange}
                                     placeholder="Write your blog post here..."
-                                    modules={Editor.modules}
-                                    formats={Editor.formats}
+                                    modules={modules}
+                                    formats={formats}
                                 />
                             </div>
                             <div className=" mt-3">
@@ -120,21 +120,21 @@ const Editor = () => {
 
 export default Editor;
 
-// Quill Editor Modules and Formats (optional: define outside the component for better readability)
-Editor.modules = {
+const modules = {
     toolbar: [
-        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-        ['bold', 'italic', 'underline'],
-        [{ 'color': [] }, { 'background': [] }],
-        ['link', 'image', 'video'],
-        ['clean']
-    ]
-};
+      [{ header: '1' }, { header: '2' }, { font: [] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'], // Add 'code-block' to toolbar
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      ['link', 'image', 'video'],
+      ['clean'], // remove formatting
+    ],
+  };
 
-Editor.formats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video', 'color', 'background'
-];
+  const formats = [
+    'header', 'font', 'list', 'bullet', 'bold', 'italic', 'underline',
+    'strike', 'blockquote', 'code-block', 'color', 'background',
+    'align', 'link', 'image', 'video',
+  ];
