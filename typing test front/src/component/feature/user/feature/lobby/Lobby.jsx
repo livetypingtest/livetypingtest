@@ -30,15 +30,15 @@ const Lobby = () => {
   const homePageSEO = useSelector(state => state.UserDataSlice.homePageSEO)
   const matchHistory = useSelector(state => state.DynamicPagesDataSlice.matchHistory)
 
-  const [time, setTime] = useState(matchHistory?.state ? matchHistory?.time : 60);
+  const [time, setTime] = useState(60);
   const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(false);
   const [prevInput, setPrevInput] = useState(false);
   const [rows, setRows] = useState(window.innerWidth > 767 ? 8 : 14); // Initial number of rows for textarea
   const [prevInputWords, setPrevInputWords] = useState(false);
-  const [difficulty, setDifficulty] = useState(matchHistory?.state ? matchHistory?.level : "easy");
-  const [timeLimit, setTimeLimit] = useState(matchHistory?.state ? matchHistory?.time : 60); // Default 30 seconds
+  const [difficulty, setDifficulty] = useState("easy");
+  const [timeLimit, setTimeLimit] = useState(60); // Default 30 seconds
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
   const [currentParagraph, setCurrentParagraph] = useState();
@@ -587,16 +587,17 @@ const Lobby = () => {
       );
       const contentHeight = typingAreaRef.current.scrollHeight;
       const targetRows = Math.max(8, Math.ceil(contentHeight / lineHeight));
-  
+      let timeIntervel = 1000
       // Gradually increase rows
       if (targetRows > rows) {
         const interval = setInterval(() => {
+          timeIntervel += 500
           setRows((prevRows) => {
             const newRows = Math.min(prevRows + 1, targetRows); // Increment rows one by one
             if (newRows === targetRows) clearInterval(interval); // Stop once target is reached
             return newRows;
           });
-        }, 100); // Adjust speed by changing the interval time (in ms)
+        }, timeIntervel); // Adjust speed by changing the interval time (in ms)
       } else if (targetRows < rows) {
         setRows(targetRows); // Reduce rows immediately
       }
@@ -604,6 +605,8 @@ const Lobby = () => {
   }, [userInput]); // Run this whenever userInput changes
   // Eye on Dynamically adjust the textarea rows based on content------------------------------------------------
   
+  useEffect(()=>{setRows(window.innerWidth > 767 ? 8 : 14)}, [])
+
   // useEffect(()=>{console.log(hasFocus)})
 
   return (
