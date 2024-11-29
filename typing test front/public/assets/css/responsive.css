@@ -326,5 +326,12 @@
         padding: 5px 10px;
         font-size: 12px;
     }
+    .typing-overlay{
+        width: 90%;
+        height: 38%;
+    }
+    .about-section {
+        padding: 25px 0px;
+    }
     
 }

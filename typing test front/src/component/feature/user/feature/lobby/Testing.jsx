@@ -1,78 +1,89 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
+import { useState } from "react";
+import { easyWords, generateParagraph, hardWords, mediumWords } from './ParagraphGenerater';
 
-const TypingArea = ({ lines }) => {
-  const [userInput, setUserInput] = useState("");
+
+const TypingTest = () => {
+  const [userInput, setUserInput] = useState('');
   const [hasFocus, setHasFocus] = useState(false);
   const [currentLines, setCurrentLines] = useState([]);
-  const [currentLineIndex, setCurrentLineIndex] = useState(0); // Tracks the current active line index
+  const [startLineIndex, setStartLineIndex] = useState(0);
   const typingAreaRef = useRef(null);
-  const paragraphWrapperRef = useRef(null);
 
-  // Update the visible lines dynamically
-  useEffect(() => {
-    const start = Math.max(0, currentLineIndex - 5); // Show up to 5 lines before the active line
-    const end = Math.min(lines?.length, currentLineIndex + 1); // Include the active line
-    setCurrentLines(lines?.slice(start, start + 6)); // Ensure only 6 lines in view
-  }, [currentLineIndex, lines]);
+    // Function to generate paragraph based on duration and difficulty
+    const generateTypingTestParagraph = () => {
+      const wordsPerMinute = 70; // Average typing speed (can be adjusted)
+      const totalWords = wordsPerMinute * (300 / 60); // Total words to match the duration
+  
+      let wordArray;
+      wordArray = hardWords.concat(mediumWords).concat(easyWords); // Mix all words
+  
+      const newParagraph = generateParagraph(wordArray, totalWords);
+      return newParagraph
+    };
+    let paragraph
+    useEffect(()=>{ paragraph = generateTypingTestParagraph()}, [])
 
-  // Handle user input
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setUserInput(value);
+  const wordsPerLine = 60; // Max words per line
+  const rows = 6; // Number of lines visible at once
 
-    const cursorPosition = value.length; // Current input cursor position
-    let totalCharCount = 0;
+  // Split the paragraph into lines of about 60 words per line
+  const splitParagraphIntoLines = (paragraph) => {
+    const words = paragraph?.split(" ");
+    const lines = [];
+    let currentLine = [];
 
-    // Calculate the current line index based on the cursor position
-    for (let i = 0; i < lines?.length; i++) {
-      totalCharCount += lines[i].length + 1; // Account for newline characters
-      if (cursorPosition <= totalCharCount) {
-        setCurrentLineIndex(i);
-        break;
+    words?.forEach((word) => {
+      currentLine.push(word);
+      if (currentLine.length === wordsPerLine) {
+        lines.push(currentLine.join(" "));
+        currentLine = [];
       }
+    });
+
+    if (currentLine.length) {
+      lines.push(currentLine.join(" "));
     }
+
+    return lines;
   };
 
-  // Prevent the cursor from moving to incorrect positions
-  const handleCursorSelection = (e) => {
-    const inputElement = e.target;
-    const currentCursorPosition = inputElement.selectionStart;
+  useEffect(() => {
+    const lines = splitParagraphIntoLines(paragraph);
+    setCurrentLines(lines.slice(startLineIndex, startLineIndex + rows));
+  }, [paragraph, startLineIndex]);
 
-    // Prevent cursor from moving before the last valid character
-    if (currentCursorPosition < userInput.length) {
-      inputElement.setSelectionRange(userInput.length, userInput.length);
+  const handleInputChange = (e) => {
+    const input = e.target.value;
+    setUserInput(input);
+
+    const totalTypedChars = input.length;
+    const currentLineIndex = Math.floor(totalTypedChars / (wordsPerLine * 5)); // Rough estimate for line tracking
+
+    // When the user reaches the 5th line, load the next set of lines
+    if (currentLineIndex >= rows - 1) {
+      setStartLineIndex((prevIndex) => prevIndex + rows);
     }
   };
 
   return (
     <div className="col-md-12">
-      {/* Overlay for blur effect */}
-      {!hasFocus && (
-        <div
-          className="typing-overlay"
-          onClick={() => {
-            setHasFocus(true);
-            typingAreaRef.current.focus();
-          }}
-        >
-          <p>Click here to continue typing!</p>
-        </div>
-      )}
+
+
       <div
         className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
-        tabIndex={0} // Make the div focusable
+        tabIndex={0}
+        onClick={() => { typingAreaRef.current.focus(); setHasFocus(true); }}
         onFocus={() => setHasFocus(true)}
         onBlur={() => setHasFocus(false)}
-        ref={paragraphWrapperRef}
+        ref={typingAreaRef}
       >
-        {/* Display the visible lines */}
-        <div className="paragraph-container">
-          {currentLines?.map((line, lineIndex) => (
+        <div className={`paragraph-container ${!hasFocus ? "text-blur" : ""}`}>
+          {currentLines.map((line, lineIndex) => (
             <div key={lineIndex} className="line">
               {line.split("").map((char, charIndex) => {
-                console.log(char)
-                const absoluteCharIndex =
-                  lines.slice(0, currentLineIndex).join("").length + charIndex;
+                const absoluteCharIndex = lineIndex * wordsPerLine + charIndex;
                 return (
                   <span
                     key={charIndex}
@@ -82,43 +93,43 @@ const TypingArea = ({ lines }) => {
                         : userInput[absoluteCharIndex] === char
                         ? "text-active"
                         : "text-wrong"
-                    } ${
-                      hasFocus &&
-                      absoluteCharIndex === userInput.length
-                        ? "underline"
-                        : ""
-                    }`}
+                    } ${hasFocus && absoluteCharIndex === userInput?.length ? "underline" : ""}`}
                   >
-                    {`char ${"hello"}`}
+                    {char}
                   </span>
                 );
               })}
             </div>
           ))}
+
+          {hasFocus && userInput?.length < currentLines.join("").length && (
+            <span
+              style={{
+                borderLeft: "2px solid white",
+                animation: "blink 1s infinite",
+                marginLeft: "2px",
+                display: "inline-block",
+              }}
+            />
+          )}
+
+          <textarea
+            // ref={typingAreaRef}
+            value={userInput}
+            onChange={handleInputChange}
+            rows={rows}
+            onClick={() => setHasFocus(true)}
+            className="main-input-cs"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck="false"
+          />
         </div>
-        {/* Textarea for input */}
-        <textarea
-          ref={typingAreaRef}
-          value={userInput}
-          rows={6}
-          onChange={handleInputChange}
-          onSelect={handleCursorSelection}
-          className="main-input-cs"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck="false"
-        />
       </div>
-      {/* Reset Button */}
+
       <div className="reset">
-        <button
-          className="z-10"
-          onClick={() => {
-            setUserInput("");
-            setCurrentLineIndex(0);
-          }}
-        >
-          <i className="fa-solid fa-arrow-rotate-right text-active"></i>{" "}
+        <button className="z-10" onClick={() => setUserInput('')}>
+          <i className="fa-solid fa-arrow-rotate-right text-active"></i>
           <span className="text-idle">Start Over</span>
         </button>
       </div>
@@ -126,4 +137,4 @@ const TypingArea = ({ lines }) => {
   );
 };
 
-export default TypingArea;
+export default TypingTest;

@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import DynamicAlert from "../../../../shared/Toast/DynamicAlert";
 import MetaUpdater from "../../../../../util/MetaUpdater";
 import { useLocation } from "react-router-dom";
+import DynamicTitle from "../../../../shared/helmet/DynamicTitle";
 
 const Contact = () => {
 
@@ -65,12 +66,10 @@ const [showAlert, setShowAlert] = useState(false)
     setShowAlert(false); // Set showAlert to false
 };
 
-useEffect(() => {
-  MetaUpdater.updateMeta("Live Typing Test | Contact", "/assets/images/favicon.png");
-}, [location]);
 
   return (
     <>
+      <DynamicTitle title={"Live Typing Test | Contact"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Contact"}  />
       <Header />
       <section>
         <div className="container py-5">

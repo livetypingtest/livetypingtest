@@ -85,7 +85,8 @@ const initialState = {
     },
     term : {},
     privacy : {},
-    about : {createdat : '', metaData : []}
+    about : {createdat : '', metaData : []},
+    matchHistory: {}
 }
 
 const UserDataSlice = createSlice({
@@ -102,6 +103,9 @@ const UserDataSlice = createSlice({
         },
         handleClearState : (state) => {
             
+        },
+        handleMatchHistory: (state, action) => {
+            state.matchHistory = action.payload
         }
     },
     extraReducers : builder => {
@@ -206,4 +210,4 @@ const UserDataSlice = createSlice({
 
 export default UserDataSlice.reducer;
 export {handleGetTermData, handleGetAboutData, handleGetPrivacyData};
-export const{ resetState, handleClearState } = UserDataSlice.actions
+export const{ resetState, handleMatchHistory, handleClearState } = UserDataSlice.actions

@@ -8,6 +8,7 @@ import { handleUploadProfile, resetState } from '../../../../../redux/UserDataSl
 import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
 import MetaUpdater from '../../../../../util/MetaUpdater'
 import DeleteUserModal from './DeleteUserModal'
+import DynamicTitle from '../../../../shared/helmet/DynamicTitle'
 
 const UserDashBoard = () => {
 
@@ -208,13 +209,11 @@ useEffect(() => {
     }
   }, [ isProcessing, processingMsg ])
 
-  useEffect(() => {
-    MetaUpdater.updateMeta("Live Typing Test | Profile", "/assets/images/favicon.png");
-}, []);
 
 
   return (
     <>
+      <DynamicTitle title={"Live Typing Test | Profile"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Profile"}  />
       <Header />
       <section className='user-profile py-5'>
         <div className="container">

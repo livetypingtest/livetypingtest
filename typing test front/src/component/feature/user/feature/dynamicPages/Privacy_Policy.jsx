@@ -4,6 +4,7 @@ import Header from "../../../../shared/header/Header"
 import {useSelector} from 'react-redux'
 import { useEffect } from "react"
 import MetaUpdater from "../../../../../util/MetaUpdater"
+import DynamicTitle from "../../../../shared/helmet/DynamicTitle"
 
 
 const Privacy_Policy = () => {
@@ -49,12 +50,9 @@ const Privacy_Policy = () => {
       return doc.body.innerHTML; // Return the processed HTML
   };
 
-  useEffect(() => {
-    MetaUpdater.updateMeta("Live Typing Test | Privacy & Policy", "/assets/images/favicon.png");
-}, []);
-
   return (
     <>
+      <DynamicTitle title={"Live Typing Test | Privacy & Policy"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Privacy & Policy"}  />
         <Header />
         <section>
             <div className="container">

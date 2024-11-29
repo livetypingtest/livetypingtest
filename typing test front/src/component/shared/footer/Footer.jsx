@@ -1,38 +1,9 @@
 import { useMemo } from 'react';
 import { NavLink, useLocation } from 'react-router-dom'
-import MetaUpdater from '../../../util/MetaUpdater';
-import { useEffect } from 'react';
 
 const Footer = () => {
 
     const checkUserToken = useMemo(() => !!localStorage.getItem('userToken'), []);
-    const location = useLocation();
-
-    const changingTitleFunc = () => {
-        if(location) {
-            const currentPath = location?.pathname
-            const getPath = {
-                '/dashnoard' : 'Profile',
-                '/leaderboard' : 'Leaderboard',
-                '/blog' : 'Blog',
-                '/contact' : 'Contact',
-                '/about' : 'About',
-                '/signup' : 'Authentication',
-                '/privacy' : 'Privacy & Policy',
-                '/term-condition' : 'Terms & Condition',
-            }
-
-            MetaUpdater.updateMeta(`Live Typing Test | ${getPath[currentPath]}`, "/assets/images/favicon.png");
-        }
-    }
-    
-    const changeTitle = (title) => {
-        MetaUpdater.updateMeta(`Live Typing Test | ${title}`, "/assets/images/favicon.png");
-    }
-
-    useEffect(()=>{
-        changingTitleFunc()
-    }, [])
 
 
   return (
@@ -56,10 +27,10 @@ const Footer = () => {
                             </div>
                             <div className="footer">
                                 <ul className='mb-3'>
-                                    <li><NavLink onClick={()=>changeTitle('Conatct')} to='/contact'>Contact Us &nbsp; |</NavLink></li>
-                                    <li><NavLink onClick={()=>changeTitle('About')} to='/about' >About &nbsp; |</NavLink></li>
-                                    <li><NavLink onClick={()=>changeTitle('Privacy & Policy')} to='/privacy' >Privacy Policy &nbsp; |</NavLink></li>
-                                    <li><NavLink onClick={()=>changeTitle('Terms & Condition')} to='/term-condition'>Terms & Condition</NavLink></li>
+                                    <li><NavLink  to='/contact'>Contact Us &nbsp; |</NavLink></li>
+                                    <li><NavLink  to='/about' >About &nbsp; |</NavLink></li>
+                                    <li><NavLink  to='/privacy' >Privacy Policy &nbsp; |</NavLink></li>
+                                    <li><NavLink  to='/term-condition'>Terms & Condition</NavLink></li>
                                 </ul>
                                 
                             </div>

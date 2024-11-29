@@ -4,6 +4,7 @@ import Header from "../../../../shared/header/Header"
 import { useState } from "react";
 import {useSelector} from 'react-redux'
 import MetaUpdater from "../../../../../util/MetaUpdater";
+import DynamicTitle from "../../../../shared/helmet/DynamicTitle";
 
 
 const Terms_Condition = () => {
@@ -49,12 +50,11 @@ const Terms_Condition = () => {
       return doc.body.innerHTML; // Return the processed HTML
   };
 
-  useEffect(() => {
-    MetaUpdater.updateMeta("Live Typing Test | Terms & Condition", "/assets/images/favicon.png");
-}, []);
 
   return (
     <>
+
+      <DynamicTitle title={"Live Typing Test | Terms & Condition"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Terms & Condition"}  />
         <Header />
         <section>
             <div className="container">

@@ -6,6 +6,7 @@ import Footer from '../footer/Footer';
 import { BASE_API_URL } from '../../../util/API_URL';
 import MetaUpdater from '../../../util/MetaUpdater';
 import { useLocation } from 'react-router-dom';
+import DynamicTitle from '../helmet/DynamicTitle';
 
 
 const LeaderBoard = () => {
@@ -98,10 +99,7 @@ const LeaderBoard = () => {
         // Update the display data
         setDisplayData(rankedData);
     };
-    
-    useEffect(() => {
-        MetaUpdater.updateMeta("Live Typing Test | Leaderboard", "/assets/images/favicon.png");
-    }, [location]);
+
 
     useEffect(()=>{
         updateDataOnLevels()
@@ -139,6 +137,7 @@ const LeaderBoard = () => {
 
   return (
     <>
+        <DynamicTitle title={"Live Typing Test | Leaderboard"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Leaderboard"}  />
         <Header />
 
         <section>
@@ -203,9 +202,9 @@ const LeaderBoard = () => {
                                                     {index + 1 === 2 && <span className="badge-icon cs">🥈</span>}
                                                     {index + 1 === 3 && <span className="badge-icon cs">🥉</span>}
                                                 </div></td>
-                                                <td>{Math.round(value?.avgWpm)}</td>
-                                                <td>{Math.round(value?.avgAcc)}</td>
-                                                <td>{Math.round(value?.avgConsis)}</td>
+                                                <td><p className="leaderboard-profile-font">{Math.round(value?.avgWpm)}</p></td>
+                                                <td><p className="leaderboard-profile-font">{Math.round(value?.avgAcc)}</p></td>
+                                                <td><p className="leaderboard-profile-font">{Math.round(value?.avgConsis)}</p></td>
                                             </tr>
                                         )) : (
                                             <tr>

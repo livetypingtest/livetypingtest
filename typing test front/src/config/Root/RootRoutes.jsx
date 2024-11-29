@@ -8,6 +8,7 @@ import Privacy_Policy from '../../component/feature/user/feature/dynamicPages/Pr
 import About from '../../component/feature/user/feature/dynamicPages/About';
 import Terms_Condition from '../../component/feature/user/feature/dynamicPages/Terms_Condition';
 import Contact from '../../component/feature/user/feature/contact/Contact';
+import TypingTest from '../../component/feature/user/feature/lobby/Testing';
 
 
 const rootRoutes = [
@@ -50,6 +51,10 @@ const rootRoutes = [
     {
         path : 'contact',
         element : <Contact />
+    },
+    {
+        path : 'test',
+        element : <TypingTest />
     },
 ]
 

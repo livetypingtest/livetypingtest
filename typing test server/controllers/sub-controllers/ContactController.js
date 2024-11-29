@@ -27,7 +27,7 @@ module.exports = (adminModel, DataModel, key) => {
             // Update the MongoDB document with the reply
             const updatedDocument = await DataModel.updateOne(
                 { 'contact.senderid': senderid }, // Match senderid
-                { $set: { 'contact.$.reply': reply } }, // Update the reply
+                { $set: { 'contact.$.reply': `${reply}` } }, // Update the reply
                 { new: true } // Return the updated document
             );
 
@@ -59,7 +59,7 @@ module.exports = (adminModel, DataModel, key) => {
                     from: `"Live Typing Test" <${process.env.BREVO_SENDER_MAIL}>`,
                     to: userEmail,
                     subject: "Reply from Admin on your enquiry over Live Typing Test",
-                    html: htmlContent
+                    html: reply
                 });            
 
             // Step 4: Send a response to the client after updating the reply and sending the email

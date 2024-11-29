@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Header from '../../../../shared/header/Header'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleMatchHistory, handleTest, resetState } from '../../../../../redux/UserDataSlice';
+import { handleTest, resetState } from '../../../../../redux/UserDataSlice';
 import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
 import { easyWords, generateParagraph, hardWords, mediumWords } from './ParagraphGenerater';
 import DynamicAlert from '../../../../shared/Toast/DynamicAlert'
 import { Helmet } from 'react-helmet';
 import Footer from '../../../../shared/footer/Footer'
+import { handleMatchHistory } from '../../../../../redux/DynamicPagesDataSlice';
+import DynamicTitle from '../../../../shared/helmet/DynamicTitle';
 
 
 const Lobby = () => {
@@ -26,7 +28,7 @@ const Lobby = () => {
   const isError = useSelector(state => state.UserDataSlice.isError)
   const isProcessing = useSelector(state => state.UserDataSlice.isProcessing)
   const homePageSEO = useSelector(state => state.UserDataSlice.homePageSEO)
-  const matchHistory = useSelector(state => state.UserDataSlice.matchHistory)
+  const matchHistory = useSelector(state => state.DynamicPagesDataSlice.matchHistory)
 
   const [time, setTime] = useState(matchHistory?.state ? matchHistory?.time : 60);
   const [userInput, setUserInput] = useState("");
@@ -192,22 +194,24 @@ const Lobby = () => {
 
   // Handle input change----------------------------------------------------------------------
   const handleInputChange = (e) => {
-    const input = e.target.value;
-
+    const input = e.target.value; // Correctly get the input value
+  
     // Start timer if it's not already running
     if (input.length === 1 && !timerRunning) {
       setTimerRunning(true);
     }
-
-    setUserInput(input);
-    calculateStats(input);
-
-     // Auto-scroll logic
-     const wrapper = paragraphWrapperRef.current;
-     const lineHeight = parseInt(getComputedStyle(wrapper).lineHeight, 10); // Get the line height
-     const currentLine = Math.floor(value.length / wrapper.offsetWidth); // Estimate the current line
-     wrapper.scrollTop = currentLine * lineHeight; // Scroll to the current line
-  };
+  
+    setUserInput(input); // Update the user input state
+    calculateStats(input); // Update typing stats
+  
+    // Auto-scroll logic
+    const wrapper = paragraphWrapperRef.current;
+    if (wrapper) {
+      const lineHeight = parseInt(getComputedStyle(wrapper).lineHeight, 10); // Get the line height
+      const currentLine = Math.floor(input.length / wrapper.offsetWidth); // Estimate the current line
+      wrapper.scrollTop = currentLine * lineHeight; // Scroll to the current line
+    }
+  };  
   // Handle input change----------------------------------------------------------------------
 
   // Calculate and update statistics-------------------------------------------------------------------
@@ -499,9 +503,9 @@ const Lobby = () => {
       const paragraph = settingTheParagraphs()
       setCurrentParagraph(paragraph)
       console.log(time, difficulty)
-      setTime(()=>{
-        dispatch(handleMatchHistory({state: false}))
-      }, 4000)
+      // setTime(()=>{
+      //   dispatch(handleMatchHistory({state: false}))
+      // }, 10000)
     }
   }, [matchHistory])
   // Getting match history from local storage -----------------------------------------------------------------
@@ -606,19 +610,7 @@ const Lobby = () => {
     <>
 
       {
-        homePageSEO && (
-          <Helmet>
-            {/* Set the page title */}
-            <title>{homePageSEO.seoTitle || 'Live Typingf Test'}</title>
-            {/* Meta description for SEO */}
-            <meta name="description" content={homePageSEO.seoDescription || 'Live Typingf Test'} />
-            {/* Open Graph tags for social media */}
-            <meta property="og:title" content={homePageSEO.seoTitle || 'Live Typingf Test'} />
-            <meta property="og:description" content={homePageSEO.seoDescription || 'Live Typingf Test'} />
-            <meta property="og:image" content={homePageSEO?.imageUrl || '/default-image.jpg'} />
-            <link rel="icon" href={homePageSEO?.imageUrl || '/default-favicon.ico'} />
-          </Helmet>
-        )
+        homePageSEO && (<DynamicTitle title={homePageSEO?.seoTitle} description={homePageSEO.seoDescription} icon={homePageSEO?.imageUrl} />)
       }
 
       <Header />
@@ -809,7 +801,7 @@ const Lobby = () => {
           </div>
         </div>
       </section>
-
+                
       <Footer />
       
       {

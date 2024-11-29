@@ -7,6 +7,7 @@ import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import Certificate from "../certificate/Certificate";
 import MetaUpdater from "../../../util/MetaUpdater";
+import DynamicTitle from "../helmet/DynamicTitle";
 
 const UserMatches = () => {
     const param = useParams();
@@ -100,12 +101,9 @@ const UserMatches = () => {
         }, 100); // Adjust the timeout duration as needed
     };
 
-    useEffect(() => {
-        MetaUpdater.updateMeta("Live Typing Test | Matches", "/assets/images/favicon.png");
-    }, []);
-
     return (
         <>
+            <DynamicTitle title={"Live Typing Test | Matches"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Terms & Condition"}  />
             <Header />
             <section>
                 <div className="container py-5">

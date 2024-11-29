@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { resetState } from '../../../../../redux/UserDataSlice'
 import MetaUpdater from '../../../../../util/MetaUpdater'
+import DynamicTitle from '../../../../shared/helmet/DynamicTitle'
 
 const UserAuth = () => {
 
@@ -43,12 +44,10 @@ const UserAuth = () => {
         dispatch(resetState())
     };
 
-    useEffect(() => {
-        MetaUpdater.updateMeta("Live Typing Test | Authentication", "/assets/images/favicon.png");
-    }, []);
 
   return (
     <>
+      <DynamicTitle title={"Live Typing Test | Authentication"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Authentication"}  />
         <Header />
         <GoogleOAuthProvider clientId="466565788678-qm48dd40fpu29rh75c2hh1tsoqvr8n8s.apps.googleusercontent.com">
         <section>

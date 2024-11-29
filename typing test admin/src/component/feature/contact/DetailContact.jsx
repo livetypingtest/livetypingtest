@@ -5,15 +5,16 @@ import { handleUpdateContactData } from "../../../redux/DynamicPagesDataSlice";
 import axios from "axios";
 import { BASE_API_URL } from "../../../util/API_URL";
 import {dynamicToast} from '../../shared/Toast/DynamicToast'
+import ReactQuill from "react-quill";
 
 const DetailContact = () => {
 
     const param = useParams();
     const {id} = param
     const [displayData, setDisplayData] = useState({})
-    const [userReply, setUserReply] = useState(null)
     const [errMsg, setErrMsg] = useState({state: false, message: ''})
     const dispatch = useDispatch()
+    const [content, setContent] = useState('');
 
     const contactData = useSelector(state => state.DynamicPagesDataSlice.contact);
     
@@ -28,6 +29,11 @@ const DetailContact = () => {
             dispatch(handleUpdateContactData(id))
         }
     }, [param, contactData, displayData])
+
+     // Update content on editor change
+    const handleContentChange = (value) => {
+        setContent(value);
+    };
 
 
     function formatDate(timestamp) {
@@ -50,11 +56,11 @@ const DetailContact = () => {
     }
 
     const handleSendReply = async() => {
-        if(userReply !== null) {
+        if(content !== null) {
             // console.log(contactData)
             const obj = {
                 senderid : displayData?.senderid,
-                reply : userReply
+                reply : content
             }
             const response = await axios.post(`${BASE_API_URL}/contact/reply`, obj)
             if(response.data.status === 200) {
@@ -108,10 +114,17 @@ const DetailContact = () => {
                             </div>
                             <div className="card-body">
                                 <div className="my-3">
-                                    <div className="reply-box">
-                                        <input type="text" name="reply" onChange={(event)=>setUserReply(event.target.value)}  placeholder={`Reply to ${displayData && displayData?.name}`} />
-                                        <button onClick={handleSendReply} className="btn btn-primary"><i class="fa-regular fa-paper-plane-top"></i></button>
+                                    <div className="blog-editor p-0">
+                                        <ReactQuill
+                                            value={content}
+                                            onChange={handleContentChange}
+                                            placeholder="Write your blog post here..."
+                                            modules={DetailContact.modules}
+                                            formats={DetailContact.formats}
+                                        />
                                     </div>
+                                        <button onClick={handleSendReply} className="btn btn-md mt-3 btn-primary">Send &nbsp; <i class="fa-regular fa-paper-plane-top"></i> </button>
+                                    
                                     {
                                         errMsg?.state && (<small className="text-danger text-sm">{errMsg?.message}</small>)
                                     }
@@ -127,3 +140,24 @@ const DetailContact = () => {
 }
 
 export default DetailContact
+
+
+
+// Quill Editor Modules and Formats (optional: define outside the component for better readability)
+DetailContact.modules = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['bold', 'italic', 'underline'],
+        [{ 'color': [] }, { 'background': [] }],
+        ['link', 'image', 'video'],
+        ['clean']
+    ]
+};
+
+DetailContact.formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'video', 'color', 'background'
+];

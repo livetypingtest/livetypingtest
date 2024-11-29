@@ -1,46 +1,17 @@
 import { useMemo, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import GoogleADs from '../googleAds/GoogleADs';
 import { useSelector } from 'react-redux';
-import MetaUpdater from '../../../util/MetaUpdater';
-import { useEffect } from 'react';
+
 
 
 const Header = () => {
-    const location = useLocation();
     const checkUserToken = useMemo(() => !!localStorage.getItem('userToken'), []);
     const checkAdminToken = useMemo(() => !!localStorage.getItem('adminToken'), []);
     const userData = useSelector(state => state.UserDataSlice.userData);
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => setIsOpen(!isOpen);
-
-
-    const changingTitleFunc = () => {
-        if(location) {
-            const currentPath = location?.pathname
-            const getPath = {
-                '/dashnoard' : 'Profile',
-                '/leaderboard' : 'Leaderboard',
-                '/blog' : 'Blog',
-                '/contact' : 'Contact',
-                '/about' : 'About',
-                '/signup' : 'Authentication',
-                '/privacy' : 'Privacy & Policy',
-                '/term-condition' : 'Terms & Condition',
-            }
-
-            MetaUpdater.updateMeta(`Live Typing Test | ${getPath[currentPath]}`, "/assets/images/favicon.png");
-        }
-    }
-    
-    const changeTitle = (title) => {
-        MetaUpdater.updateMeta(`Live Typing Test | ${title}`, "/assets/images/favicon.png");
-    }
-
-    useEffect(()=>{
-        changingTitleFunc()
-    }, [])
 
     return (
         <>
@@ -62,12 +33,12 @@ const Header = () => {
                                 {checkUserToken ? (
                                     <>
                                         <NavLink to='/'><li>Start Live Test</li></NavLink>
-                                        <NavLink onClick={()=>changeTitle('Leaderboard')} to='/leaderboard'><li>Leaderboard</li></NavLink>
-                                        <NavLink onClick={()=>changeTitle('Blog')} to='/blog'><li>Blogs</li></NavLink>
+                                        <NavLink to='/leaderboard'><li>Leaderboard</li></NavLink>
+                                        <NavLink to='/blog'><li>Blogs</li></NavLink>
                                         <li className="dropdown">
-                                            <NavLink onClick={()=>changeTitle('Profile')} to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.s3url ? `${userData?.profileimage?.s3url}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
+                                            <NavLink to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.s3url ? `${userData?.profileimage?.s3url}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
                                             <ul className="dropdown-menu">
-                                                <NavLink onClick={()=>changeTitle('Profile')} to='/dashboard'><li>Profile</li></NavLink>
+                                                <NavLink to='/dashboard'><li>Profile</li></NavLink>
                                                 <NavLink to={`/signout/${'isSignout'}`}><li>Logout</li></NavLink>
                                             </ul>
                                         </li>

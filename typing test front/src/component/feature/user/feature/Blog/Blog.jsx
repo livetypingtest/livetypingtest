@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux'
 import { useState } from "react"
 import { useEffect } from "react"
 import MetaUpdater from "../../../../../util/MetaUpdater"
+import DynamicTitle from "../../../../shared/helmet/DynamicTitle"
 
 
 const Blog = () => {
@@ -25,13 +26,10 @@ const Blog = () => {
     }, [category, blogData, blogCategory]);
     
 
-    useEffect(() => {
-        MetaUpdater.updateMeta("Live Typing Test | Blog", "/assets/images/favicon.png");
-    }, []);
-
 
   return (
     <>
+        <DynamicTitle title={"Live Typing Test | Blog"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Blog"}  />
         <Header />
 
         <section>

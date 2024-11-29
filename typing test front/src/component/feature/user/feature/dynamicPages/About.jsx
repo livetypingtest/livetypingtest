@@ -2,7 +2,7 @@ import Header from '../../../../shared/header/Header';
 import Footer from '../../../../shared/footer/Footer';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import MetaUpdater from '../../../../../util/MetaUpdater';
+import DynamicTitle from '../../../../shared/helmet/DynamicTitle';
 
 const About = () => {
   const aboutData = useSelector(state => state.DynamicPagesDataSlice?.about);
@@ -14,12 +14,10 @@ const About = () => {
     }
   }, [aboutData]);
 
-  useEffect(() => {
-    MetaUpdater.updateMeta("Live Typing Test | About", "/assets/images/favicon.png");
-  }, []);
 
   return (
     <>
+      <DynamicTitle title={"Live Typing Test | About"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | About"}  />
       <Header />
       <section className="about-main">
         <div className="container">
