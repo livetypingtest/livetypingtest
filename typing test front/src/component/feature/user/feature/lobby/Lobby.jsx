@@ -587,11 +587,13 @@ const Lobby = () => {
       );
       const contentHeight = typingAreaRef.current.scrollHeight;
       const targetRows = Math.max(8, Math.ceil(contentHeight / lineHeight));
-      let timeIntervel = 1000
+      let timeIntervel = window.innerWidth > 767 ? 1000 : 500
       // Gradually increase rows
       if (targetRows > rows) {
         const interval = setInterval(() => {
-          timeIntervel += 500
+          if(window.innerWidth > 767) {
+            timeIntervel += 700
+          } else timeIntervel += 100
           setRows((prevRows) => {
             const newRows = Math.min(prevRows + 1, targetRows); // Increment rows one by one
             if (newRows === targetRows) clearInterval(interval); // Stop once target is reached
