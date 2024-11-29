@@ -23,7 +23,7 @@ module.exports = (adminModel, DataModel, key) => {
             
             const getUser = await userModel.findOne({ _id: senderid })
             const userEmail = getUser?.email
-
+            
             // Update the MongoDB document with the reply
             const updatedDocument = await DataModel.updateOne(
                 { 'contact.senderid': senderid }, // Match senderid
@@ -48,12 +48,7 @@ module.exports = (adminModel, DataModel, key) => {
                     rejectUnauthorized: false,
                 },
             });
-        
-            const htmlContent = `<html><body>
-                <table >
-                    <tr><th>${reply}</th></tr>
-                </table>
-                </body></html>`;
+    
             
                 await transporter.sendMail({
                     from: `"Live Typing Test" <${process.env.BREVO_SENDER_MAIL}>`,

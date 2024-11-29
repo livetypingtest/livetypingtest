@@ -477,7 +477,7 @@ const Lobby = () => {
       setAlertDetail({
         title : 'Account Blocked!',
         type : 'error',
-        message : `Your Account has been Blocked! Conatct to Admin`,
+        message : `Your Account has been Blocked! Contact to Admin`,
         navigateTo : '',
         confirmBtn : true
       })
