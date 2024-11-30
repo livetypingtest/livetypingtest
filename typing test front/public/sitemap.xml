@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+		<!--	created with www.mysitemapgenerator.com	-->
+		<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+	<loc>https://livetypingtest.com/</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/leaderboard</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/blog</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/dashboard</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/signout/isSignout</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/signup</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/contact</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/about</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/privacy</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/term-condition</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/transparent</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/stats</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/adminsignin</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/matches/easy</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/matches/medium</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/matches/hard</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>0.8</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/signin</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+<url>
+	<loc>https://livetypingtest.com/user</loc>
+	<lastmod>2024-11-30T16:51:14+01:00</lastmod>
+	<priority>1.0</priority>
+</url>
+</urlset>

@@ -12,6 +12,7 @@ import { handleGetAboutData, handleGetPrivacyData, handleGetTermData } from '../
 import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 import { notificationToast } from '../component/shared/Toast/NotificationToats';
 import MetaUpdater from '../util/MetaUpdater';
+import updateSitemap from '../../public/script/updateSitemap';
 
 
 const UserModule = () => {
@@ -149,6 +150,20 @@ const UserModule = () => {
     useEffect(()=>{dispatch(handleGetAboutData())}, [])
     // useEffect(()=>{dispatch(handleGetPrivacyData())}, [])
     useEffect(()=>{dispatch(handleGetTermData())}, [])
+
+
+    const blogData = useSelector(state => state.UserDataSlice.blog)
+    let urls = []
+
+    useEffect(()=>{
+        blogData.map(value => urls.push(`https://livetypingtest.com/blog/${value.permalink}`))
+    }, [blogData])
+
+    useEffect(()=>{
+        if(urls?.length !== 0) {
+            updateSitemap(urls)
+        }
+    }, [urls])
 
     return (
         <>
