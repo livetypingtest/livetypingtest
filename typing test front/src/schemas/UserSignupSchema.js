@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 const UserSignupSchema = yup.object({
-    username : yup.string().required("Must Enter Username"),
+    username : yup.string().required("Must Enter Username").matches(/^\S*$/, "Username should not contain spaces"),
     email : yup.string().email('Invalid email format').required('Enter Email ID'),
     password : yup.string().required("Insert Your Password"),
     repassword : yup.string().oneOf([yup.ref("password")], "Password and Re-Password should be same").required("Insert Your Re-Password"),

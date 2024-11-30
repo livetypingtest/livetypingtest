@@ -1100,7 +1100,9 @@
   .ql-toolbar .ql-fill {
     fill: #e0e0e0;
   }
-  
+  .ql-toolbar.ql-snow .ql-picker-options{
+    background-color: #71CAC7;
+  }
   .ql-toolbar .ql-picker {
     color: #e0e0e0;
   }

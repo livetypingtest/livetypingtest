@@ -51,11 +51,7 @@ const rootRoutes = [
     {
         path : 'contact',
         element : <Contact />
-    },
-    {
-        path : 'test',
-        element : <TypingTest />
-    },
+    }
 ]
 
 export default rootRoutes;

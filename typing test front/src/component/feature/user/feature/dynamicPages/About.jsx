@@ -37,9 +37,11 @@ const About = () => {
                             <h4 className="font-active text-left mb-4">{value?.title}</h4>
                             <p className="mb-4">{value?.content}</p>
                             {value?.button?.title && (
-                              <a className="btn theme-btn sm" href={value?.button?.url}>
-                                {value?.button?.title}
-                              </a>
+                              <div className='align-me'>
+                                <a className="btn theme-btn sm" href={value?.button?.url}>
+                                  {value?.button?.title}
+                                </a>
+                              </div>
                             )}
                           </div>
                           <div className="col-md-5">
@@ -55,9 +57,11 @@ const About = () => {
                             <h4 className="font-active text-left mb-4">{value?.title}</h4>
                             <p className="mb-4">{value?.content}</p>
                             {value?.button?.title && (
-                              <a className="btn theme-btn sm" href={value?.button?.url}>
-                                {value?.button?.title}
-                              </a>
+                              <div className='align-me'>
+                                <a className="btn theme-btn sm" href={value?.button?.url}>
+                                  {value?.button?.title}
+                                </a>
+                              </div>
                             )}
                           </div>
                         </>

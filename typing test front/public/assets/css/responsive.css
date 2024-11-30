@@ -333,5 +333,10 @@
     .about-section {
         padding: 25px 0px;
     }
+    .align-me{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     
 }

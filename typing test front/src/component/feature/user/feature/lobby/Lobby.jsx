@@ -764,6 +764,7 @@ const Lobby = () => {
                         inputElement.setSelectionRange(userInput.length, userInput.length);
                       }
                     }}
+                    contentEditable='true'
                     className="main-input-cs"
                     autoComplete="off" // Disable browser autocomplete
                     autoCorrect="off" // Disable browser autocorrect
