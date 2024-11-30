@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import { sitemap } from 'vite-plugin-sitemap';
+import sitemap from 'vite-plugin-sitemap';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,7 +15,6 @@ export default defineConfig({
         '/contact',   // Example: Contact page
         '/leaderboard',   // Example: Contact page
         '/blog',   // Example: Contact page
-        '/blog/:id',   // Example: Contact page
         '/privacy',   // Example: Contact page
         '/term-condition',   // Example: Contact page
         '/dashboard',   // Example: Contact page
