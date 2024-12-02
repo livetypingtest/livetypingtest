@@ -152,7 +152,7 @@ const modules = {
       [{ header: '1' }, { header: '2' }, { font: [] }],
       [{ list: 'ordered' }, { list: 'bullet' }],
       ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'], // Add 'code-block' to toolbar
+      ['blockquote'], // Add 'code-block' to toolbar
       [{ color: [] }, { background: [] }],
       [{ align: [] }],
       ['link', 'image', 'video'],
@@ -162,6 +162,6 @@ const modules = {
 
   const formats = [
     'header', 'font', 'list', 'bullet', 'bold', 'italic', 'underline',
-    'strike', 'blockquote', 'code-block', 'color', 'background',
+    'strike', 'blockquote', 'color', 'background',
     'align', 'link', 'image', 'video',
   ];
