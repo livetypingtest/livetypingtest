@@ -3,8 +3,7 @@ import Footer from "../../../../shared/footer/Footer";
 import Header from "../../../../shared/header/Header";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { BASE_API_URL } from "../../../../../util/API_URL";
-import { Helmet } from 'react-helmet';
+import DynamicTitle from '../../../../shared/helmet/DynamicTitle'
 
 const BlogInner = () => {
     const param = useParams();
@@ -56,17 +55,8 @@ const BlogInner = () => {
 
     return (
         <>
-            <Helmet>
-                {/* Set the page title */}
-                <title>{displayData.seoTitle || 'Live Typingf Test '}</title>
-                {/* Meta description for SEO */}
-                <meta name="description" content={displayData.seoDescription || 'Live Typingf Test '} />
-                {/* Open Graph tags for social media */}
-                <meta property="og:title" content={displayData.seoTitle || 'Live Typingf Test '} />
-                <meta property="og:description" content={displayData.seoDescription || 'Live Typingf Test '} />
-                <meta property="og:image" content={displayData?.featuredImage?.path || '/default-image.jpg'} />
-                {/* <link rel="icon" href={displayData?.featuredImage?.path || '/default-favicon.ico'} /> */}
-            </Helmet>
+            <DynamicTitle title={`${displayData.seoTitle}`} icon={`${displayData?.featuredImage?.path}`} description={`${displayData.seoDescription}`}  />
+
             <Header />
             <section>
                 <div className="container py-5">

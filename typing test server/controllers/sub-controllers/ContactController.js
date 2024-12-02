@@ -5,6 +5,7 @@ module.exports = (adminModel, DataModel, key) => {
     const nodemailer = require("nodemailer");
     require('dotenv').config();
     const userModel = require('../../model/UserSchema')
+    const { JSDOM } = require("jsdom");
 
 
 
@@ -23,11 +24,38 @@ module.exports = (adminModel, DataModel, key) => {
             
             const getUser = await userModel.findOne({ _id: senderid })
             const userEmail = getUser?.email
+        
+                const decodeHTMLEntities = (text) => {
+                    const dom = new JSDOM();
+                    const doc = dom.window.document.createElement("div");
+                    doc.innerHTML = text;
+                    return doc.textContent;
+                };
+                
+                const processQuillContent = (html) => {
+                    if (!html) return ""; // Handle empty or null HTML gracefully
+                
+                    const dom = new JSDOM(html);
+                    const doc = dom.window.document;
+                
+                    // Handle code blocks without escaping their content
+                    doc.querySelectorAll("pre.ql-syntax").forEach((block) => {
+                        block.innerHTML = block.textContent; // Keeps code formatting intact
+                    });
+                
+                    // Decode HTML entities for other content
+                    doc.body.innerHTML = decodeHTMLEntities(doc.body.innerHTML);
+                
+                    return doc.body.innerHTML; // Return the processed HTML
+                };
             
+            
+            const formattedReply = processQuillContent(reply)
+
             // Update the MongoDB document with the reply
             const updatedDocument = await DataModel.updateOne(
                 { 'contact.senderid': senderid }, // Match senderid
-                { $set: { 'contact.$.reply': `${reply}` } }, // Update the reply
+                { $set: { 'contact.$.reply': `${formattedReply}` } }, // Update the reply
                 { new: true } // Return the updated document
             );
 
@@ -54,7 +82,7 @@ module.exports = (adminModel, DataModel, key) => {
                     from: `"Live Typing Test" <${process.env.BREVO_SENDER_MAIL}>`,
                     to: userEmail,
                     subject: "Reply from Admin on your enquiry over Live Typing Test",
-                    html: reply
+                    html: formattedReply
                 });            
 
             // Step 4: Send a response to the client after updating the reply and sending the email

@@ -196,6 +196,7 @@
 .pm-certificate-footer{
     display: flex;
     align-items: center;
+    justify-content:space-between ;
 }
 .grouped-logo{
   display: flex;
@@ -203,5 +204,9 @@
   align-items: center;
   flex-direction: column;
   gap: 16px;
+}
+
+@media screen and (max-width : 767px) {
+  
 }
 

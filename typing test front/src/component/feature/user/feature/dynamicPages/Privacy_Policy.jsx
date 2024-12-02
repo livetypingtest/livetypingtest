@@ -46,7 +46,6 @@ const Privacy_Policy = () => {
           // Allow the content inside <pre> to remain raw for display
           block.innerHTML = block.textContent; // Keeps code formatting intact
       });
-  
       return doc.body.innerHTML; // Return the processed HTML
   };
 

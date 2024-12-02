@@ -325,6 +325,7 @@
     .blog-category-pill{
         padding: 5px 10px;
         font-size: 12px;
+        word-wrap: normal;
     }
     .typing-overlay{
         width: 90%;
