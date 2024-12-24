@@ -18,7 +18,8 @@ const Lobby = () => {
   const dispatch = useDispatch();
   const typingAreaRef = useRef(null);
   const containerRef = useRef(null);
-  const wordRefs = useRef([])
+  const paragraphRef = useRef(null);
+  const paragraphWrapperRef = useRef(null);
   // const isCapsLockOn = useRef(false);
   
   const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
@@ -33,14 +34,12 @@ const Lobby = () => {
   const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(false);
-  const [counter, setCounter] = useState(0); // Track the number of times condition is met
+  const [prevInput, setPrevInput] = useState(false);
+  const [rows, setRows] = useState(window.innerWidth > 767 ? 8 : 14); // Initial number of rows for textarea
+  const [prevInputWords, setPrevInputWords] = useState(false);
   const [difficulty, setDifficulty] = useState("easy");
   const [timeLimit, setTimeLimit] = useState(60); // Default 30 seconds
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [paraHistory, setParasHistory] = useState([])
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [currentLetterIndex, setCurrentLetterIndex] = useState(0)
-  const [typedLetters, setTypedLetters] = useState([]);
   const [timerRunning, setTimerRunning] = useState(false);
   const [currentParagraph, setCurrentParagraph] = useState();
   const [timeUp, setTimeUp] = useState(false)
@@ -64,8 +63,7 @@ const Lobby = () => {
     extraChars: 0,
     isCompleted : false,
     timeOfCompletion : 0,
-    missedChars : 0,
-    correctStreak: 0,
+    // missedChars : 0,
     time: 0,
     level : ''
   });
@@ -78,11 +76,10 @@ const Lobby = () => {
     extraChars: 0,
     isCompleted : false,
     timeOfCompletion : 0,
-    missedChars : 0,
+    // missedChars : 0,
     time: 0,
     level : ''
   })
-
 
 
   // Function to get a random index based on array length
@@ -90,53 +87,49 @@ const Lobby = () => {
     return Math.floor(Math.random() * array.length);
   }
 
+  // Function to generate paragraph based on duration and difficulty
+  const generateTypingTestParagraph = () => {
+    const wordsPerMinute = 70; // Average typing speed (can be adjusted)
+    const totalWords = wordsPerMinute * (timeLimit / 60); // Total words to match the duration
+
+    let wordArray;
+    if (difficulty === "easy") {
+        wordArray = easyWords;
+    } else if (difficulty === "medium") {
+        wordArray = mediumWords.concat(easyWords); // Mix easy and medium words
+    } else if (difficulty === "hard") {
+        wordArray = hardWords.concat(mediumWords).concat(easyWords); // Mix all words
+    }
+
+    const newParagraph = generateParagraph(wordArray, totalWords);
+    return newParagraph
+  };
+
   const settingTheParagraphs = () => {
     const changeTime = {
       60: 'Min1',
       180: 'Min3',
       300: 'Min5',
-    };
-    const timeField = changeTime[time];
-
-    // Check if a paragraph exists for the given time and difficulty
-    if (timeField && paragraphs?.[timeField]?.[difficulty]?.length > 0) {
-      const selectedParagraphs = [];
-      const availableParagraphs = paragraphs[timeField][difficulty];
-      const totalParagraphs = availableParagraphs.length;
-
-      // Ensure we pick at least 3 random paragraphs (or all if less than 3 exist)
-      const pickCount = Math.min(3, totalParagraphs);
-      const usedIndexes = new Set();
-
-      for (let i = 0; i < pickCount; i++) {
-        let randomIndex;
-
-        // Ensure a unique random index each time
-        do {
-          randomIndex = getRandomIndex(availableParagraphs);
-        } while (usedIndexes.has(randomIndex));
-
-        usedIndexes.add(randomIndex);
-        selectedParagraphs.push(availableParagraphs[randomIndex]?.para || '');
-      }
-
-      // Concatenate the selected paragraphs with a space
-      return selectedParagraphs.join(' ');
-    }
-
-    // Return a default value if no paragraphs are found
-    return '';
   };
+  const timeField = changeTime[time];
 
-  const getParagraph = () => {
-    const paragraph = settingTheParagraphs()
-    // console.log(paragraph?.split(" "))
-    setCurrentParagraph(paragraph?.split(" "))
-    setParasHistory(paragraph?.split(" "))
+  // Check if a paragraph exists for the given time and difficulty
+  if (timeField && paragraphs?.[timeField]?.[difficulty]?.length > 0) {
+      // Pick a random paragraph from existing ones
+      const getIndex = getRandomIndex(paragraphs[timeField][difficulty]);
+      return paragraphs[timeField][difficulty][getIndex]?.para
+      setCurrentParagraph(paragraphs[timeField][difficulty][getIndex]?.para);
+      // console.log(paragraphs[timeField][difficulty][getIndex]?.para)
+  } 
+  // else {
+  //     // If no paragraph exists, generate a new one
+  //     setCurrentParagraph(generateTypingTestParagraph())
+  // }
   }
 
   useEffect(() => {
-    getParagraph()
+    const paragraph = settingTheParagraphs()
+    setCurrentParagraph(paragraph)
   }, [paragraphs, time, difficulty, matchHistory]); // Dependencies: `paragraphs`, `time`, and `difficulty`
 
 
@@ -199,133 +192,155 @@ const Lobby = () => {
   };
   // Handle paragraph difficulty change----------------------------------------------------------
 
+  // Handle input change----------------------------------------------------------------------
+  const handleInputChange = (e) => {
+    const input = e.target.value; // Correctly get the input value
+  
+    // Start timer if it's not already running
+    if (input.length === 1 && !timerRunning) {
+      setTimerRunning(true);
+    }
+  
+    setUserInput(input); // Update the user input state
+    calculateStats(input); // Update typing stats
+  
+    // Auto-scroll logic
+    // const wrapper = paragraphWrapperRef.current;
+    // if (wrapper) {
+    //   const lineHeight = parseInt(getComputedStyle(wrapper).lineHeight, 10); // Get the line height
+    //   const currentLine = Math.floor(input.length / wrapper.offsetWidth); // Estimate the current line
+    //   wrapper.scrollTop = currentLine * lineHeight; // Scroll to the current line
+    // }
+  };  
+  // Handle input change----------------------------------------------------------------------
+
   // Calculate and update statistics-------------------------------------------------------------------
+  const calculateStats = (input) => {
+    let correctChars = 0;
+    let incorrectChars = 0;
+    let extraChars = 0;
+    let currentStreak = 0;
+    let longestStreak = stats.longestStreak || 0;
+    let isCompleted = false;
+    let skippedChars = 0;
+    let timeOfCompletion = 0;
+  
+    // Split the input and current paragraph into words
+    const inputWords = input.trim().split(" ");
+    const currentWordIndex = inputWords.length - 1; // Index of the current word
+    const currentWord = inputWords[currentWordIndex] || ""; // Current word being typed
+    const paragraphWords = currentParagraph.split(" ");
+    const validWord = paragraphWords[currentWordIndex] || ""; // Correct word in the paragraph
 
-  const calculateAverage = () => {
-    // Calculate WPM (Words Per Minute)
-    let wpm = 0;
-
-    if (timeLimit > 0) {
-      // Count the number of correctly typed words
-      const correctWords = typedLetters
-        .reduce((wordCount, letter) => {
-          if (letter.letterIndex === 0) wordCount++; // Count the start of each correctly typed word
-          return wordCount;
-        }, 0);
+    // Restrict backspace to within the current word
+    if (inputWords.length < prevInputWords.length) {
+      setUserInput(prevInput); // Revert the input to the previous state
+      return;
+    }
+  
+    // Process each character of the paragraph and compare it with the input
+    [...currentParagraph].forEach((char, index) => {
+      const typedChar = input[index];
+  
+      if (char === " ") {
+        // Count extra characters typed in place of spaces
+        if (typedChar && typedChar !== " ") {
+          extraChars++;
+        }
+      } else {
+        // Process non-space characters
+        if (typedChar === char) {
+          correctChars++;
+          currentStreak++;
+        } else if (typedChar && typedChar !== " ") {
+          incorrectChars++;
+          longestStreak = Math.max(longestStreak, currentStreak); // Update longest streak
+          currentStreak = 0; // Reset current streak
+        } else if (typedChar !== char && typedChar === " ") {
+          skippedChars++; // Increment the skippedChars counter
+        }
 
         
-        // Calculate words per minute (1 word = 5 characters)
-        if (elapsedTime > 0) {
-          wpm = ((correctWords / elapsedTime) * 60).toFixed(2);
+      }
+    });
+  
+    // Handle extra characters beyond the paragraph length
+    if (input.length > currentParagraph.length) {
+      for (let i = currentParagraph.length; i < input.length; i++) {
+        if (input[i] !== " ") {
+          extraChars++;
         }
-    
-      setStats((prevStats) => ({
-        ...prevStats,
-        wpm: [...prevStats.wpm, Math.min(wpm, elapsedTime > 5 ? wpm : 150)], // Cap WPM at 150 for quick tests
-      }));
+      }
     }
+  
+    // Finalize longest streak calculation
+    longestStreak = Math.max(longestStreak, currentStreak);
+  
+    // Calculate WPM
+    let wpm = 0;
+    if (elapsedTime > 0) {
+      const wordsTyped = input.trim().split(/\s+/).length; // Count non-empty words
+      wpm = ((wordsTyped / elapsedTime) * 60).toFixed(2); // Words per minute
+      wpm = Math.min(wpm, elapsedTime > 5 ? wpm : 150);
+    }
+  
+    // Calculate accuracy
+    const totalTypedChars = correctChars + incorrectChars; // Total meaningful input
+    const accuracy = totalTypedChars > 0
+      ? ((correctChars / totalTypedChars) * 100).toFixed(2)
+      : 0;
+  
+    // Calculate consistency
+    const completedChars = correctChars + incorrectChars + skippedChars;
+    const nonSpaceCharCount = currentParagraph.replace(/ /g, "").length;
+    const consistency = completedChars > 0
+        ? ((correctChars / nonSpaceCharCount) * 100).toFixed(2)
+        : 0;
+  
+    // Count non-space characters in the paragraph
+    // const nonSpaceCharCount = currentParagraph.replace(/ /g, "").length;
+  
+    // Determine if the paragraph is completed
+    isCompleted = (correctChars + skippedChars + incorrectChars) >= nonSpaceCharCount;
 
-    // Variables for accuracy and consistency calculation
-    const totalCorrect = stats.correctChars; // Total number of correct characters typed
-    const totalIncorrect = stats.incorrectChars; // Total number of incorrect characters typed
-    const totalSkiped = stats.missedChars;
-    const totalWords = paraHistory?.join(" ")?.replace(/ /g, "")?.length
-    const totalTyped = totalCorrect + totalIncorrect + totalSkiped; // Total characters typed (correct + incorrect)
-    
-    // Calculate accuracy: (correctChars / totalTypedChars) * 100
-    let accuracy = 0;
-    if (totalTyped > 0) {
-      accuracy = Math.floor((totalCorrect / totalTyped) * 100); // Accuracy as an integer
+    timeOfCompletion = (elapsedTime + 1);
+    // console.log(correctChars + skippedChars + incorrectChars, nonSpaceCharCount)
+    if (isCompleted) {
+  
+      // Generate and append a new paragraph if the current one is completed
+      const addExtraParagraph = settingTheParagraphs();
+      setCurrentParagraph((prevParagraph) => `${prevParagraph} ${addExtraParagraph}`);
     }
-    
-    // Calculate consistency based on correct typing streaks
-    let consistency = 0;
-    if (totalTyped > 0) {
-      // Logic for consistency: Measure the ratio of correct characters over time
-      const correctStreakWeight = stats.correctStreak || 1; // A multiplier for consistent streaks
-      const streakEffect = correctStreakWeight / totalTyped;
-      
-      // console.log(totalCorrect, totalTyped, streakEffect, ((totalCorrect / totalTyped) + streakEffect) * 100)
-      consistency = parseFloat(((totalCorrect / totalWords) * 100).toFixed(2)); // Consistency as a float
-    }
-
-    // Update the stats with accuracy and consistency
+  
+    // Update stats
     setStats((prevStats) => ({
       ...prevStats,
-      accuracy: [...prevStats.accuracy, accuracy], // Store accuracy as an integer in the array
-      consistency: [...prevStats.consistency, consistency], // Store consistency as a float in the array
+      wpm: [...prevStats.wpm, parseFloat(wpm)], // Append the new WPM value
+      accuracy: [...prevStats.accuracy, parseFloat(accuracy)], // Append the new Accuracy value
+      consistency: [...prevStats.consistency, parseFloat(consistency)], // Append the new Consistency value
+      correctChars,
+      incorrectChars,
+      extraChars,
+      isCompleted,
+      timeOfCompletion
     }));
-
-  }
-
-  const calculateState = (input, last) => {
-    const userWord = input?.split("")?.concat(last)?.join("")?.trim(); // The word typed by the user
-    const currentParaWord = paraHistory[currentWordIndex]?.split(""); // The word from paraHistory
-    const userWordArray = userWord?.split(""); // The word typed by the user, split into an array
   
-  
-  
-    // Check if user has typed till the word's expected length
-    if (currentParaWord?.length <= userWordArray?.length) {
-      // Iterate through userWord to check correctness
-      userWordArray.forEach((letter, letterIndex) => {
-        if (currentParaWord[letterIndex] === letter) {
-          // Correctly typed letter
-          setStats((prevStats) => ({
-            ...prevStats,
-            correctChars: prevStats.correctChars + 1,
-            correctStreak: (prevStats.correctStreak || 0) + 1,
-          }));
-        } else {
-          // Incorrectly typed letter
-          setStats((prevStats) => ({
-            ...prevStats,
-            incorrectChars: prevStats.incorrectChars + 1,
-            correctStreak: 0,
-          }));
-        }
-      });
-  
-      // Handle the case where there are extra characters typed
-      const extraChars = userWordArray?.length - currentParaWord?.length;
-      if (extraChars > 0) {
-        setStats((prevStats) => ({
-          ...prevStats,
-          extraChars: prevStats.extraChars + extraChars,
-          correctStreak: 0,
-        }));
-      }
-    } else if (currentParaWord?.length > userWordArray?.length) {
-      // Handle the case where paraHistory word is longer than the typed word (skipped chars)
-      const skippedChars = currentParaWord?.length - userWordArray?.length;
-      // console.log("Skipped Characters: ", skippedChars);
-      setStats((prevStats) => ({
-        ...prevStats,
-        missedChars: prevStats.missedChars + skippedChars,
-        correctStreak: 0,
-      }));
-  
-      // Track typed characters for correctness
-      userWordArray.forEach((letter, letterIndex) => {
-        if (currentParaWord[letterIndex] === letter) {
-          setStats((prevStats) => ({
-            ...prevStats,
-            correctChars: prevStats.correctChars + 1,
-            correctStreak: (prevStats.correctStreak || 0) + 1,
-          }));
-        } else {
-          setStats((prevStats) => ({
-            ...prevStats,
-            incorrectChars: prevStats.incorrectChars + 1,
-            correctStreak: 0,
-          }));
-        }
-      });
-    }
+    // Store the previous state of input and words
+    setPrevInput(input);
+    setPrevInputWords(inputWords);
   };
   
   // Calculate and update statistics-------------------------------------------------------------------
-
+  
+  // Eyes on the Completion of test before selected Time-------------------------------------------------
+  // useEffect(()=>{
+  //   if(stats.isCompleted){
+  //       setTimerRunning(false);
+  //       setTimeUp(true)
+  //       setShowModal(true)
+  //   }
+  // }, [stats])
+  // Eyes on the Completion of test before selected Time-------------------------------------------------
 
   // updation of finalStats-------------------------------------------------------------------
   useEffect(()=>{
@@ -338,8 +353,7 @@ const Lobby = () => {
     setStats((prevStats) => ({
       ...prevStats,   // Spread the previous stats object
       level: difficulty,  // Update the 'level' property
-      time: timeLimit,
-      timeOfCompletion: timeLimit        // Update the 'time' property
+      time: timeLimit         // Update the 'time' property
     }));
   }, [difficulty, timeLimit])
   // updation Difficulty in stats-------------------------------------------------------------------
@@ -351,7 +365,6 @@ const Lobby = () => {
         data : finalStats,
         date : new Date()
       }
-      console.log(result)
       localStorage.setItem('stats', JSON.stringify(result))
       dispatch(handleMatchHistory({state: true, time : result.data.time, level : result.data.level}))
       if(localStorage.getItem('userToken')) {
@@ -379,10 +392,11 @@ const Lobby = () => {
   // Reset the typing test-----------------------------------------------------------------------------
   const resetTest = () => {
     setUserInput('');
+    setPrevInput('')
+    setPrevInputWords('')
     setElapsedTime(0);
+    setRows(window.innerWidth > 767 ? 8 : 14)
     setTimerRunning(false);
-    setCurrentLetterIndex(0)
-    setCurrentWordIndex(0)
     setStats({
       wpm: [],
       accuracy: [],
@@ -390,14 +404,12 @@ const Lobby = () => {
       correctChars: 0,
       incorrectChars: 0,
       extraChars: 0,
-      missedChars : 0,
+      // missedChars : 0,
       isCompleted : false,
       timeOfCompletion : 0,
       time: 0,
       level : ''
     });
-    setTypedLetters([])
-    getParagraph()
     typingAreaRef.current.blur();
   };
   // Reset the typing test-----------------------------------------------------------------------------
@@ -489,8 +501,11 @@ const Lobby = () => {
       setTime(matchHistory?.time || 60);
       setTimeLimit(matchHistory?.time || 60);
       const paragraph = settingTheParagraphs()
-      setCurrentParagraph(paragraph?.split(" "))
-      setParasHistory(paragraph?.split(" "))
+      setCurrentParagraph(paragraph)
+      console.log(time, difficulty)
+      // setTime(()=>{
+      //   dispatch(handleMatchHistory({state: false}))
+      // }, 10000)
     }
   }, [matchHistory])
   // Getting match history from local storage -----------------------------------------------------------------
@@ -503,137 +518,96 @@ const Lobby = () => {
   };
   // Putting eye on caps lock -----------------------------------------------------------------
 
-  const adjustScroll = () => {
-    if(window.innerWidth >= 767) {
-      const currentWordRef = wordRefs.current[currentWordIndex];
-      if (currentWordRef) {
-        const rect = currentWordRef.getBoundingClientRect();
-        // console.log(rect.top > 300);
-      
-        if (rect.top > 300) {
-          const wordElement = document.getElementsByClassName('suds');
-          if (wordElement.length > 0) {
-            // Calculate the new marginTop based on the counter value
-            const newMarginTop = `-${6 * (counter)}%`;
-            wordElement[0].style.marginTop = newMarginTop;
-            console.log(`New marginTop: ${newMarginTop}`);
-      
-            // Increment the counter for the next time
-            setCounter((prevCounter) => prevCounter + 1);
-          } else {
-            console.error('Element with class "suds" not found');
-          }
-        }
-      }
-    } else {
-      const currentWordRef = wordRefs.current[currentWordIndex];
-      if (currentWordRef) {
-        const rect = currentWordRef.getBoundingClientRect();
-        // console.log(rect.top > 197);
-      
-        if (rect.top > 197) {
-          const wordElement = document.getElementsByClassName('suds');
-          if (wordElement.length > 0) {
-            // Calculate the new marginTop based on the counter value
-            const newMarginTop = `-${6 * (counter)}%`;
-            wordElement[0].style.marginTop = newMarginTop;
-            console.log(`New marginTop: ${newMarginTop}`);
-      
-            // Increment the counter for the next time
-            setCounter((prevCounter) => prevCounter + 1);
-          } else {
-            console.error('Element with class "suds" not found');
-          }
-        }
-      }
-    }
-  }
-
-  const handleKeyPress = (e) => {
-    if(hasFocus) {
+  // Eye on Blocking The Restricted Keys To Press------------------------------------------------
+  const blockRestrictedKeys = (event) => {
+    if (event.type === 'keydown') {
       // Handle keydown event
-      if (e.ctrlKey && e.key === 'c') {
-        e.preventDefault(); // Prevent the default copy action
+      if (event.ctrlKey && event.key === 'c') {
+        event.preventDefault(); // Prevent the default copy action
         setBlockKey({ for: 'Copying is disabled', state: true });
         setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
       }
-      if (e.ctrlKey && e.key === 'v') {
-        e.preventDefault(); // Prevent the default paste action
+      if (event.ctrlKey && event.key === 'v') {
+        event.preventDefault(); // Prevent the default paste action
         setBlockKey({ for: 'Pasting is disabled', state: true });
         setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
       }
-      if (e.key === 'Backspace' || e.key === 'Delete') {
-        e.preventDefault(); // Prevent Backspace and Delete actions
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+        event.preventDefault(); // Prevent Backspace and Delete actions
         setBlockKey({ for: 'Deleting is disabled', state: true });
         setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
       }
-
-      const key = e.key;
-
-      // Start timer if it's not already running
-      if (key.length === 1 && !timerRunning) {
-        setTimerRunning(true);
-      }
-    
-      if (key === " ") {
-        setCurrentWordIndex((prev) => prev + 1);
-        setCurrentLetterIndex(0);
-        calculateState(userInput, key)
-        setUserInput("")
-        return;
-      }
-    
-      if (key.length === 1) {
-        const currentWord = currentParagraph[currentWordIndex];
-        const historyWord = paraHistory[currentWordIndex];
-        const historyWordLength = historyWord?.length;
-    
-        let updatedWord = currentWord;
-        let isCharacterCorrect = false;
-        let type = ''
-    
-        if (currentLetterIndex < historyWordLength) {
-          const expectedChar = historyWord[currentLetterIndex];
-    
-          if (key === expectedChar) {
-            isCharacterCorrect = true;
-            updatedWord = currentWord?.slice(0, currentLetterIndex) + key + currentWord.slice(currentLetterIndex + 1);
-          } else {
-            isCharacterCorrect = false;
-          }
-        } else {
-          const baseWord = historyWord?.slice(0, historyWordLength);
-          let extraChars = currentWord?.slice(historyWordLength);
-    
-          if (isCharacterCorrect) {
-            extraChars = extraChars + key;  // Append the correct character
-          } else {
-            type = 'extra'
-            extraChars = extraChars?.slice(0, currentLetterIndex - historyWordLength) + key;
-          }
-    
-          updatedWord = baseWord + extraChars.replace(/-$/, "");
-        }
-    
-        // Update the word in currentParagraph
-        const updatedWords = [...currentParagraph];
-        updatedWords[currentWordIndex] = updatedWord;
-        setCurrentParagraph(updatedWords);
-        setUserInput(userInput + key)
-        calculateAverage()
-    
-        
-        setTypedLetters((prev) => [
-          ...prev,
-          { wordIndex: currentWordIndex, letterIndex: currentLetterIndex, isCorrect: isCharacterCorrect, type: type },
-        ]);
-    
-        setCurrentLetterIndex((prev) => prev + 1);
-        adjustScroll()
-      }
+    } else if (event.type === 'keyup') {
+      // Optionally handle keyup events if needed
+      // console.log(`Key released: ${event.key}`);
     }
   };
+  // Eye on Blocking The Restricted Keys To Press------------------------------------------------
+  
 
+  // Eye on Auto-Scrolling Of the Paragraph While Typing------------------------------------------------
+    useEffect(() => {
+      const scrollToCurrentLine = () => {
+        if (typingAreaRef.current && paragraphWrapperRef.current) {
+          const inputElement = typingAreaRef.current;
+          const wrapperElement = paragraphWrapperRef.current;
+    
+          // Check if the input is not fully visible in the wrapper
+          const inputRect = inputElement.getBoundingClientRect();
+          const wrapperRect = wrapperElement.getBoundingClientRect();
+    
+          if (
+            inputRect.top < wrapperRect.top || // Input is above the wrapper
+            inputRect.bottom > wrapperRect.bottom // Input is below the wrapper
+          ) {
+            // Use scrollIntoView for better compatibility on mobile
+            inputElement.scrollIntoView({
+              behavior: "smooth", // Smooth scrolling
+              block: "nearest", // Scroll to the nearest edge
+              inline: "nearest",
+            });
+          }
+        }
+      };
+    
+      // Only scroll if the component has focus
+      if (hasFocus) {
+        scrollToCurrentLine();
+      }
+    }, [userInput, hasFocus]); // Include `hasFocus` in the dependency array
+  // Eye on Auto-Scrolling Of the Paragraph While Typing------------------------------------------------
+  
+  
+  // Eye on Dynamically adjust the textarea rows based on content------------------------------------------------
+  useEffect(() => {
+    if (typingAreaRef.current) {
+      const lineHeight = parseInt(
+        window.getComputedStyle(typingAreaRef.current).lineHeight,
+        10
+      );
+      const contentHeight = typingAreaRef.current.scrollHeight;
+      const targetRows = Math.max(8, Math.ceil(contentHeight / lineHeight));
+      let timeIntervel = window.innerWidth > 767 ? 1000 : 500
+      // Gradually increase rows
+      if (targetRows > rows) {
+        const interval = setInterval(() => {
+          if(window.innerWidth > 767) {
+            timeIntervel += 700
+          } else timeIntervel += 100
+          setRows((prevRows) => {
+            const newRows = Math.min(prevRows + 1, targetRows); // Increment rows one by one
+            if (newRows === targetRows) clearInterval(interval); // Stop once target is reached
+            return newRows;
+          });
+        }, timeIntervel); // Adjust speed by changing the interval time (in ms)
+      } else if (targetRows < rows) {
+        setRows(targetRows); // Reduce rows immediately
+      }
+    }
+  }, [userInput]); // Run this whenever userInput changes
+  // Eye on Dynamically adjust the textarea rows based on content------------------------------------------------
+  
+  useEffect(()=>{setRows(window.innerWidth > 767 ? 8 : 14)}, [])
 
   // useEffect(()=>{console.log(hasFocus)})
 
@@ -651,6 +625,11 @@ const Lobby = () => {
             className="row custom-align"
             onKeyUp={handleKeyUp}
             onKeyDown={handleKeyUp}
+            // ref={isCapsLockOn}
+            // style={{
+            //   transition: 'transform 0.3s ease', 
+            //   transform: window.innerWidth < 767 && hasFocus ? 'translateY(-20%)' : 'none' ,
+            // }}
           >
             <div ref={containerRef} className="cutom-lobby-head">
               <div className='lobby-menu'>
@@ -717,7 +696,7 @@ const Lobby = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-md-12 py-4">
+            <div className="col-md-12">
               {/* Overlay for blur effect and user instruction */}
               {!hasFocus && (
                 <div className="typing-overlay" onClick={() => {setHasFocus(true), setRootFocus(true)}}>
@@ -725,64 +704,72 @@ const Lobby = () => {
                 </div>
               )}
               <div
-                id="game"
-                tabIndex={0}
-                ref={typingAreaRef}
                 className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
+                tabIndex={0} // Make the div focusable
                 onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
                 onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
                 onBlur={() => {setHasFocus(false), setRootFocus(false)}}
-                onKeyDown={(e)=>{handleKeyPress(e)}}
-                // onKeyUp={(e)=>blockRestrictedKeys(e)}
+                onKeyDown={(e)=>blockRestrictedKeys(e)}
+                onKeyUp={(e)=>blockRestrictedKeys(e)}
+                ref={paragraphWrapperRef}
               >
-                <div  className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
-                  onClick={() => {setHasFocus(true), setRootFocus(true)}}>
-                <div id="words">
-                  {currentParagraph?.map((word, wordIndex) => {
-                    // Get the original word from paraHistory or fallback to empty string if not found
-
-                    // Check if there's any extra characters added
-                    const updatedWord = word;
-                    
-                    return (
-                      <div
-                        key={wordIndex}
-                        className={`word ${wordIndex === currentWordIndex ? "current" : ""}`}
-                        ref={(el) => (wordRefs.current[wordIndex] = el)} 
-                      >
-                        {updatedWord.split("").map((letter, letterIndex) => {
-                          // Find out if this character was typed correctly or incorrectly
-                          const typed = typedLetters && typedLetters?.find(
-                            (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
-                          );
-                          const isCorrect = typed?.isCorrect;
-                          const isExtra = typed?.type
-
-                          // Define the class names for styling
-                          let classNames = "letter ";
-                          if (wordIndex === currentWordIndex && letterIndex === currentLetterIndex) {
-                            classNames += "current";
-                          }
-                          if (isCorrect === true) {
-                            classNames += " correct";
-                          } else if (isCorrect === false) {
-                            if(isExtra === '') {
-                              classNames += " incorrect";
-                            } else if(isExtra === 'extra') {
-                              classNames += " extra";
-                            }
-                          }
-
-                          return (
-                            <span key={letterIndex} className={classNames}>
-                              {letter}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
+                <div
+                  className={`paragraph-container ${!hasFocus ? "text-blur" : ""}`}
+                  onClick={() => {setHasFocus(true), setRootFocus(true)}}
+                >
+                  {currentParagraph && typeof currentParagraph === "string"
+                    ? currentParagraph.split("").map((char, index) => (
+                        <span
+                          key={index}
+                          className={`${
+                            userInput[index] === undefined
+                              ? "text-light"
+                              : userInput[index] === char
+                              ? "text-active"
+                              : "text-wrong"
+                          } ${hasFocus && index === userInput?.length ? "underline" : ""}`}
+                        >
+                          {char}
+                        </span>
+                      ))
+                    : null}
+                    {hasFocus && userInput?.length < currentParagraph?.length && (
+                      <span
+                        style={{
+                          borderLeft: "2px solid white",
+                          animation: "blink 1s infinite",
+                          marginLeft: "2px",
+                          display: "inline-block",
+                        }}
+                      />
+                    )}
+                  <textarea
+                    ref={typingAreaRef}
+                    value={userInput}
+                    onClick={() => {setHasFocus(true), setRootFocus(true)}}
+                    rows={rows} // Dynamically updated rows
+                    // onChange={handleInputChange}
+                    onChange={(e) => {
+                      // Restrict input processing if !hasFocus
+                      if (!hasFocus) return;
+              
+                      handleInputChange(e);
+                    }}
+                    onSelect={(e) => {
+                      const inputElement = e.target;
+                      const currentCursorPosition = inputElement.selectionStart;
+                  
+                      // Prevent cursor from going before the last character
+                      if (currentCursorPosition < userInput.length) {
+                        inputElement.setSelectionRange(userInput.length, userInput.length);
+                      }
+                    }}
+                    contentEditable='true'
+                    className="main-input-cs"
+                    autoComplete="off" // Disable browser autocomplete
+                    autoCorrect="off" // Disable browser autocorrect
+                    spellCheck="false" // Disable spellchecking
+                  ></textarea>
                 </div>
               </div>
               <div className='reset'><button className='z-10' onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>

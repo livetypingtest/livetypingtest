@@ -339,5 +339,11 @@
         align-items: center;
         justify-content: center;
     }
+    #words{
+        font-size: 35px;
+        gap: 25px;
+        height: 250px;
+        overflow: hidden;
+    }
     
 }
