@@ -378,6 +378,8 @@ const Lobby = () => {
 
   // Reset the typing test-----------------------------------------------------------------------------
   const resetTest = () => {
+    const wordElement = document.getElementsByClassName('suds')
+    wordElement[0].style.marginTop = '0px'
     setUserInput('');
     setElapsedTime(0);
     setTimerRunning(false);
@@ -516,7 +518,7 @@ const Lobby = () => {
             // Calculate the new marginTop based on the counter value
             const newMarginTop = `-${6 * (counter)}%`;
             wordElement[0].style.marginTop = newMarginTop;
-            console.log(`New marginTop: ${newMarginTop}`);
+            // console.log(`New marginTop: ${newMarginTop}`);
       
             // Increment the counter for the next time
             setCounter((prevCounter) => prevCounter + 1);
