@@ -578,6 +578,7 @@ const Lobby = () => {
       }
     
       if (key === " ") {
+        e.preventDefault()
         setCurrentWordIndex((prev) => prev + 1);
         setCurrentLetterIndex(0);
         calculateState(userInput, key)
@@ -732,17 +733,20 @@ const Lobby = () => {
               )}
               <div
                 id="game"
-                tabIndex={0}
-                ref={typingAreaRef}
+                // tabIndex={0}
+                
                 className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
                 onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
                 onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
                 onBlur={() => {setHasFocus(false), setRootFocus(false)}}
-                onKeyDown={(e)=>{handleKeyPress(e)}}
+                
                 // onKeyUp={(e)=>blockRestrictedKeys(e)}
               >
                 <div  className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
                   onClick={() => {setHasFocus(true), setRootFocus(true)}}>
+                <div onKeyDown={(e)=>{handleKeyPress(e)}} ref={typingAreaRef} style={{width: 0, height: 0, overflow: 'hidden'}} contentEditable={true} >
+
+                </div>
                 <div id="words">
                   {currentParagraph?.map((word, wordIndex) => {
                     // Get the original word from paraHistory or fallback to empty string if not found
