@@ -629,11 +629,15 @@ const Lobby = () => {
         ]);
     
         setCurrentLetterIndex((prev) => prev + 1);
-        adjustScroll()
       }
     }
   };
 
+  useEffect(()=>{
+    if(timerRunning) {
+      adjustScroll()
+    }
+  })
 
   // useEffect(()=>{console.log(hasFocus)})
 
