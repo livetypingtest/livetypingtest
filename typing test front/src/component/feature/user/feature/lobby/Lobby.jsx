@@ -33,7 +33,6 @@ const Lobby = () => {
   const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(false);
-  const [storage, setStorage] = useState("")
   const [counter, setCounter] = useState(0); // Track the number of times condition is met
   const [difficulty, setDifficulty] = useState("easy");
   const [timeLimit, setTimeLimit] = useState(60); // Default 30 seconds
@@ -401,7 +400,7 @@ const Lobby = () => {
     });
     setTypedLetters([])
     getParagraph()
-    typingAreaRef.current.blur();
+    typingAreaRef.current.focus();
   };
   // Reset the typing test-----------------------------------------------------------------------------
   
@@ -513,7 +512,7 @@ const Lobby = () => {
         const rect = currentWordRef.getBoundingClientRect();
         // console.log(rect.top > 300);
       
-        if (rect.top > 350) {
+        if (rect.top > 300) {
           const wordElement = document.getElementsByClassName('suds');
           if (wordElement.length > 0) {
             // Calculate the new marginTop based on the counter value
@@ -552,57 +551,34 @@ const Lobby = () => {
     }
   }
 
-  let key = ""; // Local variable for current characters
-  let wordArray = []; // Local variable for completed words
-
   const handleKeyPress = (e) => {
     if(hasFocus) {
-      // // Handle keydown event
-      // if (e.ctrlKey && e.key === 'c') {
-      //   e.preventDefault(); // Prevent the default copy action
-      //   setBlockKey({ for: 'Copying is disabled', state: true });
-      //   setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
-      // }
-      // if (e.ctrlKey && e.key === 'v') {
-      //   e.preventDefault(); // Prevent the default paste action
-      //   setBlockKey({ for: 'Pasting is disabled', state: true });
-      //   setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
-      // }
-      // if (e.key === 'Backspace' || e.key === 'Delete') {
-      //   e.preventDefault(); // Prevent Backspace and Delete actions
-      //   setBlockKey({ for: 'Deleting is disabled', state: true });
-      //   setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
-      // }
-      const input = e.target.value; // Current input value
-      const lastChar = input[input.length - 1]; // Get the last character typed
-
-    if (lastChar === " ") {
-      // If space is pressed
-      if (key.length > 0) {
-        const completedWord = key.join(""); // Form the completed word
-        wordArray.push(completedWord); // Add the completed word to wordArray
-        console.log("Completed Word:", completedWord);
-        console.log("Word Array:", wordArray);
-        key = []; // Reset key for the new word
+      // Handle keydown event
+      if (e.ctrlKey && e.key === 'c') {
+        e.preventDefault(); // Prevent the default copy action
+        setBlockKey({ for: 'Copying is disabled', state: true });
+        setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
       }
-      e.target.value = ""; // Clear the input field after processing the word
-    } else if (lastChar) {
-      // For any other character
-      key = lastChar; // Add the character to key
-      console.log("Current Characters:", key);
-      console.log("word Characters:", input);
-    }
- 
+      if (e.ctrlKey && e.key === 'v') {
+        e.preventDefault(); // Prevent the default paste action
+        setBlockKey({ for: 'Pasting is disabled', state: true });
+        setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
+      }
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        e.preventDefault(); // Prevent Backspace and Delete actions
+        setBlockKey({ for: 'Deleting is disabled', state: true });
+        setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
+      }
+
+      const key = e.key;
+
       // Start timer if it's not already running
       if (key.length === 1 && !timerRunning) {
         setTimerRunning(true);
       }
-
-
     
-      if (input?.split("")[currentLetterIndex] === " ") {
-        // e.preventDefault()
-        setStorage("")
+      if (key === " ") {
+        e.preventDefault()
         setCurrentWordIndex((prev) => prev + 1);
         setCurrentLetterIndex(0);
         calculateState(userInput, key)
@@ -610,7 +586,7 @@ const Lobby = () => {
         return;
       }
     
-      if (key.length >= 1) {
+      if (key.length === 1) {
         const currentWord = currentParagraph[currentWordIndex];
         const historyWord = paraHistory[currentWordIndex];
         const historyWordLength = historyWord?.length;
@@ -758,15 +734,14 @@ const Lobby = () => {
               <div
                 id="game"
                 tabIndex={0}
-                // ref={typingAreaRef}
+                ref={typingAreaRef}
                 className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
                 onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
                 onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
                 onBlur={() => {setHasFocus(false), setRootFocus(false)}}
-                // onKeyDown={(e)=>{handleKeyPress(e)}}
+                onKeyDown={(e)=>{handleKeyPress(e)}}
                 // onKeyUp={(e)=>blockRestrictedKeys(e)}
               >
-                <input style={{height: 0, width: 0, overflow : "hidden"}} ref={typingAreaRef} value={storage} onChange={(e)=>{handleKeyPress(e), setStorage(e.target.value)}} type="text" name="" id="" />
                 <div  className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
                   onClick={() => {setHasFocus(true), setRootFocus(true)}}>
                 <div id="words">
