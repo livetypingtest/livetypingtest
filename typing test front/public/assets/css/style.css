@@ -1995,8 +1995,14 @@ button.google-sign-btn img {
   .paragraph-container {
     position: relative;
     white-space: pre-wrap; /* Preserve spaces and line breaks */
-    
+    /* font-family: "Roboto Mono", "Roboto Mono", Vazirmatn, monospace;
+  font-style: normal;
+  font-weight: 400; */
+  font-size: 30px;
   height: 250px;
+  /* line-height: 48px; */
+
+
   }
 
 
