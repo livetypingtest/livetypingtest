@@ -595,7 +595,7 @@ const BackupWithInput = () => {
     if(hasFocus) {
       
       const input = e.target.value; // Current input value
-      console.log("input", input)
+      // console.log("input", input)
       
       const lastChar = input[input.length - 1]; // Get the last character typed
 
@@ -806,7 +806,7 @@ const BackupWithInput = () => {
                   id=""
                   // Conditional event handler based on screen size
                   {...(isMobile
-                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.target.value); }}
+                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value); console.log("input", e.currentTarget.value) }}
                     : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); }}
                   )}
                 />
