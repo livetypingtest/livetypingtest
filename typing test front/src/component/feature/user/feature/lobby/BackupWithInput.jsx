@@ -85,6 +85,9 @@ const BackupWithInput = () => {
     level : ''
   })
 
+  let key = ""; // Local variable for current characters
+  let wordArray = []; // Local variable for completed words
+
 
 
   // Function to get a random index based on array length
@@ -383,6 +386,8 @@ const BackupWithInput = () => {
     const wordElement = document.getElementsByClassName('suds')
     wordElement[0].style.marginTop = '0px'
     setUserInput('');
+    key = []
+    wordArray = []
     setElapsedTime(0);
     setTimerRunning(false);
     setCurrentLetterIndex(0)
@@ -574,9 +579,6 @@ const BackupWithInput = () => {
     }
   }
 
-  let key = ""; // Local variable for current characters
-  let wordArray = []; // Local variable for completed words
-
   const handleKeyPress = (e) => {
     if(hasFocus) {
       
@@ -584,6 +586,12 @@ const BackupWithInput = () => {
       // console.log("input", input)
       
       const lastChar = input[input.length - 1]; // Get the last character typed
+
+      // Only allow alphabetic characters (A-Z, a-z)
+    // if (!/^[a-zA-Z]$/.test(lastChar)) {
+    //   e.preventDefault(); // Prevent non-alphabetic input
+    //   return;
+    // }
 
     if (lastChar === " ") {
       // If space is pressed
