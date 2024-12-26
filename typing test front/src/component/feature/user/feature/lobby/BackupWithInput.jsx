@@ -579,6 +579,8 @@ const BackupWithInput = () => {
     if(hasFocus) {
       
       const input = e.target.value; // Current input value
+      console.log("input", input)
+      
       const lastChar = input[input.length - 1]; // Get the last character typed
 
     if (lastChar === " ") {
@@ -615,7 +617,6 @@ const BackupWithInput = () => {
       }
 
       console.log("key", key)
-      console.log("input", input)
     
       if (key.length >= 1) {
         const currentWord = currentParagraph[currentWordIndex];
