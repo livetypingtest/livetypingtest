@@ -8,7 +8,7 @@ const Lobby = () => {
         window.innerWidth >= 767 ?
         (<BackupWithInput />)
         :
-        (<OldBackup />)
+        (<BackupWithInput />)
       }
     </>
   )

@@ -19,7 +19,8 @@ const BackupWithInput = () => {
   const typingAreaRef = useRef(null);
   const containerRef = useRef(null);
   const wordRefs = useRef([])
-  // const isCapsLockOn = useRef(false);
+  const skippedWordsRef = useRef(new Set()); // Tracks skipped word indices
+
   
   const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
   const paragraphs = useSelector(state => state.UserDataSlice.paragraphs)
@@ -42,6 +43,7 @@ const BackupWithInput = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0)
   const [typedLetters, setTypedLetters] = useState([]);
+  const [skipLetters, setSkipLetters] = useState([]);
   const [timerRunning, setTimerRunning] = useState(false);
   const [currentParagraph, setCurrentParagraph] = useState();
   const [timeUp, setTimeUp] = useState(false)
@@ -400,8 +402,9 @@ const BackupWithInput = () => {
       level : ''
     });
     setTypedLetters([])
+    setSkipLetters([])
     getParagraph()
-    typingAreaRef.current.blur();
+    typingAreaRef.current.focus();
   };
   // Reset the typing test-----------------------------------------------------------------------------
   
@@ -517,7 +520,7 @@ const BackupWithInput = () => {
           const wordElement = document.getElementsByClassName('suds');
           if (wordElement.length > 0) {
             // Calculate the new marginTop based on the counter value
-            const newMarginTop = `-${6 * (counter)}%`;
+            const newMarginTop = `-${70 * (counter)}px`;
             wordElement[0].style.marginTop = newMarginTop;
             // console.log(`New marginTop: ${newMarginTop}`);
       
@@ -538,7 +541,7 @@ const BackupWithInput = () => {
           const wordElement = document.getElementsByClassName('suds');
           if (wordElement.length > 0) {
             // Calculate the new marginTop based on the counter value
-            const newMarginTop = `-${6 * (counter)}%`;
+            const newMarginTop = `-${40 * (counter)}px`;
             wordElement[0].style.marginTop = newMarginTop;
             console.log(`New marginTop: ${newMarginTop}`);
       
@@ -579,22 +582,19 @@ const BackupWithInput = () => {
       
       const input = e.target.value; // Current input value
       const lastChar = input[input.length - 1]; // Get the last character typed
+      let type = ''
 
     if (lastChar === " ") {
       // If space is pressed
       if (key.length > 0) {
         const completedWord = key.join(""); // Form the completed word
         wordArray.push(completedWord); // Add the completed word to wordArray
-        // console.log("Completed Word:", completedWord);
-        // console.log("Word Array:", wordArray);
         key = []; // Reset key for the new word
       }
       e.target.value = ""; // Clear the input field after processing the word
     } else if (lastChar) {
       // For any other character
       key = lastChar; // Add the character to key
-      // console.log("Current Characters:", key);
-      // console.log("word Characters:", input);
     }
  
       // Start timer if it's not already running
@@ -609,6 +609,17 @@ const BackupWithInput = () => {
         if (input.trim().length === 0) {
           return;
         }  
+        
+        if (currentWordIndex > 0) {
+          skippedWordsRef.current.add(currentWordIndex - 1); // Mark previous word as skipped
+      
+          // Apply underline class manually
+          const prevWordEl = wordRefs.current[currentWordIndex - 1];
+          if (prevWordEl) {
+            prevWordEl.classList.add("skip-underline");
+          }
+        }
+
         setStorage("")
         setCurrentWordIndex((prev) => prev + 1);
         setCurrentLetterIndex(0);
@@ -624,7 +635,6 @@ const BackupWithInput = () => {
     
         let updatedWord = currentWord;
         let isCharacterCorrect = false;
-        let type = ''
     
         if (currentLetterIndex < historyWordLength) {
           const expectedChar = historyWord[currentLetterIndex];
@@ -673,7 +683,7 @@ const BackupWithInput = () => {
     }
   })
 
-  // useEffect(()=>{console.log(hasFocus)})
+  useEffect(()=>{console.log(typedLetters)}, [typedLetters])
 
   return (
     <>
@@ -762,66 +772,87 @@ const BackupWithInput = () => {
                   <p>Click here to continue typing!</p>
                 </div>
               )}
+              <input
+                style={{ height: 0, width: 0, overflow: "hidden" }}
+                ref={typingAreaRef}
+                value={storage}
+                onChange={(e) => {
+                  handleKeyPress(e);
+                  setStorage(e.target.value);
+                }}
+                type="text"
+              />
               <div
                 id="game"
                 tabIndex={0}
-                // ref={typingAreaRef}
                 className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
-                onClick={() => {typingAreaRef.current.focus(), setRootFocus(true)}} 
-                onFocus={() => {setHasFocus(true), setRootFocus(true)}} 
-                onBlur={() => {setHasFocus(false), setRootFocus(false)}}
-                onKeyDown={(e)=>{blockRestrictedKeys(e)}}
-                // onKeyUp={(e)=>blockRestrictedKeys(e)}
+                onClick={() => {
+                  typingAreaRef.current.focus();
+                  setRootFocus(true);
+                }}
+                onFocus={() => {
+                  setHasFocus(true);
+                  setRootFocus(true);
+                }}
+                onBlur={() => {
+                  setHasFocus(false);
+                  setRootFocus(false);
+                }}
+                onKeyDown={(e) => {
+                  blockRestrictedKeys(e);
+                }}
               >
-                <input style={{height: 0, width: 0, overflow : "hidden"}} ref={typingAreaRef} value={storage} onChange={(e)=>{handleKeyPress(e), setStorage(e.target.value)}} type="text" name="" id="" />
-                <div  className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
-                  onClick={() => {setHasFocus(true), setRootFocus(true)}}>
-                <div id="words">
-                  {currentParagraph?.map((word, wordIndex) => {
-                    // Get the original word from paraHistory or fallback to empty string if not found
+                <div
+                  className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
+                  onClick={() => {
+                    setHasFocus(true);
+                    setRootFocus(true);
+                  }}
+                >
+                  <div id="words">
+                    {currentParagraph?.map((word, wordIndex) => {
+                    const isSkipped = skippedWordsRef.current.has(wordIndex);
+                      return (
+                        <div
+                          key={wordIndex}
+                          className={`word ${wordIndex === currentWordIndex ? "current" : ""} ${
+                            isSkipped ? "skip-underline" : ""
+                          }`}
+                          ref={(el) => (wordRefs.current[wordIndex] = el)}
+                        >
+                          {word.split("").map((letter, letterIndex) => {
+                            // Find out if this character was typed correctly or incorrectly
+                            const typed = typedLetters?.find(
+                              (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
+                            );
+                            const isCorrect = typed?.isCorrect;
+                            const isExtra = typed?.type;
 
-                    // Check if there's any extra characters added
-                    const updatedWord = word;
-                    
-                    return (
-                      <div
-                        key={wordIndex}
-                        className={`word ${wordIndex === currentWordIndex ? "current" : ""}`}
-                        ref={(el) => (wordRefs.current[wordIndex] = el)} 
-                      >
-                        {updatedWord.split("").map((letter, letterIndex) => {
-                          // Find out if this character was typed correctly or incorrectly
-                          const typed = typedLetters && typedLetters?.find(
-                            (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
-                          );
-                          const isCorrect = typed?.isCorrect;
-                          const isExtra = typed?.type
-
-                          // Define the class names for styling
-                          let classNames = "letter ";
-                          if (wordIndex === currentWordIndex && letterIndex === currentLetterIndex) {
-                            classNames += "current";
-                          }
-                          if (isCorrect === true) {
-                            classNames += " correct";
-                          } else if (isCorrect === false) {
-                            if(isExtra === '') {
-                              classNames += " incorrect";
-                            } else if(isExtra === 'extra') {
-                              classNames += " extra";
+                            // Define the class names for styling
+                            let classNames = "letter ";
+                            if (wordIndex === currentWordIndex && letterIndex === currentLetterIndex) {
+                              classNames += "current";
                             }
-                          }
+                            if (isCorrect === true) {
+                              classNames += " correct";
+                            } else if (isCorrect === false) {
+                              if (isExtra === "") {
+                                classNames += " incorrect";
+                              } else if (isExtra === "extra") {
+                                classNames += " extra";
+                              }
+                            }
 
-                          return (
-                            <span key={letterIndex} className={classNames}>
-                              {letter}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
+                            return (
+                              <span key={letterIndex} className={classNames}>
+                                {letter}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
               <div className='reset'><button className='z-10' onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>
