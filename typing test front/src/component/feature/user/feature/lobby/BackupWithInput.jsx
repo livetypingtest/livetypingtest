@@ -405,6 +405,7 @@ const BackupWithInput = () => {
     setCurrentLetterIndex(0)
     setSkippedWords(new Set())
     setCurrentWordIndex(0)
+    setCounter(0)
     setStats({
       wpm: [],
       accuracy: [],
@@ -796,18 +797,18 @@ const BackupWithInput = () => {
                 onKeyUp={(e)=>blockRestrictedKeys(e)}
               >
                 {/* <input onKeyDown={(e)=>{blockRestrictedKeys(e)}} style={{height: 0, width: 0, overflow : "hidden"}} ref={typingAreaRef} value={storage} {window.innerWidth > 767 ? onChange={(e)=>{handleKeyPress(e), setStorage(e.target.value)}} : onInput={(e)=>{handleKeyPress(e), setStorage(e.target.value)}}} type="text" name="" id="" /> */}
-                <input
+                <textarea
                   ref={typingAreaRef}
                   value={storage}
                   onKeyDown={(e) => blockRestrictedKeys(e)}
-                  style={{ height: 0, width: 0, overflow: 'hidden' }}
+                  style={{ height: 0, width: 0, overflow: 'hidden', position: 'absolute', left: '-9999px', opacity: 0 }}
                   type="text"
                   name=""
                   id=""
                   // Conditional event handler based on screen size
                   {...(isMobile
                     ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value); console.log("input", e.currentTarget.value) }}
-                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); }}
+                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); console.log("input", e.target.value)}}
                   )}
                 />
                 <div
@@ -815,54 +816,56 @@ const BackupWithInput = () => {
                   // ref={typingAreaRef}
                   className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
                 >
-                  <div  className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
-                    onClick={() => {setHasFocus(true), setRootFocus(true)}}>
-                  <div id="words">
-                    {currentParagraph?.map((word, wordIndex) => {
-                      // Get the original word from paraHistory or fallback to empty string if not found
+                  <div  
+                    className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
+                    onClick={() => {setHasFocus(true), setRootFocus(true)}}
+                  >
+                    <div id="words">
+                      {currentParagraph?.map((word, wordIndex) => {
+                        // Get the original word from paraHistory or fallback to empty string if not found
 
-                      // Check if there's any extra characters added
-                      const updatedWord = word;
-                      
-                      return (
-                        <div
-                          key={wordIndex}
-                          className={`word ${wordIndex === currentWordIndex ? "current" : ""} ${skippedWords.has(wordIndex) ? "skip-underline" : ""}`}
-                          ref={(el) => (wordRefs.current[wordIndex] = el)} 
-                        >
-                          {updatedWord.split("").map((letter, letterIndex) => {
-                            // Find out if this character was typed correctly or incorrectly
-                            const typed = typedLetters && typedLetters?.find(
-                              (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
-                            );
-                            const isCorrect = typed?.isCorrect;
-                            const isExtra = typed?.type
+                        // Check if there's any extra characters added
+                        const updatedWord = word;
+                        
+                        return (
+                          <div
+                            key={wordIndex}
+                            className={`word ${wordIndex === currentWordIndex ? "current" : ""} ${skippedWords.has(wordIndex) ? "skip-underline" : ""}`}
+                            ref={(el) => (wordRefs.current[wordIndex] = el)} 
+                          >
+                            {updatedWord.split("").map((letter, letterIndex) => {
+                              // Find out if this character was typed correctly or incorrectly
+                              const typed = typedLetters && typedLetters?.find(
+                                (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
+                              );
+                              const isCorrect = typed?.isCorrect;
+                              const isExtra = typed?.type
 
-                            // Define the class names for styling
-                            let classNames = "letter ";
-                            if (wordIndex === currentWordIndex && letterIndex === currentLetterIndex) {
-                              classNames += "current";
-                            }
-                            if (isCorrect === true) {
-                              classNames += " correct";
-                            } else if (isCorrect === false) {
-                              if(isExtra === '') {
-                                classNames += " incorrect";
-                              } else if(isExtra === 'extra') {
-                                classNames += " extra";
+                              // Define the class names for styling
+                              let classNames = "letter ";
+                              if (wordIndex === currentWordIndex && letterIndex === currentLetterIndex) {
+                                classNames += "current";
                               }
-                            }
+                              if (isCorrect === true) {
+                                classNames += " correct";
+                              } else if (isCorrect === false) {
+                                if(isExtra === '') {
+                                  classNames += " incorrect";
+                                } else if(isExtra === 'extra') {
+                                  classNames += " extra";
+                                }
+                              }
 
-                            return (
-                              <span key={letterIndex} className={classNames}>
-                                {letter}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      );
-                    })}
-                  </div>
+                              return (
+                                <span key={letterIndex} className={classNames}>
+                                  {letter}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
