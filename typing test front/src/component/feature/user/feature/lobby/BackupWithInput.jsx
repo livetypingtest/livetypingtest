@@ -381,6 +381,8 @@ const BackupWithInput = () => {
   // Reset the typing test-----------------------------------------------------------------------------
   const resetTest = () => {
     typingAreaRef.current.focus();
+    setHasFocus(true)
+    setRootFocus(true)
     const wordElement = document.getElementsByClassName('suds')
     wordElement[0].style.marginTop = '0px'
     setUserInput('');
@@ -541,7 +543,7 @@ const BackupWithInput = () => {
           if (wordElement.length > 0) {
             // Calculate the new marginTop based on the counter value
             // const newMarginTop = `-${40 * (counter)}px`;
-            const newMarginTop = `-${Math.min(40 * counter, 300)}px`; 
+            const newMarginTop = `-${Math.min(60 * counter, 300)}px`; 
             wordElement[0].style.marginTop = newMarginTop;
       
             // Increment the counter for the next time
@@ -602,6 +604,7 @@ const BackupWithInput = () => {
         setTimerRunning(true);
       }
 
+      console.log(key)
 
     
       if (input?.split("")[currentLetterIndex] === " ") {
@@ -626,7 +629,7 @@ const BackupWithInput = () => {
         return;
       } 
 
-console.log("skipLetters",skipLetters)
+// console.log("skipLetters",skipLetters)
 
       skipLetters?.forEach((value, index) => {
         value?.type === 'skipped' && console.log(value)
