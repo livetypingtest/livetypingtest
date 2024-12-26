@@ -800,6 +800,14 @@ const BackupWithInput = () => {
                 <textarea
                   ref={typingAreaRef}
                   value={storage}
+                  autoCapitalize='off'
+                  autoComplete='off'
+                  autoCorrect='off'
+                  data-gramm='false'
+                  data-gramm_editor='false'
+                  data-enable-grammarly="false"
+                  list="autocompleteOff"
+                  spellCheck="false"
                   onKeyDown={(e) => blockRestrictedKeys(e)}
                   style={{ height: 0, width: 0, overflow: 'hidden', position: 'absolute', left: '-9999px', opacity: 0 }}
                   type="text"
