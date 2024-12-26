@@ -31,6 +31,7 @@ const BackupWithInput = () => {
 
   const [time, setTime] = useState(60);
   const [skippedWords, setSkippedWords] = useState(new Set());
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(false);
@@ -88,7 +89,18 @@ const BackupWithInput = () => {
   let key = ""; // Local variable for current characters
   let wordArray = []; // Local variable for completed words
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 767);
+    };
 
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup listener on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   // Function to get a random index based on array length
   function getRandomIndex(array) {
@@ -514,7 +526,7 @@ const BackupWithInput = () => {
   // Putting eye on caps lock -----------------------------------------------------------------
 
   const adjustScroll = () => {
-    if(window.innerWidth >= 767) {
+    if(!isMobile) {
       const currentWordRef = wordRefs.current[currentWordIndex];
       if (currentWordRef) {
         const rect = currentWordRef.getBoundingClientRect();
@@ -586,12 +598,6 @@ const BackupWithInput = () => {
       // console.log("input", input)
       
       const lastChar = input[input.length - 1]; // Get the last character typed
-
-      // Only allow alphabetic characters (A-Z, a-z)
-    // if (!/^[a-zA-Z]$/.test(lastChar)) {
-    //   e.preventDefault(); // Prevent non-alphabetic input
-    //   return;
-    // }
 
     if (lastChar === " ") {
       // If space is pressed
@@ -789,7 +795,21 @@ const BackupWithInput = () => {
                 onKeyDown={(e)=>{blockRestrictedKeys(e)}}
                 onKeyUp={(e)=>blockRestrictedKeys(e)}
               >
-                <input onKeyDown={(e)=>{blockRestrictedKeys(e)}} style={{height: 0, width: 0, overflow : "hidden"}} ref={typingAreaRef} value={storage} onChange={(e)=>{handleKeyPress(e), setStorage(e.target.value)}} type="text" name="" id="" />
+                {/* <input onKeyDown={(e)=>{blockRestrictedKeys(e)}} style={{height: 0, width: 0, overflow : "hidden"}} ref={typingAreaRef} value={storage} {window.innerWidth > 767 ? onChange={(e)=>{handleKeyPress(e), setStorage(e.target.value)}} : onInput={(e)=>{handleKeyPress(e), setStorage(e.target.value)}}} type="text" name="" id="" /> */}
+                <input
+                  ref={typingAreaRef}
+                  value={storage}
+                  onKeyDown={(e) => blockRestrictedKeys(e)}
+                  style={{ height: 0, width: 0, overflow: 'hidden' }}
+                  type="text"
+                  name=""
+                  id=""
+                  // Conditional event handler based on screen size
+                  {...(isMobile
+                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.target.value); }}
+                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); }}
+                  )}
+                />
                 <div
                   id="game"
                   // ref={typingAreaRef}
