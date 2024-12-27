@@ -908,17 +908,16 @@ const BackupWithInput = () => {
                   data-enable-grammarly="false"
                   list="autocompleteOff"
                   spellCheck="false"
-                  onKeyDown={(e) => {blockRestrictedKeys(e); console.log("onKeyDown",e.key)}}
-                  onKeyUp={(e) => {console.log("onKeyUp",e.key)}}
+                  onKeyDown={(e) => blockRestrictedKeys(e)}
                   style={{ height: 0, width: 0, overflow: 'hidden', position: 'absolute', left: '-9999px', opacity: 0 }}
                   type="text"
                   name=""
                   id=""
                   // Conditional event handler based on screen size
-                  // {...(isMobile
-                  //   ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value); console.log("input", e.currentTarget.value) }}
-                  //   : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); console.log("input", e.target.value)}}
-                  // )}
+                  {...(isMobile
+                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value); console.log("input", e.currentTarget.value) }}
+                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); console.log("input", e.target.value)}}
+                  )}
                 />
                 <div
                   id="game"
