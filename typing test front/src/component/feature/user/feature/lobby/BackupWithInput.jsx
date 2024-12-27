@@ -558,8 +558,8 @@ const BackupWithInput = () => {
           const wordElement = document.getElementsByClassName('suds');
           if (wordElement.length > 0) {
             // Calculate the new marginTop based on the counter value
-            // const newMarginTop = `-${60 * (counter)}px`;
-            const newMarginTop = `-${Math.min(60 * counter, 300)}px`
+            const newMarginTop = `-${55 * (counter)}px`;
+            // const newMarginTop = `-${Math.min(65 * counter, 300)}px`
             wordElement[0].style.marginTop = newMarginTop;
             // console.log(`New marginTop: ${newMarginTop}`);
       
@@ -909,7 +909,7 @@ const BackupWithInput = () => {
                   list="autocompleteOff"
                   spellCheck="false"
                   onKeyDown={(e) => blockRestrictedKeys(e)}
-                  style={{ height: 0, width: 0, overflow: 'hidden', position: 'absolute', left: '-9999px', opacity: 0 }}
+                  style={isMobile ? { position: 'absolute', left: '-9999px', opacity: 0 } : { height: 0, width: 0, overflow: 'hidden', position: 'absolute', left: '-9999px', opacity: 0 }}
                   type="text"
                   name=""
                   id=""

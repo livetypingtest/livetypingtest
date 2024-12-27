@@ -97,12 +97,13 @@
     }
     .typing-area{
         padding: 20px;
+        height: 158px;
     }
     .typing-area{
         border-radius: 15px;
     }
     .reset {
-        padding: 6px 14px 20px 14px;
+        padding: 15px 14px 20px 14px;
     }
     .reset span{
         font-size: 14px;
@@ -340,10 +341,14 @@
         justify-content: center;
     }
     #words{
-        font-size: 35px;
+        font-size: 25px;
         gap: 25px;
-        height: 250px;
+        line-height: 30px;
+        height: 164px;
         /* overflow: hidden; */
+    }
+    .paragraph-container {
+        height: 140px;
     }
     
 }
