@@ -18,7 +18,6 @@ const HomePageSEO = () => {
     validationSchema: SeoSetupSchema,
     onSubmit: async (formData) => {
         setIsSubmitting(true);
-    
         const ID = localStorage.getItem('adminToken')
         const response = await axios.post(`${ADMIN_API_URL}/home-seo`, formData, {
             headers : {

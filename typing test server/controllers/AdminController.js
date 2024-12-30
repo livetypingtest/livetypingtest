@@ -446,12 +446,7 @@ route.post('/home-seo', uploadForHomeSEO.single('seoImage'), async (req, res) =>
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { seoTitle, seoDiscription } = req.body;
-
-    // Check if file is uploaded
-    if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded or invalid file type.' });
-    }
+    const { seoTitle, seoDescription } = req.body;
 
     const isProfilePresent = await DataModel.findOne({}, { homePageSEO: 1, _id: 0 });
 
@@ -466,7 +461,7 @@ route.post('/home-seo', uploadForHomeSEO.single('seoImage'), async (req, res) =>
 
     const newHomePageSEO = {
       seoTitle: seoTitle,
-      seoDiscription: seoDiscription,
+      seoDescription: seoDescription,
       imageUrl: req.file.location,
       imageKey: req.file.key,
     };
@@ -485,7 +480,7 @@ route.post('/home-seo', uploadForHomeSEO.single('seoImage'), async (req, res) =>
       type: "homepageseo",
       result: {
         seoTitle,
-        seoDiscription,
+        seoDescription,
         imageUrl: req.file.location,
       },
     });

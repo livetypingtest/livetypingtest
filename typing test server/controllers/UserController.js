@@ -245,8 +245,8 @@ route.post('/signin/google', async (req, res) => {
                 if (!isUserExist?.isblocked?.status) {
                     // Update the Google profile picture in the database
                     if (picture) {
-                        isUserExist.profileImage = {
-                            ...isUserExist.profileImage, 
+                        isUserExist.profileimage = {
+                            ...isUserExist.profileimage, 
                             googleProfile: picture, 
                         };
                         await isUserExist.save(); 
