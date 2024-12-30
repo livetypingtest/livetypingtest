@@ -234,6 +234,33 @@ const handleDeleteUserAccount = createAsyncThunk('handleDeleteUserAccount', asyn
     }
 }) 
 
+const handleProfileStatus = createAsyncThunk('handleProfileStatus', async(formData) => {
+    const ID = localStorage.getItem('userToken')
+    try{
+        const response = await axios.post(`${USER_API_URL}/profile-status`, formData, { headers : { Authorization : ID } })
+        // console.log(response.data)
+        if(response.data.status === 200) {
+            let checkMsg = {
+                status : true,
+                message : response.data.message,
+                type : response.data.type,
+                data : formData?.display,
+            }
+            return checkMsg
+        } else {
+            let checkMsg = {
+                status : false,
+                message : response.data.message,
+                type : response.data.type,
+                data : []
+            }
+            return checkMsg
+        }
+    } catch (error) {
+        console.error('Error deleting account:', error);
+    }
+}) 
+
 
 const initialState = {
     isProcessing : false,
@@ -252,7 +279,7 @@ const initialState = {
         message : ''
     },
     isDataPending : false,
-    userData : [],
+    userData : {},
     match1 : [],
     match3 : [],
     match5 : [],
@@ -535,9 +562,39 @@ const UserDataSlice = createSlice({
             state.processingMsg.message = 'Deleting User'
             state.processingMsg.type = 'delete'
         });
+        builder.addCase(handleProfileStatus.fulfilled, (state, action) => {
+            if (action.payload.status) {
+                state.isFullfilled = true;
+                state.userData = {
+                    ...state.userData,
+                    profileimage: {
+                        ...state.userData?.profileimage,
+                        display: action.payload.data
+                    }
+                };
+                state.fullFillMsg = {
+                    type: action.payload.type,
+                    message: action.payload.message
+                };
+                state.isError = false;
+                state.isProcessing = false;
+            } else {
+                state.isProcessing = false;
+                state.isError = true;
+                state.errorMsg = {
+                    type: action.payload.type,
+                    message: action.payload.message
+                };
+            }
+        });
+        builder.addCase(handleProfileStatus.pending, (state, action) => {
+            state.isProcessing = true
+            state.processingMsg.message = 'Update Profile'
+            state.processingMsg.type = 'profile'
+        });
     }
 })
 
 export default UserDataSlice.reducer;
-export {handleGetUserData, handleSigninUser, handleLocalDataCalling, handleCreateUser, handleUploadProfile, handleDeleteUserAccount, handleUpdatePassword, handleSignupWithGoogle, handleTest, handleGetLeaderboardData, handleSigninUserWithGoogle};
+export {handleGetUserData, handleSigninUser, handleProfileStatus, handleLocalDataCalling, handleCreateUser, handleUploadProfile, handleDeleteUserAccount, handleUpdatePassword, handleSignupWithGoogle, handleTest, handleGetLeaderboardData, handleSigninUserWithGoogle};
 export const{ resetState, handleClearState } = UserDataSlice.actions

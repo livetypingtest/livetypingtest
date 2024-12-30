@@ -329,8 +329,8 @@
         word-wrap: normal;
     }
     .typing-overlay{
-        width: 90%;
-        height: 27%;
+        width: 100%;
+        height: 100%;
     }
     .about-section {
         padding: 25px 0px;
@@ -350,5 +350,14 @@
     .paragraph-container {
         height: 140px;
     }
-    
+    .notice-bar .notice{
+        align-items: start;
+        flex-direction: column;
+    }
+    .notice-bar .notice h3{
+        font-size: 12px;
+    }
+    .notice-bar .notice p{
+        font-size: 10px;
+    }
 }

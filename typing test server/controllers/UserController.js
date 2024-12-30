@@ -222,29 +222,70 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
     res.send({ status: 200, userData: rankedData, type: "leaderboard", message: "Leaderboard Data" });
 });
 
-
-route.post('/signin/google', async(req, res) => {
+route.post('/signin/google', async (req, res) => {
     const token = Object.keys(req.body)[0];
-    // Fetch user information from Google's Userinfo API
-    const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
 
-    const userInfo = await userInfoResponse.json();
-    const {email_verified, email} = userInfo;
-    const isUserExist = await userModel.findOne({email : email})
-    if(isUserExist) {
-        if(email_verified) {
-            if(!isUserExist?.isblocked?.status) {
-                const ID = {id : isUserExist?._id};
-                const token = jwt.sign(ID, key)
-                res.send({ status : 200, token : token, message : "Logged in Successfully", type : 'signin' })
-            } else res.send({ status : 402, message : "Your Account is blocked", type : 'block-unblock' })
+    try {
+        // Fetch user information from Google's Userinfo API
+        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        const userInfo = await userInfoResponse.json();
+        const { email_verified, email, picture } = userInfo;
+
+        // Check if the user exists in the database
+        const isUserExist = await userModel.findOne({ email });
+
+        if (isUserExist) {
+            if (email_verified) {
+                // Check if the user is blocked
+                if (!isUserExist?.isblocked?.status) {
+                    // Update the Google profile picture in the database
+                    if (picture) {
+                        isUserExist.profileImage = {
+                            ...isUserExist.profileImage, 
+                            googleProfile: picture, 
+                        };
+                        await isUserExist.save(); 
+                    }
+                    // console.log(picture)
+                    const ID = { id: isUserExist?._id };
+                    const token = jwt.sign(ID, key);
+
+                    res.send({
+                        status: 200,
+                        token,
+                        message: "Logged in Successfully",
+                        type: 'signin',
+                    });
+                } else {
+                    res.send({
+                        status: 402,
+                        message: "Your Account is blocked",
+                        type: 'block-unblock',
+                    });
+                }
+            } else {
+                res.send({
+                    status: 401,
+                    message: "Email ID is not verified",
+                    type: 'signin',
+                });
+            }
+        } else {
+            res.send({
+                status: 401,
+                message: "Email ID is Invalid",
+                type: 'signin',
+            });
         }
-    } else res.send({ status : 401, message : "Email ID is Invalid", type : 'signin' })
-    
+    } catch (error) {
+        console.error("Error during Google Sign-In:", error);
+        res.status(500).send({ status: 500, message: "Internal Server Error" });
+    }
 });
 
 route.post('/signin', async(req, res) => {
@@ -277,7 +318,7 @@ route.post('/signup/google', async(req, res) => {
     });
 
     const userInfo = await userInfoResponse.json();
-    const {email_verified, email} = userInfo;
+    const {email_verified, email, picture} = userInfo;
     const username = email?.split('@')[0]
         const isUserExist = await userModel.findOne({ email : email })
         if(!isUserExist) {
@@ -289,8 +330,10 @@ route.post('/signup/google', async(req, res) => {
                     createdate : createdate,
                     accountid : accountID(),
                     googleId : token,
-                    authType : {google : true, email : false}
+                    authType : {google : true, email : false},
+                    profileimage: {googleProfile: picture, display: 'google'}
                 }
+                // console.log(finalData?.profileimage)
 
                 // sending mail--------------------
                 // Create a Nodemailer transporter using your Gmail account
@@ -717,46 +760,98 @@ route.post('/', async (req, res) => {
 // Route to handle profile picture upload
 route.post('/upload-profile', upload.single('profile'), async (req, res) => {
     if (req.headers.authorization) {
-      const ID = jwt.decode(req.headers.authorization, key);
-  
-      // Check if file is uploaded
-      if (!req.file) {
+    const ID = jwt.decode(req.headers.authorization, key);
+
+    // Check if file is uploaded
+    if (!req.file) {
         return res.status(400).send({ message: 'No file uploaded or invalid file type.' });
-      }
-  
-      try {
+    }
+
+    try {
         const isProfilePresent = await userModel.findOne({ _id: ID.id });
-  
+
         if (isProfilePresent) {
-          const existingImageKey = isProfilePresent?.profileimage?.s3key;
-  
-          // Delete the previous profile image from S3 if it exists
-          if (existingImageKey) {
+        const existingImageKey = isProfilePresent?.profileimage?.s3key;
+
+        // Delete the previous profile image from S3 if it exists
+        if (existingImageKey) {
             await deleteImageFromS3(existingImageKey);
-          }
-  
-          // Upload new profile image data
-          const profileData = {
+        }
+
+        // Prepare the updated profile image data
+        const profileData = {
             originalname: req.file.originalname,
             s3key: req.file.key, // The S3 key (path) for the file
             s3url: req.file.location, // The URL to access the file
-            updatedat: new Date()
-          };
-  
-          // Update the user's profile with the new image data
-          await userModel.updateOne({ _id: ID?.id }, { profileimage: profileData });
-  
-          // Send the details back to the client
-          return res.send({ status: 200, message: "Profile Uploaded Successfully", type: "profile", profile: profileData });
+            updatedat: new Date(),
+        };
+
+        // Update only the specified fields in the profileimage property
+        await userModel.updateOne(
+            { _id: ID.id },
+            {
+            $set: {
+                'profileimage.originalname': profileData.originalname,
+                'profileimage.s3key': profileData.s3key,
+                'profileimage.s3url': profileData.s3url,
+                'profileimage.updatedat': profileData.updatedat,
+                'profileimage.display': 'custom',
+            },
+            }
+        );
+
+        const getProfile = await userModel.findOne({_id: ID?.id})
+
+        // Send the details back to the client
+        return res.send({
+            status: 200,
+            message: 'Profile Uploaded Successfully',
+            type: 'profile',
+            profile: getProfile?.profileimage,
+        });
         } else {
-          return res.status(404).send({ message: "User not found" });
+        return res.status(404).send({ message: 'User not found' });
         }
-      } catch (err) {
+    } catch (err) {
         console.error('Error processing profile upload:', err);
-        return res.status(500).send({ message: "Internal server error" });
-      }
+        return res.status(500).send({ message: 'Internal server error' });
+    }
     } else {
-      return res.status(401).send({ message: "Unauthorized request." });
+    return res.status(401).send({ message: 'Unauthorized request.' });
+    }
+});
+
+
+route.post('/profile-status', async (req, res) => {
+    try {
+        if (!req.headers.authorization) {
+            return res.status(401).send({ status: 401, message: "Unauthorized", type: "error" });
+        }
+
+        const status = req.body.display; // Ensure you're accessing the correct field in the request body
+        if (!status) {
+            return res.status(400).send({ status: 400, message: "Invalid status data", type: "error" });
+        }
+
+        const ID = jwt.decode(req.headers.authorization, key);
+        if (!ID?.id) {
+            return res.status(401).send({ status: 401, message: "Invalid token", type: "error" });
+        }
+
+        await userModel.updateOne(
+            { _id: ID.id },
+            { $set: { 'profileimage.display': status } }
+        );
+
+        return res.send({
+            status: 200,
+            message: "Profile Uploaded Successfully",
+            type: "profile",
+            profile: status
+        });
+    } catch (error) {
+        console.error("Error updating profile status:", error);
+        return res.status(500).send({ status: 500, message: "Internal Server Error", type: "error" });
     }
 });
 

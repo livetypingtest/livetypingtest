@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import Header from '../../../../shared/header/Header';
-import Footer from '../../../../shared/footer/Footer';
+import Header from '../component/shared/header/Header';
+import Footer from '../component/shared/footer/Footer';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import DynamicAlert from '../../../../shared/Toast/DynamicAlert';
-import Certificate from '../../../../shared/certificate/Certificate';
-import DownloadButton from '../../../../shared/certificate/DownloadCertificate';
-import MetaUpdater from '../../../../../util/MetaUpdater'
+import DynamicAlert from '../component/shared/Toast/DynamicAlert';
+import Certificate from '../component/shared/certificate/Certificate';
+import DownloadButton from '../component/shared/certificate/DownloadCertificate';
+import MetaUpdater from '../util/MetaUpdater'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 

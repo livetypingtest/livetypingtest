@@ -4,6 +4,7 @@ import { dynamicToast } from "../../shared/Toast/DynamicToast";
 import { useSelector } from 'react-redux';
 import HomePageSEO from "../SEO/HomePageSEO";
 import DynamicTitle from "../../shared/helmet/DynamicTitle";
+import Notice from "../notice/Notice";
 
 const AdminDashBoard = () => {
     const adminData = useSelector(state => state.AdminDataSlice.adminData);
@@ -101,6 +102,9 @@ const AdminDashBoard = () => {
                     </div>
                     <div className="col-md-12 ">
                         <HomePageSEO />
+                    </div>
+                    <div className="col-md-12 ">
+                        <Notice />
                     </div>
                 </div>
             </div>

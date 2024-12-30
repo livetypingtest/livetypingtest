@@ -2,19 +2,36 @@ import { useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import GoogleADs from '../googleAds/GoogleADs';
 import { useSelector } from 'react-redux';
-
+import { profileExtractor } from '../../../util/Extractor';
+import { useDispatch } from 'react-redux'
+import { handleSetNoticeState } from '../../../redux/DynamicPagesDataSlice';
 
 
 const Header = () => {
+    const dsipatch = useDispatch()
     const checkUserToken = useMemo(() => !!localStorage.getItem('userToken'), []);
     const checkAdminToken = useMemo(() => !!localStorage.getItem('adminToken'), []);
     const userData = useSelector(state => state.UserDataSlice.userData);
+    const notice = useSelector(state => state.DynamicPagesDataSlice.notice)
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
     return (
         <>
+            {
+                notice?.state && (
+                    <div className="notice-bar">
+                        <div className="notice">
+                            <h3>{notice?.title} :</h3>
+                            <p>{notice?.description}</p>
+                        </div>
+                        <div className="button">
+                            <button className='btn' onClick={()=>dsipatch(handleSetNoticeState())}><i class="fa-solid fa-xl fa-xmark" style={{color: "#fff"}} /></button>
+                        </div>
+                    </div>
+                )
+            }
             <div className="container p-custom">
                 <div className="row align-items-center">
                     <div className="col-md-4 col-12">
@@ -36,7 +53,7 @@ const Header = () => {
                                         <NavLink to='/leaderboard'><li>Leaderboard</li></NavLink>
                                         <NavLink to='/blog'><li>Blogs</li></NavLink>
                                         <li className="dropdown">
-                                            <NavLink to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.s3url ? `${userData?.profileimage?.s3url}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
+                                            <NavLink to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.display !== 'empty' ? `${userData?.profileimage?.[profileExtractor[userData?.profileimage?.display]]}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
                                             <ul className="dropdown-menu">
                                                 <NavLink to='/dashboard'><li>Profile</li></NavLink>
                                                 <NavLink to={`/signout/${'isSignout'}`}><li>Logout</li></NavLink>
@@ -77,7 +94,7 @@ const Header = () => {
                             <ul className="menu">
                                 {checkUserToken ? (
                                     <>
-                                        <NavLink to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.s3url ? `${userData?.profileimage?.s3url}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
+                                        <NavLink to='/dashboard'><li className='header-profile'><img src={userData?.profileimage?.display !== 'empty' ? `${userData?.profileimage?.[profileExtractor[userData?.profileimage?.display]]}` : '/assets/images/profile.png'} alt="" /> {userData?.username} </li></NavLink>
                                         <NavLink to='/'><li>Start Live Test</li></NavLink>
                                         <NavLink to='/leaderboard'><li>Leaderboard</li></NavLink>
                                         <NavLink to='/blog'><li>Blogs</li></NavLink>

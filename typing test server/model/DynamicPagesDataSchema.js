@@ -49,6 +49,12 @@ const DynamicPagesDataSchema = mongoose.Schema({
     }],
     googleAnalytics: {
         trackingId: { type: String, default: '' }
+    },
+    notice: {
+        title: { type: String, default: '' },
+        description: { type: String, default: '' },
+        createdat: { type: Date, default: Date.now() },
+        state: { type: Boolean, default: false },
     }
 
 }, { collection : "dynamiPages" });

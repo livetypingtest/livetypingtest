@@ -91,6 +91,8 @@ const UserSchema = mongoose.Schema({
         }
     },
     profileimage : {
+        display : { type : String, default : '' },
+        googleProfile : { type : String, default : '' },
         originalname : { type : String, default : '' },
         s3key : { type : String, default : '' },
         s3url : { type : String, default : '' },

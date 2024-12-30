@@ -8,7 +8,7 @@ import { messaging } from '../firebaseConfig'
 import { getToken, onMessage } from "firebase/messaging";
 import { ADMIN_API_URL, USER_API_URL } from '../util/API_URL';
 import { dynamicToast } from '../component/shared/Toast/DynamicToast';
-import { handleGetAboutData, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
+import { handleGetAboutData, handleGetNotice, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
 import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 import { notificationToast } from '../component/shared/Toast/NotificationToats';
 
@@ -119,6 +119,8 @@ const UserModule = () => {
     useEffect(()=>{
         dispatch(handleLocalDataCalling())
     }, [])  
+
+    useEffect(()=>{dispatch(handleGetNotice())}, [])
     
     useEffect(()=>{
         const ID = localStorage.getItem('userToken')

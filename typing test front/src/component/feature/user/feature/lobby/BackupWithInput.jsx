@@ -881,7 +881,7 @@ const BackupWithInput = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-md-12 py-4">
+            <div className="col-md-12 position-rel py-4">
               {/* Overlay for blur effect and user instruction */}
               {!hasFocus && (
                 <div className="typing-overlay" onClick={() => {setHasFocus(true), setRootFocus(true)}}>

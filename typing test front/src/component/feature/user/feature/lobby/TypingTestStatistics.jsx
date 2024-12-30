@@ -260,7 +260,7 @@ const TypingTestStats = () => {
                         <div className="col-md-12 p-custom">
                             <div className="below-graph-btn">
                                 <div className='item'><span>Download Certificate</span><DownloadButton onDownload={handleDownload} /></div>
-                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /></button></div>
+                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /><p className='mt-2 font-idle'>Repeat</p></button></div>
                             </div>
                         </div>
                     </div>

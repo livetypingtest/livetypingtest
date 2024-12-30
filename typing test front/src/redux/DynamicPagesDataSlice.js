@@ -66,6 +66,27 @@ const handleGetAboutData = createAsyncThunk('handleGetAboutData', async() => {
     }
 })
 
+const handleGetNotice = createAsyncThunk('handleGetNotice', async() => {
+    const response = await axios.get(`${BASE_API_URL}/notice`)
+    if(response.data.status === 200) {
+        let checkMsg = {
+            status : true,
+            message : response.data.message,
+            type : response.data.type,
+            data : response.data.result,
+        }
+        return checkMsg
+    } else {
+        let checkMsg = {
+            status : false,
+            message : response.data.message,
+            type : response.data.type,
+            data : []
+        }
+        return checkMsg
+    }
+})
+
 
 const initialState = {
     isProcessing : false,
@@ -86,7 +107,13 @@ const initialState = {
     term : {},
     privacy : {},
     about : {createdat : '', metaData : []},
-    matchHistory: {}
+    matchHistory: {},
+    notice: {
+        title: '',
+        description: '',
+        createdat: Date.now(),
+        state: null
+    }
 }
 
 const UserDataSlice = createSlice({
@@ -106,6 +133,9 @@ const UserDataSlice = createSlice({
         },
         handleMatchHistory: (state, action) => {
             state.matchHistory = action.payload
+        },
+        handleSetNoticeState: (state, action) => {
+            state.notice.state = false
         }
     },
     extraReducers : builder => {
@@ -205,9 +235,45 @@ const UserDataSlice = createSlice({
                 messsage : 'Getting About Data'
             }
         });
+        builder.addCase(handleGetNotice.fulfilled, (state, action) => {
+            // Check if the payload indicates a successful operation
+            if (action.payload.status) {
+                // Set fulfillment state and message
+                state.isFullfilled = true;
+                state.fullFillMsg = {
+                    type: action.payload.type,
+                    message: action.payload.message,
+                };
+                const {createdat, title, description} = action.payload?.data
+                state.notice = {
+                    description,
+                    title,
+                    createdat,
+                    state : action.payload?.data?.state
+                }
+                // Reset error state
+                state.isError = false;
+                state.isProcessing = false;
+            } else {
+                // Handle error state
+                state.isProcessing = false;
+                state.isError = true;
+                state.errorMsg = {
+                    message: action.payload.message,
+                    type: action.payload.type,
+                };
+            }
+        });
+        builder.addCase(handleGetNotice.pending, (state, action) => {
+            state.isProcessing = true
+            state.processingMsg = {
+                type : 'notice',
+                messsage : 'Getting Notice Data'
+            }
+        });
     }
 })
 
 export default UserDataSlice.reducer;
-export {handleGetTermData, handleGetAboutData, handleGetPrivacyData};
-export const{ resetState, handleMatchHistory, handleClearState } = UserDataSlice.actions
+export {handleGetTermData, handleGetAboutData, handleGetNotice, handleGetPrivacyData};
+export const{ resetState, handleSetNoticeState, handleMatchHistory, handleClearState } = UserDataSlice.actions

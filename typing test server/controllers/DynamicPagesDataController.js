@@ -8,6 +8,7 @@ routes.use('/about', require('../controllers/sub-controllers/AboutController')(a
 routes.use('/term-condition', require('../controllers/sub-controllers/Terms_ConditionController')(adminModel, DataModel, key));
 routes.use('/privacy-policy', require('../controllers/sub-controllers/Privacy_PolicyController')(adminModel, DataModel, key));
 routes.use('/contact', require('../controllers/sub-controllers/ContactController')(adminModel, DataModel, key));
+routes.use('/notice', require('../controllers/sub-controllers/NoticeController')(adminModel, DataModel, key));
 routes.use('/sitemap', require('../controllers/sub-controllers/SitemapController')(adminModel, DataModel, key));
 
 module.exports = routes;

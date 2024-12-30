@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Header from '../../../../shared/header/Header'
+import Header from '../component/shared/header/Header'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleTest, resetState } from '../../../../../redux/UserDataSlice';
-import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
-import { easyWords, generateParagraph, hardWords, mediumWords } from './ParagraphGenerater';
-import DynamicAlert from '../../../../shared/Toast/DynamicAlert'
+import { handleTest, resetState } from '../redux/UserDataSlice';
+import { dynamicToast } from '../component/shared/Toast/DynamicToast'
+import { easyWords, generateParagraph, hardWords, mediumWords } from '../component/feature/user/feature/lobby/ParagraphGenerater';
+import DynamicAlert from '../component/shared/Toast/DynamicAlert'
 import { Helmet } from 'react-helmet';
-import Footer from '../../../../shared/footer/Footer'
-import { handleMatchHistory } from '../../../../../redux/DynamicPagesDataSlice';
-import DynamicTitle from '../../../../shared/helmet/DynamicTitle';
+import Footer from '../component/shared/footer/Footer'
+import { handleMatchHistory } from '../redux/DynamicPagesDataSlice';
+import DynamicTitle from '../component/shared/helmet/DynamicTitle';
 
 
 const Lobby = () => {

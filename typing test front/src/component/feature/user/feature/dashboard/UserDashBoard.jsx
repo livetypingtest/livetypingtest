@@ -9,6 +9,8 @@ import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
 import MetaUpdater from '../../../../../util/MetaUpdater'
 import DeleteUserModal from './DeleteUserModal'
 import DynamicTitle from '../../../../shared/helmet/DynamicTitle'
+import { profileExtractor } from '../../../../../util/Extractor'
+import ProfileUpdateModal from './ProfileUpdateModal'
 
 const UserDashBoard = () => {
 
@@ -28,7 +30,6 @@ const UserDashBoard = () => {
   const [match3MinData, setMatch3MinData] = useState([])
   const [match5MinData, setMatch5MinData] = useState([])
   const [imagePath, setImagePath] = useState('');
-  const profileRef = useRef();
   const [loader, setLoader] = useState({state : false, for : ''})
 
 
@@ -170,32 +171,17 @@ useEffect(() => {
   
   // handle upload profile------------------------------------------------------------------------------
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
 
-    if (!file) {
-      return;
+  useEffect(() => {
+  
+    const whatDisplay = rawUserData?.profileimage?.display;
+  
+    if (whatDisplay && whatDisplay !== 'empty') {
+      setImagePath(rawUserData?.profileimage?.[profileExtractor[whatDisplay]]);
+    } else {
+      setImagePath('empty');
     }
-
-    // Check the file type for additional validation
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if (!validTypes.includes(file.type)) {
-      dynamicToast({ message: 'Please upload a valid image file (jpeg, jpg, or png).', icon: 'error' });
-      return;
-    }
-
-    // Prepare the file for upload
-    const formData = new FormData();
-    formData.append('profile', file); // 'profilePic' is the key you'll use on the server-side
-
-    dispatch(handleUploadProfile(formData))
-  };
-
-  useEffect(()=>{
-    if(rawUserData) {
-      setImagePath(rawUserData?.profileimage?.s3url)
-    }
-  }, [rawUserData])
+  }, [rawUserData]);
   
   // handle upload profile------------------------------------------------------------------------------
 
@@ -222,14 +208,13 @@ useEffect(() => {
               <div className="profile-layout">
                 <div className="profile-sec1">
                   <div className='profile-upload-main'>
-                    <img src={imagePath ? `${imagePath}` : "/assets/images/profile.png"}  alt="" />
+                    <img src={imagePath !== 'empty' ? `${imagePath}` : "/assets/images/profile.png"}  alt="" />
                     {
                       loader.state && loader.for === 'profile' && (<div className="profile-loader"><i className="fa-duotone fa-solid fa-loader fa-spin-pulse fa-2xl" style={{color : '#fff'}} /></div>)
                     }
-                    <div className='profile-upload'><button onClick={()=>profileRef?.current?.click()}><i className="fa-regular fa-upload fa-xl" style={{ color: "#71cac7" }} /></button></div>
-                    <input type="file" ref={profileRef} onChange={handleFileChange} style={{visibility : 'hidden'}} />
+                    <div className='profile-upload'><button data-bs-toggle='modal' data-bs-target='#profile'><i className="fa-regular fa-upload fa-xl" style={{ color: "#71cac7" }} /></button></div>
                   </div>
-                  <div className='text-center mt-12'>
+                  <div className='text-center mt-24'>
                     <h4 className='font-active m-0'>{rawUserData?.username}</h4>
                     <hp className='font-idle'>Joined {formattedDate ? formattedDate : null}</hp>
                   </div>
@@ -451,6 +436,7 @@ useEffect(() => {
       </section>
       <Footer />
       <UpdatePassModal props={rawUserData?.password ? 'notEmpty' : 'isEmpty'} />
+      <ProfileUpdateModal googleProfileImage={rawUserData?.profileimage?.googleProfile} initialProfileImage={rawUserData?.profileimage?.s3url} type={rawUserData?.profileimage?.display} />
       <DeleteUserModal />
     </>
   )
