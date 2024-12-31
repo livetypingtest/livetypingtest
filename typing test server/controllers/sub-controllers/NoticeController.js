@@ -40,7 +40,7 @@ module.exports = (adminModel, DataModel, key) => {
             const data = await DataModel.findOne({}, { notice: 1 }); // Fetch only the `notice` field
             const notice = data?.notice;
 
-            console.log(notice)
+            // console.log(notice)
 
             return res.send({
                 status: 200,

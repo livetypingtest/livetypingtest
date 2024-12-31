@@ -244,13 +244,17 @@ route.post('/signin/google', async (req, res) => {
                 // Check if the user is blocked
                 if (!isUserExist?.isblocked?.status) {
                     // Update the Google profile picture in the database
+                    const updatedProfileImage = { ...isUserExist.profileimage };
                     if (picture) {
-                        isUserExist.profileimage = {
-                            ...isUserExist.profileimage, 
-                            googleProfile: picture, 
-                        };
-                        await isUserExist.save(); 
+                        updatedProfileImage.googleProfile = picture;
                     }
+                    if (updatedProfileImage.display === "") {
+                        updatedProfileImage.display = "empty";
+                    }
+
+                    // Update the user document
+                    isUserExist.profileimage = updatedProfileImage;
+                    await isUserExist.save();
                     // console.log(picture)
                     const ID = { id: isUserExist?._id };
                     const token = jwt.sign(ID, key);

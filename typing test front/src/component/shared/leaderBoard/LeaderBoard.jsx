@@ -7,6 +7,7 @@ import { BASE_API_URL } from '../../../util/API_URL';
 import MetaUpdater from '../../../util/MetaUpdater';
 import { useLocation } from 'react-router-dom';
 import DynamicTitle from '../helmet/DynamicTitle';
+import { profileExtractor } from '../../../util/Extractor';
 
 
 const LeaderBoard = () => {
@@ -26,8 +27,9 @@ const LeaderBoard = () => {
 
     useEffect(() => {
         if (rawAllUserData) {
-            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile.s3url, avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
+            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
             // console.log(rawAllUserData)  
+            rawAllUserData?.map(value => console.log(value?.username + ":" +value.profile?.googleProfile))
         }
     }, [rawAllUserData]);
     
@@ -195,7 +197,7 @@ const LeaderBoard = () => {
                                         displayData?.length !== 0 ? displayData?.map((value, index) => (
                                             <tr key={index}>
                                                 <td>{index+1}</td>
-                                                <td><div className='profile'><img src={value?.profile ? `${value?.profile}` : "/assets/images/profile.png"}  alt="" />
+                                                <td><div className='profile'><img src={value?.profile}  alt="" />
                                                     <p className='leaderboard-profile-font'>{value?.username}</p>
                                                     {/* Show badges based on the index, after the username */}
                                                     {index + 1 === 1 && <span className="badge-icon cs">🥇</span>}
