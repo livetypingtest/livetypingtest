@@ -93,7 +93,6 @@ route.get('/local', async (req, res) => {
     }
 });
 
-
 route.get('/', async(req, res) => {
     // console.log(req.headers.authorization)
     if(req.headers.authorization){
