@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux'
 import { handleSetNoticeState } from '../../../redux/DynamicPagesDataSlice';
 
 
-const Header = () => {
+const Header = ({ timerRunning }) => {
     const dsipatch = useDispatch()
     const checkUserToken = useMemo(() => !!localStorage.getItem('userToken'), []);
     const checkAdminToken = useMemo(() => !!localStorage.getItem('adminToken'), []);
@@ -20,7 +20,7 @@ const Header = () => {
     return (
         <>
             {
-                notice?.state && (
+                !timerRunning && notice?.state && (
                     <div className="notice-bar">
                         <div className="notice">
                             <h3>{notice?.title} :</h3>

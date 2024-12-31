@@ -808,7 +808,7 @@ const BackupWithInput = () => {
         homePageSEO && (<DynamicTitle title={homePageSEO?.seoTitle} description={homePageSEO.seoDescription} icon={homePageSEO?.imageUrl} />)
       }
 
-      <Header />
+      <Header timerRunning={timerRunning} />
       <section className='lobby-area pb-3'>
         <div className="container">
           <div 
