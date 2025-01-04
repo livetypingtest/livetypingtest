@@ -92,7 +92,7 @@ const ImageTextRepeater = () => {
       formData.append(`btnTitle[${index}]`, item.btnTitle);
       formData.append(`buttonUrls[${index}]`, item.buttonUrl);
       formData.append(`title[${index}]`, item.title);
-      formData.append(`date`, new Date());
+      formData.append(`date`, Date.now());
     });
 
     // Dispatch form data to backend

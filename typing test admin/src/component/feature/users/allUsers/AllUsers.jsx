@@ -10,6 +10,7 @@ import axios from "axios";
 import Pagination from '../../../shared/pagination/Pagination';
 import * as XLSX from 'xlsx';
 import DynamicTitle from "../../../shared/helmet/DynamicTitle";
+import { profileExtractor } from "../../../../util/Extractor";
 
 const AllUsers = () => {
     const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const AllUsers = () => {
 
     useEffect(() => {
         if (rawAllUsersData?.length !== 0) {
+            // console.log(rawAllUsersData)
             setUsers(rawAllUsersData);
         }
     }, [dispatch, rawAllUsersData]);
@@ -172,61 +174,66 @@ const AllUsers = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {users?.map((value, index) => (
-                                            <tr key={value.username || index}>
-                                                <td>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedUsers.includes(value.username)}
-                                                        onChange={() => handleCheckboxChange(value.username)}
-                                                    />
-                                                </td>
-                                                <td>{index + 1}</td>
-                                                <td>
-                                                    <NavLink to={`/admin/users/${value?.username}`}>
-                                                        <div className="profile">
-                                                            <img
-                                                                src={
-                                                                    value?.profile
-                                                                        ? `${value?.profile}`
-                                                                        : "/assets/images/profile.png"
-                                                                }
-                                                                alt=""
-                                                            />
-                                                            {value?.username}
-                                                        </div>
-                                                    </NavLink>
-                                                </td>
-                                                <td>
-                                                    <NavLink to={`/admin/users/${value?.username}`}>
-                                                        <button className="btn">
-                                                            <i className="fa-solid fa-eye fa-lg"></i>
+                                        {users?.map((value, index) => {
+                                            value?.profile?.display !== 'empty'
+                                            ? console.log(value?.profile?.[profileExtractor[value?.profile?.display]])
+                                            : "/assets/images/profile.png"
+                                            return (
+                                                <tr key={value.username || index}>
+                                                    <td>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedUsers.includes(value.username)}
+                                                            onChange={() => handleCheckboxChange(value.username)}
+                                                        />
+                                                    </td>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        <NavLink to={`/admin/users/${value?.username}`}>
+                                                            <div className="profile">
+                                                                <img
+                                                                    src={
+                                                                        value?.profile?.display !== 'empty'
+                                                                            ? value?.profile?.[profileExtractor[value?.profile?.display]]
+                                                                            : "/assets/images/profile.png"
+                                                                    }
+                                                                    alt=""
+                                                                />
+                                                                {value?.username}
+                                                            </div>
+                                                        </NavLink>
+                                                    </td>
+                                                    <td>
+                                                        <NavLink to={`/admin/users/${value?.username}`}>
+                                                            <button className="btn">
+                                                                <i className="fa-solid fa-eye fa-lg"></i>
+                                                            </button>
+                                                        </NavLink>
+                                                    </td>
+                                                    <td>
+                                                        <NavLink to={`/admin/users/${value?.username}`}>
+                                                            <button className="btn">
+                                                                <i className="fa-solid fa-user-pen fa-lg" />
+                                                            </button>
+                                                        </NavLink>
+                                                    </td>
+                                                    <td>
+                                                        <button className="btn" onClick={() => blockUser(value.username)}>
+                                                            {!value.isblock ? (
+                                                                <i className="fa-solid fa-shield-check fa-xl"></i>
+                                                            ) : (
+                                                                <i className="fa-solid fa-circle-xmark fa-xl" />                                                      
+                                                            )}
                                                         </button>
-                                                    </NavLink>
-                                                </td>
-                                                <td>
-                                                    <NavLink to={`/admin/users/${value?.username}`}>
-                                                        <button className="btn">
-                                                            <i className="fa-solid fa-user-pen fa-lg" />
+                                                    </td>
+                                                    <td>
+                                                        <button className="btn" onClick={() => setDeleteUsername(value.username)} data-bs-toggle="modal" data-bs-target="#deleteaccount">
+                                                            <i className="fa-solid fa-user-xmark fa-lg"></i>
                                                         </button>
-                                                    </NavLink>
-                                                </td>
-                                                <td>
-                                                    <button className="btn" onClick={() => blockUser(value.username)}>
-                                                        {!value.isblock ? (
-                                                            <i className="fa-solid fa-shield-check fa-xl"></i>
-                                                        ) : (
-                                                            <i className="fa-solid fa-circle-xmark fa-xl" />                                                      
-                                                        )}
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <button className="btn" onClick={() => setDeleteUsername(value.username)} data-bs-toggle="modal" data-bs-target="#deleteaccount">
-                                                        <i className="fa-solid fa-user-xmark fa-lg"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
                                     </tbody>
                                 </table>
                             </div>

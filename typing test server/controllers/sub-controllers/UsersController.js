@@ -73,7 +73,7 @@ route.get('/', async (req, res) => {
             const filteredData = paginatedUsers?.map(value => {
                 return {
                     username : value?.username,
-                    profile : value?.profileimage?.s3url,
+                    profile : value?.profileimage   ,
                     isblock : value?.isblocked?.status,
                     createdate : value?.createdate,
                     accountid : value?.accountid,

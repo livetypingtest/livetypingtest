@@ -27,7 +27,7 @@ const LeaderBoard = () => {
 
     useEffect(() => {
         if (rawAllUserData) {
-            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
+            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
             // console.log(rawAllUserData)  
             rawAllUserData?.map(value => console.log(value?.username + ":" +value.profile?.googleProfile))
         }

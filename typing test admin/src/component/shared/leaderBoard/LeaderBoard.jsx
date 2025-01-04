@@ -4,6 +4,7 @@ import { handleGetLeaderboardData, resetState } from '../../../redux/UserDataSli
 import { NavLink } from 'react-router-dom';
 import { BASE_API_URL } from '../../../util/API_URL';
 import DynamicTitle from '../helmet/DynamicTitle';
+import { profileExtractor } from '../../../util/Extractor';
 
 
 const LeaderBoard = () => {
@@ -22,7 +23,7 @@ const LeaderBoard = () => {
 
     useEffect(() => {
         if (rawAllUserData) {
-            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile.s3url, avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
+            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
             // console.log(rawAllUserData)  
         }
     }, [rawAllUserData]);
@@ -194,7 +195,7 @@ const LeaderBoard = () => {
                                             <td>
                                                 <NavLink to={`/admin/users/${value.username}`}>
                                                     <div className="profile">
-                                                        <img src={value?.profile || "/assets/images/profile.png"} alt="" />
+                                                        <img src={value?.profile} alt="" />
                                                         {value?.username}
                                                         {/* Show badges based on the index, after the username */}
                                                         {index + 1 === 1 && <span className="badge-icon cs">🥇</span>}

@@ -6,6 +6,7 @@ import DeleteUserModal from "../modals/DeleteUserModal";
 import { dynamicToast } from "../../../shared/Toast/DynamicToast";
 import UpdatePassModal from "../modals/UpdatePassModal";
 import DynamicTitle from "../../../shared/helmet/DynamicTitle";
+import { profileExtractor } from "../../../../util/Extractor";
 
 const UserDetail = () => {
 
@@ -223,10 +224,20 @@ const UserDetail = () => {
             matches1Min = rawUserData?.match_1 
             matches3Min = rawUserData?.match_3 
             matches5Min = rawUserData?.match_5 
-            setImagePath(rawUserData?.profileimage?.s3url)
         }
     }, [rawUserData])
     
+    useEffect(() => {
+  
+      const whatDisplay = rawUserData?.profileimage?.display;
+    
+      if (whatDisplay && whatDisplay !== 'empty') {
+        console.log(rawUserData?.profileimage?.[profileExtractor[whatDisplay]])
+        setImagePath(rawUserData?.profileimage?.[profileExtractor[whatDisplay]]);
+      } else {
+        setImagePath('empty');
+      }
+    }, [rawUserData]);
 
     const blockUser = () =>{
       dispatch(handleBlockUnblockUser(rawUserData?.username))

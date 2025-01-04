@@ -131,9 +131,9 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
     const fetchFilteredData = async (filterType, limit) => {
         const levels = ['all', 'easy', 'medium', 'hard'];
         const queries = levels.map(level => ({
-            [`${filterType}.${level}.avgwpm`]: { $gt: 40 },
-            [`${filterType}.${level}.avgconsis`]: { $gt: 8 },
-            [`${filterType}.${level}.avgacc`]: { $gt: 90 }
+            [`${filterType}.${level}.avgwpm`]: { $gt: 10 },
+            [`${filterType}.${level}.avgconsis`]: { $gt: 2 },
+            [`${filterType}.${level}.avgacc`]: { $gt: 10 }
         }));
 
         const results = await userModel.find({
@@ -166,6 +166,8 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
     }
 
     const allUser = await fetchFilteredData(filterType, limit);
+
+    console.log(allUser)
 
     const extractLevelData = (matchData, level) => {
         const filteredData = matchData?.filter(value => value.level === level);
@@ -402,7 +404,8 @@ route.post('/signup', async(req, res) => {
                 password : sha(password),
                 createdate : createdate,
                 accountid : accountID(),
-                authType : {google : false, email : true}
+                authType : {google : false, email : true},
+                profileimage: {display: 'empty'}
             }
             // sending mail--------------------
                 // Create a Nodemailer transporter using your Gmail account
