@@ -10,8 +10,8 @@ const DynamicTitle = ({ title, description, icon }) => {
             {/* Open Graph tags for social media */}
             <meta property="og:title" content={title || 'Live Typing Test'} />
             <meta property="og:description" content={description || 'Live Typing Test'} />
-            <meta property="og:image" content={icon || '/assets/images/logo.svg'} />
-            <link rel="icon" href={icon || '/assets/images/logo.svg'} />
+            <meta property="og:image" content={icon || '/assets/images/favicon.png'} />
+            <link rel="icon" href={icon || '/assets/images/favicon.png'} />
         </Helmet>
   )
 }
