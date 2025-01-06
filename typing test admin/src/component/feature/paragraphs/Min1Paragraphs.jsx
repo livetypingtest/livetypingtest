@@ -4,10 +4,11 @@ import AddParagraphsSchema from '../../../schemas/AddParagraphsSchema';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleAddParagraphs, handleDeleteParagraph, resetState } from '../../../redux/AdminDataSlice';
 import ButtonLoader from '../../shared/loader/ButtonLoader';
+import { generateUniqueId } from '../../../util/UniqueIdGenerator';
 
 const Min1Paragraphs = (props) => {
     const textareaRef = useRef([]);
-    const [textareas, setTextareas] = useState([{ id: Date.now(), para: '' }]);
+    const [textareas, setTextareas] = useState([{ id: generateUniqueId(), para: '' }]);
     const [displayData, setDisplayData] = useState([]);
     const [editableIndex, setEditableIndex] = useState(null);
     const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const Min1Paragraphs = (props) => {
             formData.level = levelFilter;
             formData.time = timeFilter;
             dispatch(handleAddParagraphs(formData));
-            setTextareas([{ id: Date.now(), para: '' }]); // Clear after adding
+            setTextareas([{ id: generateUniqueId(), para: '' }]); // Clear after adding
         },
     });
 
@@ -88,14 +89,16 @@ const Min1Paragraphs = (props) => {
     useEffect(() => {
         if (isfullFilled) {
             if(fullFillMsg?.type === 'addpara') {
-                setTextareas([{ id: Date.now(), para: '' }]);
+                setTextareas([{ id: generateUniqueId(), para: '' }]);
                 addParaForm.resetForm();
             }
         }
     }, [isfullFilled, fullFillMsg]);
 
     const handleAddMore = () => {
-        setTextareas((prev) => [...prev, { id: Date.now(), para: '' }]);
+        const newParagraph = { id: generateUniqueId(), para: '' };
+        setTextareas((prev) => [...prev, newParagraph]); // Update local state
+        addParaForm.setFieldValue('paragraphs', [...textareas, newParagraph]); // Update Formik field
     };
 
     const handleDeleteLast = () => {

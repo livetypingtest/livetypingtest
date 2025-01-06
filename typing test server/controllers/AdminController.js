@@ -140,16 +140,18 @@ route.post('/signin', async(req, res) => {
 });
 
 route.post('/add-para', async (req, res) => {
-    if (req.headers.authorization) {
-        const ID = jwt.decode(req.headers.authorization, key);
-        const { paragraphs, level, time } = req.body;
-
-        const isThisAdmin = await adminModel.findOne({ _id: ID?.id });
-        if (!isThisAdmin) {
-            return res.status(403).json({ message: "Unauthorized" });
+    try {
+        if (!req.headers.authorization) {
+            return res.status(401).json({ message: "Authorization header missing" });
         }
 
-        // Map time to the correct nested field
+        const ID = jwt.verify(req.headers.authorization, key);
+        const { paragraphs, level, time } = req.body;
+
+        if (!paragraphs || !level || !time) {
+            return res.status(400).json({ message: "Missing required parameters" });
+        }
+
         const changeTime = {
             '1': 'Min1',
             '3': 'Min3',
@@ -160,64 +162,66 @@ route.post('/add-para', async (req, res) => {
             return res.status(400).json({ message: "Invalid time parameter" });
         }
 
-        // Define the dynamic path in paragraphs
+        const isThisAdmin = await adminModel.findOne({ _id: ID.id });
+        if (!isThisAdmin) {
+            return res.status(403).json({ message: "Unauthorized" });
+        }
+
         const arrayFieldPath = `paragraphs.${timeField}.${level}`;
 
-        // Convert each paragraph to the format { id, para }
         const formattedParagraphs = paragraphs.map((paraObj) => ({
-            id: paraObj.id || uuidv4(), // Generate a unique ID only if it doesn't exist
+            id: paraObj.id || uuidv4(),
             para: paraObj.para,
         }));
 
-        try {
-            // Fetch existing paragraphs to check for duplicates
-            const existingData = await adminModel.findOne({ _id: ID?.id });
-            const existingParagraphs = existingData?.paragraphs[timeField]?.[level] || [];
+        const existingData = await adminModel.findOne({ _id: ID.id });
+        const existingParagraphs = existingData?.paragraphs?.[timeField]?.[level] || [];
 
-            // Create a map of existing paragraphs by ID for quick lookup
-            const existingMap = new Map(existingParagraphs.map(para => [para.id, para]));
+        const existingMap = new Map(existingParagraphs.map(para => [para.id, para]));
 
-            // Prepare updates and new paragraphs to push
-            const updates = [];
-            const paragraphsToPush = [];
+        const updates = formattedParagraphs
+            .filter(newPara => existingMap.has(newPara.id)) // Only update existing items
+            .map(newPara => ({
+                updateOne: {
+                    filter: { _id: ID.id, [`${arrayFieldPath}.id`]: newPara.id },
+                    update: { $set: { [`${arrayFieldPath}.$.para`]: newPara.para } },
+                },
+            }));
 
-            // Check each formatted paragraph
-            for (const newPara of formattedParagraphs) {
-                if (existingMap.has(newPara.id)) {
-                    // Prepare to overwrite the existing paragraph if it exists
-                    updates.push({
-                        updateOne: {
-                            filter: { _id: ID?.id, [`${arrayFieldPath}.id`]: newPara.id },
-                            update: { $set: { [`${arrayFieldPath}.$.para`]: newPara.para } } // Update the existing paragraph
-                        }
-                    });
-                } else {
-                    // If the paragraph ID does not exist, add to the push array
-                    paragraphsToPush.push(newPara);
-                }
-            }
+        const paragraphsToPush = formattedParagraphs.filter(
+            newPara => !existingMap.has(newPara.id)
+        );
 
-            // Perform bulk updates for existing paragraphs
-            if (updates.length > 0) {
-                await adminModel.bulkWrite(updates);
-            }
-
-            // Push new paragraphs if any exist
-            if (paragraphsToPush.length > 0) {
-                await adminModel.updateOne(
-                    { _id: ID?.id },
-                    { $push: { [arrayFieldPath]: { $each: paragraphsToPush } } } // Push each new paragraph object
-                );
-            }
-
-            const paraData = await adminModel.findOne({ _id: ID?.id });
-            res.send({ status: 200, message: "Paragraphs added successfully", type: 'addpara', paragraphs: paraData?.paragraphs });
-        } catch (error) {
-            console.error("Error updating paragraphs:", error);
-            res.status(500).json({ message: "An error occurred while adding paragraphs" });
+        // Update existing paragraphs
+        if (updates.length > 0) {
+            await adminModel.bulkWrite(updates);
         }
-    } else {
-        res.status(401).json({ message: "Authorization header missing" });
+
+        // Push new paragraphs
+        if (paragraphsToPush.length > 0) {
+            await adminModel.updateOne(
+                { _id: ID.id },
+                {
+                    $push: {
+                        [arrayFieldPath]: { $each: paragraphsToPush },
+                    },
+                }
+            );
+        }
+
+        const paraData = await adminModel.findOne({ _id: ID.id });
+        res.status(200).send({
+            status: 200,
+            message: "Paragraphs added successfully",
+            type: 'addpara',
+            paragraphs: paraData?.paragraphs,
+        });
+    } catch (error) {
+        console.error("Error in /add-para route:", error.message, error);
+        res.status(500).json({
+            message: "An error occurred while adding paragraphs",
+            error: error.message,
+        });
     }
 });
 
