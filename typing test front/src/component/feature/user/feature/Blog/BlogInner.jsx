@@ -37,7 +37,7 @@ const BlogInner = () => {
     // Only render SEO tags when displayData is available
     if (!displayData) return null;
 
-    console.log(displayData)
+    // console.log(displayData)
 
     const processQuillContent = (html) => {
         if (!html) return ""; // Handle empty or null HTML gracefully
