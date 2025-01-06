@@ -29,7 +29,7 @@ const Blog = () => {
 
   return (
     <>
-        <DynamicTitle title={"Live Typing Test | Blog"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Blog"}  />
+        <DynamicTitle title={"Live Typing Test | Blog"} description={"Live Typing Test | Blog"}  />
         <Header />
 
         <section>
