@@ -34,7 +34,7 @@ const BackupWithInput = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
-  const [hasFocus, setHasFocus] = useState(false);
+  const [hasFocus, setHasFocus] = useState(true);
   const [storage, setStorage] = useState("")
   const [counter, setCounter] = useState(0); // Track the number of times condition is met
   const [difficulty, setDifficulty] = useState("easy");

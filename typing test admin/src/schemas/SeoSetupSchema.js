@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 const SeoSetupSchema = Yup.object({
     seoTitle: Yup.string()
       .required("SEO Title is required")
-      .max(60, "SEO Title cannot exceed 60 characters"),
+      .max(200, "SEO Title cannot exceed 200 characters"),
     seoDescription: Yup.string()
       .required("SEO Description is required")
       .max(160, "SEO Description cannot exceed 160 characters"),
