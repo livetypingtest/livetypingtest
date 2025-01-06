@@ -73,7 +73,7 @@ route.get('/', async (req, res) => {
             const filteredData = paginatedUsers?.map(value => {
                 return {
                     username : value?.username,
-                    profile : value?.profileimage   ,
+                    profile : value?.profileimage,
                     isblock : value?.isblocked?.status,
                     createdate : value?.createdate,
                     accountid : value?.accountid,
@@ -232,13 +232,14 @@ route.post('/upload-profile/:username', upload.single('profile'), async (req, re
           // Upload new profile image data
           const profileData = {
             originalname: req.file.originalname,
+            display: 'custom',
             s3key: req.file.key, // The S3 key (path) for the file
             s3url: req.file.location, // The URL to access the file
             updatedat: new Date()
           };
   
           // Update the user's profile with the new image data
-          await userModel.updateOne({ username : username }, { profileimage: profileData });
+          await userModel.updateOne({ username : username }, { $set: {profileimage: profileData} });
   
           // Send the details back to the client
           return res.send({ status: 200, message: "Profile Uploaded Successfully", type: "profile", profile: profileData });

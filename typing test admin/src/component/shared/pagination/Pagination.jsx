@@ -4,8 +4,8 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
     return (
         <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-end">
-                <li className="page-item ">
                 {pageNumbers.map((page) => (
+                    <li className="page-item ">
                         <button
                             key={page}
                             onClick={() => onPageChange(page)}
@@ -14,8 +14,8 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
                         >
                             {page}
                         </button>
+                    </li>
                 ))}
-                </li>
             </ul>
         </nav>
     );

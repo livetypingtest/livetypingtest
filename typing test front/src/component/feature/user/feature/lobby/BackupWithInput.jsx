@@ -368,7 +368,7 @@ const BackupWithInput = () => {
         data : finalStats,
         date : new Date()
       }
-      console.log(result)
+      // console.log(result)
       localStorage.setItem('stats', JSON.stringify(result))
       dispatch(handleMatchHistory({state: true, time : result.data.time, level : result.data.level}))
       if(localStorage.getItem('userToken')) {
@@ -641,7 +641,7 @@ const BackupWithInput = () => {
         return;
       }
 
-      console.log("key", key)
+      // console.log("key", key)
     
       if (key.length >= 1) {
         const currentWord = currentParagraph[currentWordIndex];
@@ -915,8 +915,8 @@ const BackupWithInput = () => {
                   id=""
                   // Conditional event handler based on screen size
                   {...(isMobile
-                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value); console.log("input", e.currentTarget.value) }}
-                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value); console.log("input", e.target.value)}}
+                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value) }}
+                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value)}}
                   )}
                 />
                 <div

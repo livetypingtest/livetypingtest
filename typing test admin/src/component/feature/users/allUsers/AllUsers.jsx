@@ -175,9 +175,6 @@ const AllUsers = () => {
                                     </thead>
                                     <tbody>
                                         {users?.map((value, index) => {
-                                            value?.profile?.display !== 'empty'
-                                            ? console.log(value?.profile?.[profileExtractor[value?.profile?.display]])
-                                            : "/assets/images/profile.png"
                                             return (
                                                 <tr key={value.username || index}>
                                                     <td>
@@ -193,7 +190,7 @@ const AllUsers = () => {
                                                             <div className="profile">
                                                                 <img
                                                                     src={
-                                                                        value?.profile?.display !== 'empty'
+                                                                        value?.profile?.display !== 'empty' || value?.profile?.display !== '' 
                                                                             ? value?.profile?.[profileExtractor[value?.profile?.display]]
                                                                             : "/assets/images/profile.png"
                                                                     }
