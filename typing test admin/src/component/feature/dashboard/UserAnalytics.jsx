@@ -21,7 +21,7 @@ const UserAnalytics = ({ user }) => {
 
   // Extract unique years from user data
   const availableYears = useMemo(() => {
-    const years = user.map((u) => getYear(parseISO(u?.createdate)));
+    const years = user?.map((u) => getYear(parseISO(u?.createdate)));
     return ['All', ...new Set(years)];
   }, [user]);
 
@@ -29,7 +29,7 @@ const UserAnalytics = ({ user }) => {
   const processedData = useMemo(() => {
     const monthCounts = {};
 
-    user.forEach((u) => {
+    user?.forEach((u) => {
       const date = parseISO(u?.createdate);
       const year = getYear(date);
 

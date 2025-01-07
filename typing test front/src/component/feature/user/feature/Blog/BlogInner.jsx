@@ -55,7 +55,7 @@ const BlogInner = () => {
 
     return (
         <>
-            <DynamicTitle title={`${displayData.seoTitle}`} icon={`${displayData?.featuredImage?.path}`} description={`${displayData.seoDescription}`}  />
+            <DynamicTitle title={`${displayData.seoTitle}`}  description={`${displayData.seoDescription}`}  />
 
             <Header />
             <section>
