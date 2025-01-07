@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import HomePageSEO from "../SEO/HomePageSEO";
 import DynamicTitle from "../../shared/helmet/DynamicTitle";
 import Notice from "../notice/Notice";
+import UserAnalytics from "./UserAnalytics";
 
 const AdminDashBoard = () => {
     const adminData = useSelector(state => state.AdminDataSlice.adminData);
@@ -49,7 +50,7 @@ const AdminDashBoard = () => {
                                 alt=""
                             />
                             <p className="fw-semibold text-primary mb-1">Users</p>
-                            <h4 className="fw-semibold text-primary mb-0">{adminData?.userCount}</h4>
+                            <h4 className="fw-semibold text-primary mb-0">{adminData?.userCount?.length}</h4>
                         </NavLink>
                     </div>
                     <div className="col-sm-3 col-6 col-lg-3 col-xl-3">
@@ -99,6 +100,9 @@ const AdminDashBoard = () => {
                             <p className="fw-semibold text-danger mb-1">Paragraphs</p>
                             <h4 className="fw-semibold text-danger mb-0">{paraLength}</h4>
                         </NavLink>
+                    </div>
+                    <div className="col-md-12 ">
+                        <UserAnalytics user={adminData?.userCount} />
                     </div>
                     <div className="col-md-12 ">
                         <HomePageSEO />

@@ -256,7 +256,7 @@ const UserDetail = () => {
               <div className="profile-card my-4">
                 <div className="sec-1">
                   <div className="profile-img">
-                    <img src={imagePath ? `${imagePath}` : "/assets/images/profile.png"}  alt="" />
+                    <img src={imagePath !== 'empty' ? `${imagePath}` : "/assets/images/profile.png"}  alt="" />
                     <button className="btn" onClick={()=>profileRef?.current?.click()}><i class="fa-solid fa-upload cs-color-dark"></i></button>
                     {
                       loader.state && loader.for === 'profile' && (<div className="profile-loader"><i className="fa-duotone fa-solid fa-loader fa-spin-pulse fa-2xl" style={{color : '#fff'}} /></div>)

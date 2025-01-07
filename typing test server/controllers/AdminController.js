@@ -102,14 +102,20 @@ route.get('/', async(req, res) => {
     if(req.headers.authorization){
         let ID = jwt.decode(req.headers.authorization, key)
         let adminData = await adminModel.findOne({_id : ID?.id})
-        let userCount = await userModel.countDocuments({})
+        let userData = await userModel.find({})
+        const filteredUserData = userData?.map(value => {
+            return {
+                username: value.username,
+                createdate: value?.createdate
+            }
+        })
         adminData = {
             email : adminData?.email,
             _id : adminData?.username,
             paragraphs : adminData?.paragraphs,
             blogCount : adminData?.blog?.length,
             block : adminData?.blockUser,
-            userCount : userCount,
+            userCount : filteredUserData,
             blogCategory : adminData?.blogCategory,
             profileimage : adminData?.profileimage
         }

@@ -190,7 +190,7 @@ const AllUsers = () => {
                                                             <div className="profile">
                                                                 <img
                                                                     src={
-                                                                        value?.profile?.display !== 'empty' || value?.profile?.display !== '' 
+                                                                        value?.profile?.display !== 'empty' && value?.profile?.display !== '' 
                                                                             ? value?.profile?.[profileExtractor[value?.profile?.display]]
                                                                             : "/assets/images/profile.png"
                                                                     }
@@ -219,7 +219,7 @@ const AllUsers = () => {
                                                             {!value.isblock ? (
                                                                 <i className="fa-solid fa-shield-check fa-xl"></i>
                                                             ) : (
-                                                                <i className="fa-solid fa-circle-xmark fa-xl" />                                                      
+                                                                <i className="fa-solid fa-circle-xmark fa-xl" />
                                                             )}
                                                         </button>
                                                     </td>
@@ -229,7 +229,7 @@ const AllUsers = () => {
                                                         </button>
                                                     </td>
                                                 </tr>
-                                            )
+                                            );
                                         })}
                                     </tbody>
                                 </table>
