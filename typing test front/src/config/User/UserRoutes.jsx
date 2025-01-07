@@ -10,7 +10,6 @@ import About from '../../component/feature/user/feature/dynamicPages/About';
 import Privacy_Policy from '../../component/feature/user/feature/dynamicPages/Privacy_Policy';
 import Contact from '../../component/feature/user/feature/contact/Contact';
 import Terms_Condition from '../../component/feature/user/feature/dynamicPages/Terms_Condition';
-import UserAnalytics from '../../component/feature/user/feature/UserAnalytics';
 
 const userRoutes = [
     {
@@ -61,10 +60,7 @@ const userRoutes = [
         path : 'term-condition',
         element : <Terms_Condition />
     },
-    // {
-    //     path : 'analytics',
-    //     element : <UserAnalytics />
-    // },
+
 ]
 
 export default userRoutes
