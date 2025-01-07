@@ -61,10 +61,10 @@ const userRoutes = [
         path : 'term-condition',
         element : <Terms_Condition />
     },
-    {
-        path : 'analytics',
-        element : <UserAnalytics />
-    },
+    // {
+    //     path : 'analytics',
+    //     element : <UserAnalytics />
+    // },
 ]
 
 export default userRoutes

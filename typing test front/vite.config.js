@@ -19,6 +19,7 @@ export default defineConfig({
         '/term-condition',   // Example: Contact page
         '/dashboard',   // Example: Contact page
       ],
+      generateRobotsTxt: true
     }),
   ],
   esbuild: {
