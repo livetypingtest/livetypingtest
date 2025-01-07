@@ -7,6 +7,7 @@ import { handleSigninUser, resetState } from '../../../../../redux/UserDataSlice
 import { NavLink, useNavigate } from 'react-router-dom';
 import GoogleAuth from './GoogleAuth';
 import ForgotPassModal from './ForgotPassModal';
+import { requestPermission } from '../../../../shared/FireBase/UpdateFCM';
 
 // Helper function to check if the input is an email
 const isEmail = (value) => {
@@ -86,6 +87,7 @@ const UserSignin = () => {
     if(isFullfilled) {
       if(fullFillMsg?.type === 'signin'){
         navigate(`/`)
+        requestPermission()
         dispatch(resetState())
       }
     }

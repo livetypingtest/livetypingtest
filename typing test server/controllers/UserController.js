@@ -912,6 +912,7 @@ route.delete('/', async (req, res) => {
 // Route to save FCM token
 route.post("/save-token", async (req, res) => {
     const { token, userId } = req.body;
+    console.log(token)
     let ID = jwt.decode(userId, key)
     try {
         await notificationModel.updateOne({ userId : ID?.id }, { fcmToken: token });

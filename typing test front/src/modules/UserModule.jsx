@@ -5,7 +5,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { handleGetUserData, handleLocalDataCalling, resetState } from '../redux/UserDataSlice';
 import PageDataLoader from '../component/shared/loader/PageDataLoader';
 import { messaging } from '../firebaseConfig'
-import { getToken, onMessage } from "firebase/messaging";
+import { onMessage } from "firebase/messaging";
 import { ADMIN_API_URL, USER_API_URL } from '../util/API_URL';
 import { dynamicToast } from '../component/shared/Toast/DynamicToast';
 import { handleGetAboutData, handleGetNotice, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
@@ -25,31 +25,7 @@ const UserModule = () => {
     const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
 
 //  Notification Setup-----------------------------------------------------------------------------------
-    // Request permission to receive notifications
-    const requestPermission = async () => {
-    try {
-        const token = await getToken(messaging, { vapidKey: "BOU19idOtLs9r2PE7MlijvtivcxdL4lEBU_r3wMt0VTA1thHhytEGAlTk2LDBsPDsV9A2yOX7PyBJnSKJ0BOfGM" });
-        if (token) {
-        // Save the token to the server
-        await fetch(`${USER_API_URL}/save-token`, {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ token, userId: localStorage.getItem('userToken') }) // Replace with dynamic user ID
-        });
-        // console.log("Token saved:", token);
-        } else {
-        console.log("No registration token available. Request permission to generate one.");
-        }
-    } catch (error) {
-        console.error("An error occurred while retrieving token:", error);
-    }
-    };
-
-    useEffect(() => {
-        requestPermission();
-    }, [])
+    // UpdateFCM()
 
     useEffect(()=>{
         // Handle foreground messages

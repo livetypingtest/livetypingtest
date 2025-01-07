@@ -323,7 +323,7 @@ route.post('/para', async (req, res) => {
 // });
 
 route.post("/send-notification", async (req, res) => {
-    const { title, message, url } = req.body; // `url` will be included in the payload
+    const { title, message, url } = req.body; 
 
     try {
 

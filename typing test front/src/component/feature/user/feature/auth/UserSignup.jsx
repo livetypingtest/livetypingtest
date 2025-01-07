@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { handleCreateUser, resetState } from '../../../../../redux/UserDataSlice'
 import { useNavigate } from 'react-router-dom'
 import GoogleAuth from './GoogleAuth'
+import { requestPermission } from '../../../../shared/FireBase/UpdateFCM'
 
 const UserSignup = () => {
   const dispatch = useDispatch();
@@ -74,6 +75,7 @@ const UserSignup = () => {
     if (isFullfilled) {
       if (fullFillMsg?.type === 'signup') {
         navigate(`/`)
+        requestPermission()
         dispatch(resetState())
       }
     }
