@@ -12,20 +12,31 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+const shownBackgroundNotifications = new Set();
 
 messaging.onBackgroundMessage((payload) => {
-  // console.log("Received background message: ", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: "./assets/images/favicon.png",
-    data: {
-      url: payload.data?.url || "/", // Ensure the URL is retrieved from payload.data
-    },
-  };
+    const notificationId = payload.messageId || payload.notification.title;
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+    // Skip if notification has already been shown
+    if (shownBackgroundNotifications.has(notificationId)) {
+        return;
+    }
+
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+        body: payload.notification.body,
+        icon: "./assets/images/favicon.png",
+        data: {
+            url: payload.data?.url || "/",
+        },
+    };
+
+    self.registration.showNotification(notificationTitle, notificationOptions);
+
+    // Mark the notification as shown
+    shownBackgroundNotifications.add(notificationId);
 });
+
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close(); // Close the notification when clicked
