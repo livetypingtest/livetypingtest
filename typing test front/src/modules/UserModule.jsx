@@ -7,7 +7,6 @@ import PageDataLoader from '../component/shared/loader/PageDataLoader';
 import { messaging } from '../firebaseConfig'
 import { onMessage } from "firebase/messaging";
 import { ADMIN_API_URL, USER_API_URL } from '../util/API_URL';
-import { dynamicToast } from '../component/shared/Toast/DynamicToast';
 import { handleGetAboutData, handleGetNotice, handleGetPrivacyData, handleGetTermData } from '../redux/DynamicPagesDataSlice';
 import useDynamicTitle from '../component/shared/dynamicTitle/useDynamicTitle';
 import { notificationToast } from '../component/shared/Toast/NotificationToats';
@@ -25,49 +24,63 @@ const UserModule = () => {
     const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
 
 //  Notification Setup-----------------------------------------------------------------------------------
-    const shownNotifications = new Set(); // To track shown notifications
+const shownNotifications = new Set(); // Global Set to track notifications
 
-    useEffect(() => {
-        // Handle foreground messages
-        onMessage(messaging, (payload) => {
-            const notificationId = payload.messageId || payload.notification.title;
+useEffect(() => {
+    onMessage(messaging, (payload) => {
+        const notificationId = payload.messageId || payload.notification.title;
 
-            // Skip if the notification has already been shown
-            if (shownNotifications.has(notificationId)) {
-                return;
-            }
+        // Skip if the notification has already been shown
+        if (shownNotifications.has(notificationId)) {
+            return;
+        }
 
-            // Display notification
-            notificationToast({
-                message: `${payload.notification.title}`,
-                body: `${payload.notification.body}`,
-                url: `${payload.data.url}`,
-                timer: 5000,
-                icon: 'info',
-            });
-
-            // Mark the notification as shown
-            shownNotifications.add(notificationId);
+        // Handle foreground notification
+        notificationToast({
+            message: `${payload.notification.title}`,
+            body: `${payload.notification.body}`,
+            url: `${payload.data?.url || '/'}`,
+            timer: 5000,
+            icon: payload.notification.icon || 'default-icon.png',
         });
 
-        if ("serviceWorker" in navigator) {
-            // Only register if no service worker is registered yet
-            navigator.serviceWorker.ready
-                .then((registration) => {
-                    if (!registration.active) {
-                        return navigator.serviceWorker
-                            .register("/firebase-messaging-sw.js")
-                            .then((registration) => {
-                                // console.log("Service Worker registered with scope:", registration.scope);
-                            });
-                    }
-                })
-                .catch((error) => {
+        // Mark the notification as shown
+        shownNotifications.add(notificationId);
+
+        // Handle background notification by triggering it via the service worker
+        if (!document.hasFocus()) { // App is in background
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker.ready.then((registration) => {
+                    registration.showNotification(payload.notification.title, {
+                        body: payload.notification.body,
+                        icon: payload.notification.icon || './assets/images/favicon.png',
+                        data: {
+                            url: payload.data?.url || "/",
+                        },
+                    });
+                }).catch((error) => {
                     console.error("Service Worker registration failed:", error);
                 });
+            }
         }
-        
-    }, []);
+    });
+
+    if ("serviceWorker" in navigator) {
+        // Only register if no service worker is registered yet
+        navigator.serviceWorker.ready.then((registration) => {
+            if (!registration.active) {
+                return navigator.serviceWorker
+                    .register("/firebase-messaging-sw.js")
+                    .then((registration) => {
+                        // console.log("Service Worker registered with scope:", registration.scope);
+                    });
+            }
+        }).catch((error) => {
+            console.error("Service Worker registration failed:", error);
+        });
+    }
+}, []);
+
 
 //  Notification Setup-----------------------------------------------------------------------------------
 
