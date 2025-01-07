@@ -46,23 +46,6 @@ useEffect(() => {
 
         // Mark the notification as shown
         shownNotifications.add(notificationId);
-
-        // Handle background notification by triggering it via the service worker
-        if (!document.hasFocus()) { // App is in background
-            if ("serviceWorker" in navigator) {
-                navigator.serviceWorker.ready.then((registration) => {
-                    registration.showNotification(payload.notification.title, {
-                        body: payload.notification.body,
-                        icon: payload.notification.icon || './assets/images/favicon.png',
-                        data: {
-                            url: payload.data?.url || "/",
-                        },
-                    });
-                }).catch((error) => {
-                    console.error("Service Worker registration failed:", error);
-                });
-            }
-        }
     });
 
     if ("serviceWorker" in navigator) {
@@ -80,7 +63,6 @@ useEffect(() => {
         });
     }
 }, []);
-
 
 //  Notification Setup-----------------------------------------------------------------------------------
 
