@@ -66,6 +66,7 @@ const UserAnalytics = ({ user }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
@@ -159,7 +160,7 @@ const UserAnalytics = ({ user }) => {
                         },
                       },
                       '& .MuiSelect-select': {
-                        padding: '10px',
+                        padding: '5px',
                       },
                     }}
                   >
@@ -180,8 +181,8 @@ const UserAnalytics = ({ user }) => {
                 </div>
 
                 {/* Chart */}
-                <div className="d-flex justify-content-center">
-                  <Bar data={chartData} height={100} width={300} options={options} />
+                <div className="d-flex justify-content-center" style={{width: '100%', height: 'auto'}}>
+                  <Bar data={chartData} height={window.innerWidth < 768 ? 100 : 400} width={300} options={options} />
                 </div>
               </div>
             </div>

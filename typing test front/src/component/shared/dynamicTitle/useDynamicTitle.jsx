@@ -6,7 +6,7 @@ const useDynamicTitle = () => {
 
   useEffect(() => {
     const updateTitleAndFavicon = () => {
-      let title = "Live Typing Test"; // Default title
+      let title = ""; // Default title
       let faviconPath = "/assets/images/favicon.png"; // Default favicon
 
       // Update the page title
