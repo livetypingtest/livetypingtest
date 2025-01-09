@@ -137,6 +137,7 @@ const UserAnalytics = ({ user }) => {
           <div className="col-md-12">
             <div className="card bg-theme">
               <div className="card-body">
+
                 {/* Dropdown for Year Selection */}
                 <div className="d-flex justify-content-end mb-3">
                   <FormControl
@@ -181,7 +182,7 @@ const UserAnalytics = ({ user }) => {
                 </div>
 
                 {/* Chart */}
-                <div className="d-flex justify-content-center" style={{width: '100%', height: 'auto'}}>
+                <div className="d-flex justify-content-center" style={{width: '100%', height: 'auto', minHeight: '300px'}}>
                   <Bar data={chartData} height={window.innerWidth < 768 ? 100 : 400} width={300} options={options} />
                 </div>
               </div>

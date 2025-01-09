@@ -117,7 +117,7 @@ const TypingTestStats = () => {
       
       const Chart = ({ totalTime }) => {
         const ticks = calculateTicks(totalTime);
-        console.log(ticks)
+        // console.log(ticks)
       
         return (
           <ResponsiveContainer
@@ -234,7 +234,9 @@ const TypingTestStats = () => {
                             </div>
                         </div>
                         <div className="col-md-10 ">
-                            {Chart({totalTime: time})}
+                            <div style={{width: '100%', minHeight: '280px'}}>
+                              {Chart({totalTime: time})}
+                            </div>
                         {/* <Line data={data} options={options}  height={window.innerWidth <= 767 ? 100 : 30} width={"100%"}  /> */}
                         </div>
                         <div className="col-md-12 p-custom">

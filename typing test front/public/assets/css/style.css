@@ -1963,10 +1963,6 @@ button.google-sign-btn img {
     width: 90%;
 }
 
-.word.letter{
-    transition: 0.5s all;
-}
-
 /* Blur Effect Overlay */
 .typing-overlay {
     position: absolute;
@@ -2093,6 +2089,7 @@ button.google-sign-btn img {
     color: #fff;
     flex: 1;
     flex-wrap: wrap;
+    transition: 0.3s all;
   
   .letter.correct {
     color: #71CAC7; /* Or any color to indicate correct input */
@@ -2107,6 +2104,7 @@ button.google-sign-btn img {
   
   .word.current .letter {
     text-decoration: underline; /* Optional for current word emphasis */
+    transition: 0.3s all !important;
   }
 }
 
@@ -2137,6 +2135,7 @@ button.google-sign-btn img {
     .skip-underline{
         text-decoration: underline !important;
         text-decoration-color: red !important;
+        transition: 0.3s all;
     }
 
     .radio-options {

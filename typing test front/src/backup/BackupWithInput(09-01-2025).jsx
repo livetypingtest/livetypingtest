@@ -32,6 +32,7 @@ const BackupWithInput = () => {
   const [time, setTime] = useState(60);
   const [skippedWords, setSkippedWords] = useState(new Set());
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
+  const [userInput, setUserInput] = useState("");
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(true);
   const [storage, setStorage] = useState("")
@@ -253,7 +254,6 @@ const BackupWithInput = () => {
     if (totalTyped > 0) {
       accuracy = Math.floor((totalCorrect / totalTyped) * 100); // Accuracy as an integer
     }
-    // console.log('totalTyped :',totalTyped, 'totalCorrect :',totalCorrect)
     
     // Calculate consistency based on correct typing streaks
     let consistency = 0;
@@ -275,62 +275,71 @@ const BackupWithInput = () => {
 
   }
 
-  const calculateState = (inputString, isBackSpace) => {
-
-    // Extract the last letter from the input string
-    let inputLetter = inputString.charAt(inputString.length - 1); // Get the last character from the input string
-    let expectedLetter
-    if(isBackSpace !== 'BackSpace') {
-      // Get the current expected letter from paraHistory at the correct position
-      expectedLetter = paraHistory[currentWordIndex]?.[currentLetterIndex - 1];
-    } else {
-      expectedLetter = paraHistory[currentWordIndex]?.[currentLetterIndex - 2];
-    }
-    
-    // console.log(`Input: ${inputLetter}, Expected: ${expectedLetter}`);
-  
-    // Check if the typed letter matches the expected letter
-    if (expectedLetter === inputLetter) {
-      // Correctly typed letter
-      setStats((prevStats) => ({
-        ...prevStats,
-        correctChars: prevStats.correctChars + 1,
-        correctStreak: (prevStats.correctStreak || 0) + 1,
-      }));
-    } else {
-      // Incorrectly typed letter
-      setStats((prevStats) => ({
-        ...prevStats,
-        incorrectChars: prevStats.incorrectChars + 1,
-        correctStreak: 0,
-      }));
-    }
-  
-    
-  };
-  
-  const calculateExtraMissed = (inputString) => {
-    // Handle the case where there are extra characters typed
+  const calculateState = (input, last) => {
+    const userWord = input?.split("")?.concat(last)?.join("")?.trim(); // The word typed by the user
     const currentParaWord = paraHistory[currentWordIndex]?.split(""); // The word from paraHistory
-    const extraChars = inputString?.length - currentParaWord?.length;
-    if (extraChars > 0) {
-      setStats((prevStats) => ({
-        ...prevStats,
-        extraChars: prevStats.extraChars + extraChars,
-        correctStreak: 0,
-      }));
-    }
-    if (currentParaWord?.length > inputString?.length) {
+    const userWordArray = userWord?.split(""); // The word typed by the user, split into an array
+  
+  
+  
+    // Check if user has typed till the word's expected length
+    if (currentParaWord?.length <= userWordArray?.length) {
+      // Iterate through userWord to check correctness
+      userWordArray.forEach((letter, letterIndex) => {
+        if (currentParaWord[letterIndex] === letter) {
+          // Correctly typed letter
+          setStats((prevStats) => ({
+            ...prevStats,
+            correctChars: prevStats.correctChars + 1,
+            correctStreak: (prevStats.correctStreak || 0) + 1,
+          }));
+        } else {
+          // Incorrectly typed letter
+          setStats((prevStats) => ({
+            ...prevStats,
+            incorrectChars: prevStats.incorrectChars + 1,
+            correctStreak: 0,
+          }));
+        }
+      });
+  
+      // Handle the case where there are extra characters typed
+      const extraChars = userWordArray?.length - currentParaWord?.length;
+      if (extraChars > 0) {
+        setStats((prevStats) => ({
+          ...prevStats,
+          extraChars: prevStats.extraChars + extraChars,
+          correctStreak: 0,
+        }));
+      }
+    } else if (currentParaWord?.length > userWordArray?.length) {
       // Handle the case where paraHistory word is longer than the typed word (skipped chars)
-      const skippedChars = currentParaWord?.length - inputString?.length;
+      const skippedChars = currentParaWord?.length - userWordArray?.length;
       // console.log("Skipped Characters: ", skippedChars);
       setStats((prevStats) => ({
         ...prevStats,
         missedChars: prevStats.missedChars + skippedChars,
         correctStreak: 0,
       }));
+  
+      // Track typed characters for correctness
+      userWordArray.forEach((letter, letterIndex) => {
+        if (currentParaWord[letterIndex] === letter) {
+          setStats((prevStats) => ({
+            ...prevStats,
+            correctChars: prevStats.correctChars + 1,
+            correctStreak: (prevStats.correctStreak || 0) + 1,
+          }));
+        } else {
+          setStats((prevStats) => ({
+            ...prevStats,
+            incorrectChars: prevStats.incorrectChars + 1,
+            correctStreak: 0,
+          }));
+        }
+      });
     }
-  }
+  };
   
   // Calculate and update statistics-------------------------------------------------------------------
 
@@ -388,13 +397,13 @@ const BackupWithInput = () => {
   const resetTest = () => {
     const wordElement = document.getElementsByClassName('suds')
     wordElement[0].style.marginTop = '0px'
+    setUserInput('');
     key = []
     wordArray = []
     setElapsedTime(0);
     setTimerRunning(false);
     setCurrentLetterIndex(0)
     setSkippedWords(new Set())
-    setStorage("")
     setCurrentWordIndex(0)
     setCounter(0)
     setStats({
@@ -565,193 +574,232 @@ const BackupWithInput = () => {
   }
 
   const blockRestrictedKeys = (e) => {
-    // Handle keydown event for disabling copying and pasting
-    if (e.ctrlKey && e.key === "c") {
-      e.preventDefault();
-      setBlockKey({ for: "Copying is disabled", state: true });
-      setTimeout(() => {
-        setBlockKey({ for: "", state: false });
-      }, 1500);
-      return;
+    // Handle keydown event
+    if (e.ctrlKey && e.key === 'c') {
+      e.preventDefault(); // Prevent the default copy action
+      setBlockKey({ for: 'Copying is disabled', state: true });
+      setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
     }
-    if (e.ctrlKey && e.key === "v") {
-      e.preventDefault();
-      setBlockKey({ for: "Pasting is disabled", state: true });
-      setTimeout(() => {
-        setBlockKey({ for: "", state: false });
-      }, 1500);
-      return;
+    if (e.ctrlKey && e.key === 'v') {
+      e.preventDefault(); // Prevent the default paste action
+      setBlockKey({ for: 'Pasting is disabled', state: true });
+      setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
     }
-  
-    // Handle Backspace (deletes the last letter typed)
-    if (e.key === "Backspace") {
-      e.preventDefault();
-      handleBackSpace()
-      return; // Prevent default behavior
-    }
-
-  };
-
-  const handleBackSpace = () => {
-    if(currentLetterIndex > 1) {
-      const lastTypedLetter = typedLetters.filter(
-        (item) =>
-          item.letterIndex !== currentLetterIndex || item.wordIndex !== currentWordIndex
-      )
-      const {isCorrect, type} = lastTypedLetter
-      // console.log(lastTypedLetter[0])
-      setTypedLetters((prev) => {
-        const updated = prev.filter(
-          (item) =>
-            item.letterIndex !== currentLetterIndex - 1 || item.wordIndex !== currentWordIndex
-        );
-        return updated;
-      });
-      const count = typedLetters[typedLetters?.length - 1]?.letterIndex
-      setCurrentLetterIndex(count + 1)
-      const preStorage = storage?.split("")?.slice(0, currentLetterIndex - 1)?.join("")
-      setStorage(preStorage)
-      // Handle extra letters in the typed word
-      const expectedWord = paraHistory[currentWordIndex]; // Original expected word
-      const typedWord = currentParagraph[currentWordIndex]; // Typed word so far
-
-      if (typedWord.length > expectedWord.length) {
-        // If there are extra letters, remove the last one
-        const correctedWord = typedWord.slice(0, currentLetterIndex - 1); // Remove the last extra character
-        const updatedParagraph = [...currentParagraph];
-        updatedParagraph[currentWordIndex] = correctedWord;
-        setCurrentParagraph(updatedParagraph);
-      }
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      e.preventDefault(); // Prevent Backspace and Delete actions
+      setBlockKey({ for: 'Deleting is disabled', state: true });
+      setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
     }
   }
-  
+
   const handleKeyPress = (e) => {
-    if (hasFocus) {
+    if(hasFocus) {
+      
       const input = e.target.value; // Current input value
+      // console.log("input", input)
+      
       const lastChar = input[input.length - 1]; // Get the last character typed
-  
-      if (lastChar === " ") {
-        // Handle spacebar input (word completion)
-        if (key.length > 0) {
-          const completedWord = key.join(""); // Form the completed word
-          wordArray.push(completedWord); // Add the completed word to wordArray
-          key = []; // Reset key for the new word
-        }
-  
-        e.target.value = ""; // Clear the input field after processing the word
-  
-        // Process word transition and other calculations
-        if (input.trim().length > 0) {
-          if (
-            input?.split("")?.length - 1 !== paraHistory[currentWordIndex]?.length
-          ) {
-            // Mark the current word as skipped
-            setSkippedWords((prev) => new Set(prev).add(currentWordIndex));
-          }
-          setStorage("");
-          calculateExtraMissed(input?.trim())
-          setCurrentWordIndex((prev) => prev + 1); // Move to the next word
-          setCurrentLetterIndex(0); // Reset letter index for the new word
-        }
-        return; // Exit function to prevent further processing
+
+    if (lastChar === " ") {
+      // If space is pressed
+      if (key.length > 0) {
+        const completedWord = key.join(""); // Form the completed word
+        wordArray.push(completedWord); // Add the completed word to wordArray
+        key = []; // Reset key for the new word
       }
-  
-      // For other characters (not space)
-      if (lastChar) {
-        key = lastChar; // Add the character to key array
-      }
-  
+      
+      e.target.value = ""; // Clear the input field after processing the word
+    } else if (lastChar) {
+      // For any other character
+      key = lastChar; // Add the character to key
+    }
+ 
       // Start timer if it's not already running
       if (key.length === 1 && !timerRunning) {
         setTimerRunning(true);
       }
-  
-      // Handle character processing
+
+
+    
+      if (input?.split("")[currentLetterIndex] === " ") {
+        e.preventDefault()
+        if (input.trim().length === 0) {
+          return;
+        }  
+        // console.log(input?.split("")?.length, paraHistory[currentWordIndex]?.length)
+
+        if(input?.split("")?.length - 1 !== paraHistory[currentWordIndex]?.length) {
+          // console.log("hello")
+          // Mark the current word as skipped
+          setSkippedWords((prev) => new Set(prev).add(currentWordIndex));
+        }
+        setStorage("")
+        setCurrentWordIndex((prev) => prev + 1);
+        setCurrentLetterIndex(0);
+        calculateState(userInput, key)
+        setUserInput("")
+        return;
+      }
+
+      // console.log("key", key)
+    
       if (key.length >= 1) {
         const currentWord = currentParagraph[currentWordIndex];
         const historyWord = paraHistory[currentWordIndex];
         const historyWordLength = historyWord?.length;
-  
+    
         let updatedWord = currentWord;
         let isCharacterCorrect = false;
-        let type = "";
-  
+        let type = ''
+    
         if (currentLetterIndex < historyWordLength) {
           const expectedChar = historyWord[currentLetterIndex];
-  
+    
           if (key === expectedChar) {
             isCharacterCorrect = true;
-            updatedWord =
-              currentWord?.slice(0, currentLetterIndex) +
-              key +
-              currentWord.slice(currentLetterIndex + 1);
+            updatedWord = currentWord?.slice(0, currentLetterIndex) + key + currentWord.slice(currentLetterIndex + 1);
           } else {
             isCharacterCorrect = false;
           }
         } else {
           const baseWord = historyWord?.slice(0, historyWordLength);
           let extraChars = currentWord?.slice(historyWordLength);
-  
+    
           if (isCharacterCorrect) {
-            extraChars = extraChars + key; // Append the correct character
+            extraChars = extraChars + key;  // Append the correct character
           } else {
-            type = "extra";
-            extraChars =
-              extraChars?.slice(0, currentLetterIndex - historyWordLength) + key;
+            type = 'extra'
+            extraChars = extraChars?.slice(0, currentLetterIndex - historyWordLength) + key;
           }
-  
+    
           updatedWord = baseWord + extraChars.replace(/-$/, "");
         }
-  
+    
         // Update the word in currentParagraph
         const updatedWords = [...currentParagraph];
         updatedWords[currentWordIndex] = updatedWord;
         setCurrentParagraph(updatedWords);
-        calculateAverage();
-  
-        // Add the letter to typedLetters only if it hasn't been typed already for this index
-        if (
-          typedLetters?.findIndex(
-            (item) =>
-              item.letterIndex === currentLetterIndex &&
-              item.wordIndex === currentWordIndex
-          ) === -1
-        ) {
-          setTypedLetters((prev) => [
-            ...prev,
-            {
-              wordIndex: currentWordIndex,
-              letterIndex: currentLetterIndex,
-              isCorrect: isCharacterCorrect,
-              type: type,
-            },
-          ]);
-        }
-  
-        setCurrentLetterIndex((prev) => prev + 1); // Move to the next letter
+        setUserInput(userInput + key)
+        calculateAverage()
+    
+        
+        setTypedLetters((prev) => [
+          ...prev,
+          { wordIndex: currentWordIndex, letterIndex: currentLetterIndex, isCorrect: isCharacterCorrect, type: type },
+        ]);
+    
+        setCurrentLetterIndex((prev) => prev + 1);
       }
     }
   };
-  
+
+  // const handleKeyPress = (e) => {
+  //   if(hasFocus) {
+  //     const input = e.target.value; // Current input value
+      
+  //     // Handle mobile space key issue
+  //     if (input === 't' && e.target.selectionStart === 1) {
+  //       // Mobile space was detected as 't', treat as space
+  //       if (key.length > 0) {
+  //         const completedWord = key.join(""); 
+  //         wordArray.push(completedWord);
+  //         key = [];
+  //       }
+  //       e.target.value = "";
+  //       return;
+  //     }
+
+  //     const lastChar = input[input.length - 1];
+
+  //     if (lastChar === " ") {
+  //       // If space is pressed
+  //       if (key.length > 0) {
+  //         const completedWord = key.join("");
+  //         wordArray.push(completedWord);
+  //         key = [];
+  //       }
+  //       e.target.value = "";
+  //     } else if (lastChar) {
+  //       key = lastChar;
+  //     }
+ 
+  //     // Start timer if it's not already running
+  //     if (key.length === 1 && !timerRunning) {
+  //       setTimerRunning(true);
+  //     }
+    
+  //     if (input?.split("")[currentLetterIndex] === " ") {
+  //       e.preventDefault()
+  //       if (input.trim().length === 0) {
+  //         return;
+  //       }  
+
+  //       if(input?.split("")?.length - 1 !== paraHistory[currentWordIndex]?.length) {
+  //         setSkippedWords((prev) => new Set(prev).add(currentWordIndex));
+  //       }
+  //       setStorage("")
+  //       setCurrentWordIndex((prev) => prev + 1);
+  //       setCurrentLetterIndex(0);
+  //       calculateState(userInput, key)
+  //       setUserInput("")
+  //       return;
+  //     }
+    
+  //     if (key.length >= 1) {
+  //       const currentWord = currentParagraph[currentWordIndex];
+  //       const historyWord = paraHistory[currentWordIndex];
+  //       const historyWordLength = historyWord?.length;
+    
+  //       let updatedWord = currentWord;
+  //       let isCharacterCorrect = false;
+  //       let type = ''
+    
+  //       if (currentLetterIndex < historyWordLength) {
+  //         const expectedChar = historyWord[currentLetterIndex];
+    
+  //         if (key === expectedChar) {
+  //           isCharacterCorrect = true;
+  //           updatedWord = currentWord?.slice(0, currentLetterIndex) + key + currentWord.slice(currentLetterIndex + 1);
+  //         } else {
+  //           isCharacterCorrect = false;
+  //         }
+  //       } else {
+  //         const baseWord = historyWord?.slice(0, historyWordLength);
+  //         let extraChars = currentWord?.slice(historyWordLength);
+    
+  //         if (isCharacterCorrect) {
+  //           extraChars = extraChars + key;
+  //         } else {
+  //           type = 'extra'
+  //           extraChars = extraChars?.slice(0, currentLetterIndex - historyWordLength) + key;
+  //         }
+    
+  //         updatedWord = baseWord + extraChars.replace(/-$/, "");
+  //       }
+    
+  //       const updatedWords = [...currentParagraph];
+  //       updatedWords[currentWordIndex] = updatedWord;
+  //       setCurrentParagraph(updatedWords);
+  //       setUserInput(userInput + key)
+  //       calculateAverage()
+    
+  //       setTypedLetters((prev) => [
+  //         ...prev,
+  //         { wordIndex: currentWordIndex, letterIndex: currentLetterIndex, isCorrect: isCharacterCorrect, type: type },
+  //       ]);
+    
+  //       setCurrentLetterIndex((prev) => prev + 1);
+  //     }
+  //   }
+  // };
+
   useEffect(()=>{
     if(timerRunning) {
       adjustScroll()
     }
   })
 
-  useEffect(() => {
-    if (timerRunning) {
-      // Call calculateState only if storage is not empty
-      if (storage.trim() !== '') {
-        if(storage?.length < currentLetterIndex) {
-          calculateState(storage, 'BackSpace');
-        } else {
-          calculateState(storage, 'no');
-        }
-      }
-    }
-  }, [storage]);
-  
+  // useEffect(()=>{console.log(hasFocus)})
 
   return (
     <>
