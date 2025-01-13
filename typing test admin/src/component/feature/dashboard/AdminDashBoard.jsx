@@ -104,9 +104,9 @@ const AdminDashBoard = () => {
                     <div className="col-md-12 ">
                         <UserAnalytics user={adminData?.userCount} />
                     </div>
-                    <div className="col-md-12 ">
+                    {/* <div className="col-md-12 ">
                         <HomePageSEO />
-                    </div>
+                    </div> */}
                     <div className="col-md-12 ">
                         <Notice />
                     </div>

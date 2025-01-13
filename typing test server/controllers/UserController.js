@@ -131,9 +131,9 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
     const fetchFilteredData = async (filterType, limit) => {
         const levels = ['all', 'easy', 'medium', 'hard'];
         const queries = levels.map(level => ({
-            [`${filterType}.${level}.avgwpm`]: { $gt: 10 },
-            [`${filterType}.${level}.avgconsis`]: { $gt: 2 },
-            [`${filterType}.${level}.avgacc`]: { $gt: 10 }
+            [`${filterType}.${level}.avgwpm`]: { $gt: 60 },
+            [`${filterType}.${level}.avgconsis`]: { $gt: 10 },
+            [`${filterType}.${level}.avgacc`]: { $gt: 80 }
         }));
 
         const results = await userModel.find({
@@ -167,7 +167,7 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     const allUser = await fetchFilteredData(filterType, limit);
 
-    console.log(allUser)
+    console.log(allUser?.map(value => value.username), allUser?.map(value => value[matchType]?.length))
 
     const extractLevelData = (matchData, level) => {
         const filteredData = matchData?.filter(value => value.level === level);
@@ -180,6 +180,7 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     const filteredData = allUser.map(user => {
         const matchData = user[matchType] || [];
+        const matchCount = matchData?.length
 
         // Extract data for easy, medium, and hard levels
         const easyData = extractLevelData(matchData, 'easy');
@@ -190,6 +191,7 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
         return {
             username: user?.username,
             profile: user?.profileimage,
+            matchCount,
             overall: {
                 avgWpm: calculateAverage(matchData.map(value => parseFloat(value.avgwpm))),
                 avgAcc: calculateAverage(matchData.map(value => parseFloat(value.avgacc))),
@@ -203,8 +205,11 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
         };
     });
 
+    // Filter users with more than 10 matches
+    const eligibleUsers = filteredData.filter(user => user.matchCount > 10);
+
     // Sort users based on overall performance in descending order for ranking
-    const sortedData = filteredData.sort((a, b) => {
+    const sortedData = eligibleUsers.sort((a, b) => {
         // Ranking priority: avgWpm > avgConsis > avgAcc
         const scoreA = a.overall.avgWpm * 0.5 + a.overall.avgConsis * 0.3 + a.overall.avgAcc * 0.2;
         const scoreB = b.overall.avgWpm * 0.5 + b.overall.avgConsis * 0.3 + b.overall.avgAcc * 0.2;

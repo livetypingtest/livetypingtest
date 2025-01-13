@@ -17,6 +17,9 @@
     .p-custom{
         padding: 20px 20px !important;
     }
+    .blog-banner img{
+        height: 250px;
+    }
     .header ul {
         gap: 10px;
     }

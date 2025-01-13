@@ -1359,8 +1359,9 @@ button.google-sign-btn img {
 .blog-banner img{
     width: 100%;
     border-radius: 18px;
-    height: 230px;
+    height: 500px;
     object-fit: cover;
+    object-position: top;
 }
 
 .blog-content {
