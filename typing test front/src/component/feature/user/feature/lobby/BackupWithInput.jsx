@@ -116,6 +116,11 @@ const BackupWithInput = () => {
 
     // Check if a paragraph exists for the given time and difficulty
     if (timeField && paragraphs?.[timeField]?.[difficulty]?.length > 0) {
+      const getIndex = getRandomIndex(paragraphs[timeField][difficulty]);
+      return paragraphs[timeField][difficulty][getIndex]?.para
+
+    // This logic used to get multiple paragraphs and returned by concatinating them--------------------
+
       const selectedParagraphs = [];
       const availableParagraphs = paragraphs[timeField][difficulty];
       const totalParagraphs = availableParagraphs.length;
