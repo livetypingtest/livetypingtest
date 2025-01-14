@@ -877,78 +877,77 @@ const BackupWithInput = () => {
                   )}
                 />
                 <div
-  id="game"
-  className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
->
-  <div
-    className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
-    onClick={() => {
-      setHasFocus(true);
-      setRootFocus(true);
-    }}
-  >
-    <div id="words">
-      {currentParagraph?.map((word, wordIndex) => {
-        const updatedWord = word;
+                  id="game"
+                  className={`typing-area ${!hasFocus ? "text-blur" : ""}`}
+                >
+                  <div
+                    className={`paragraph-container suds ${!hasFocus ? "text-blur" : ""}`}
+                    onClick={() => {
+                      setHasFocus(true);
+                      setRootFocus(true);
+                    }}
+                  >
+                    <div id="words">
+                      {currentParagraph?.map((word, wordIndex) => {
+                        const updatedWord = word;
 
-        return (
-          <div
-            key={wordIndex}
-            className={`word ${
-              wordIndex === currentWordIndex ? "current" : ""
-            } ${skippedWords.has(wordIndex) ? "skip-underline" : ""}`}
-            ref={(el) => (wordRefs.current[wordIndex] = el)}
-          >
-            {updatedWord.split("").map((letter, letterIndex) => {
-              // Find out if this character was typed correctly or incorrectly
-              const typed = typedLetters?.find(
-                (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
-              );
-              const isCorrect = typed?.isCorrect;
-              const isExtra = typed?.type;
+                        return (
+                          <div
+                            key={wordIndex}
+                            className={`word ${
+                              wordIndex === currentWordIndex ? "current" : ""
+                            } ${skippedWords.has(wordIndex) ? "skip-underline" : ""}`}
+                            ref={(el) => (wordRefs.current[wordIndex] = el)}
+                          >
+                            {updatedWord.split("").map((letter, letterIndex) => {
+                              // Find out if this character was typed correctly or incorrectly
+                              const typed = typedLetters?.find(
+                                (t) => t.wordIndex === wordIndex && t.letterIndex === letterIndex
+                              );
+                              const isCorrect = typed?.isCorrect;
+                              const isExtra = typed?.type;
 
-              // Define the class names for styling
-              let classNames = "letter ";
-              if (
-                wordIndex === currentWordIndex &&
-                letterIndex === currentLetterIndex
-              ) {
-                classNames += "current";
-              }
-              if (isCorrect === true) {
-                classNames += " correct";
-              } else if (isCorrect === false) {
-                if (isExtra === "") {
-                  classNames += " incorrect";
-                } else if (isExtra === "extra") {
-                  classNames += " extra";
-                }
-              }
+                              // Define the class names for styling
+                              let classNames = "letter ";
+                              if (
+                                wordIndex === currentWordIndex &&
+                                letterIndex === currentLetterIndex
+                              ) {
+                                classNames += "current";
+                              }
+                              if (isCorrect === true) {
+                                classNames += " correct";
+                              } else if (isCorrect === false) {
+                                if (isExtra === "") {
+                                  classNames += " incorrect";
+                                } else if (isExtra === "extra") {
+                                  classNames += " extra";
+                                }
+                              }
 
-              return (
-                <span key={letterIndex} className={`${classNames}`}>
-                  {/* Add cursor at the current typing position */}
-                  {wordIndex === currentWordIndex &&
-                    letterIndex === currentLetterIndex && (
-                      <span className="blinking-cursor"></span>
-                    )}
-                  {letter}
-                </span>
-              );
-            })}
+                              return (
+                                <span key={letterIndex} className={`${classNames}`}>
+                                  {/* Add cursor at the current typing position */}
+                                  {wordIndex === currentWordIndex &&
+                                    letterIndex === currentLetterIndex && (
+                                      <span className="blinking-cursor"></span>
+                                    )}
+                                  {letter}
+                                </span>
+                              );
+                            })}
 
-            {/* If the cursor is at the end of the word, add a blinking cursor */}
-            {wordIndex === currentWordIndex &&
-              currentLetterIndex === updatedWord.length && (
-                <span className="blinking-cursor"></span>
-              )}
-          </div>
-        );
-      })}
-    </div>
-  </div>
-</div>
-
+                            {/* If the cursor is at the end of the word, add a blinking cursor */}
+                            {wordIndex === currentWordIndex &&
+                              currentLetterIndex === updatedWord.length && (
+                                <span className="blinking-cursor"></span>
+                              )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className='reset'><button className='z-10' onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>
             </div>

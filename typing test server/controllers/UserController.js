@@ -127,6 +127,11 @@ route.get('/', async(req, res) => {
     }
 });
 
+const calculatePoints = (metrics) => {
+    const { avgWpm, avgConsis, avgAcc } = metrics;
+    return avgWpm * 0.5 + avgConsis * 0.3 + avgAcc * 0.2;
+};
+
 route.get('/dashdata/:limit/:type', async (req, res) => {
     const fetchFilteredData = async (filterType, limit) => {
         const levels = ['all', 'easy', 'medium', 'hard'];
@@ -167,36 +172,47 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     const allUser = await fetchFilteredData(filterType, limit);
 
-    console.log(allUser?.map(value => value.username), allUser?.map(value => value[matchType]?.length))
+    console.log('allUser',allUser?.map((value) => console.log(value?.username, value[matchType]?.length)))
 
     const extractLevelData = (matchData, level) => {
         const filteredData = matchData?.filter(value => value.level === level);
+        const avgWpm = calculateAverage(filteredData.map(value => parseFloat(value.avgwpm)));
+        const avgAcc = calculateAverage(filteredData.map(value => parseFloat(value.avgacc)));
+        const avgConsis = calculateAverage(filteredData.map(value => parseFloat(value.avgconsis)));
+
+        // Calculate points for the level
+        const points = calculatePoints({ avgWpm, avgConsis, avgAcc });
         return {
-            avgWpm: calculateAverage(filteredData.map(value => parseFloat(value.avgwpm))),
-            avgAcc: calculateAverage(filteredData.map(value => parseFloat(value.avgacc))),
-            avgConsis: calculateAverage(filteredData.map(value => parseFloat(value.avgconsis))),
+            avgWpm,
+            avgAcc,
+            avgConsis,
+            points, // Add points for each level
         };
     };
 
     const filteredData = allUser.map(user => {
         const matchData = user[matchType] || [];
-        const matchCount = matchData?.length
+        const matchCount = matchData?.length;
 
         // Extract data for easy, medium, and hard levels
         const easyData = extractLevelData(matchData, 'easy');
         const mediumData = extractLevelData(matchData, 'medium');
         const hardData = extractLevelData(matchData, 'hard');
 
+        // Extract overall data
+        const overallData = {
+            avgWpm: calculateAverage(matchData.map(value => parseFloat(value.avgwpm))),
+            avgAcc: calculateAverage(matchData.map(value => parseFloat(value.avgacc))),
+            avgConsis: calculateAverage(matchData.map(value => parseFloat(value.avgconsis))),
+        };
+        const overallPoints = calculatePoints(overallData);
+
         // Return the structured response with overall and levels data
         return {
             username: user?.username,
             profile: user?.profileimage,
             matchCount,
-            overall: {
-                avgWpm: calculateAverage(matchData.map(value => parseFloat(value.avgwpm))),
-                avgAcc: calculateAverage(matchData.map(value => parseFloat(value.avgacc))),
-                avgConsis: calculateAverage(matchData.map(value => parseFloat(value.avgconsis))),
-            },
+            overall: { ...overallData, points: overallPoints }, // Include overall points
             levels: {
                 easy: easyData,
                 medium: mediumData,
@@ -209,12 +225,11 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
     const eligibleUsers = filteredData.filter(user => user.matchCount > 10);
 
     // Sort users based on overall performance in descending order for ranking
-    const sortedData = eligibleUsers.sort((a, b) => {
-        // Ranking priority: avgWpm > avgConsis > avgAcc
-        const scoreA = a.overall.avgWpm * 0.5 + a.overall.avgConsis * 0.3 + a.overall.avgAcc * 0.2;
-        const scoreB = b.overall.avgWpm * 0.5 + b.overall.avgConsis * 0.3 + b.overall.avgAcc * 0.2;
-        return scoreB - scoreA;
-    });
+    const sortedData = eligibleUsers
+        .filter(user => user.overall.avgWpm && user.overall.avgConsis && user.overall.avgAcc) // Ensure valid users
+        .sort((a, b) => b.overall.points - a.overall.points); // Sort globally by overall points
+
+        // console.dir(sortedData, {depth: null})
 
     // Slice the top 100 users
     const top100 = sortedData.slice(0, 100);
@@ -227,6 +242,7 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     res.send({ status: 200, userData: rankedData, type: "leaderboard", message: "Leaderboard Data" });
 });
+
 
 route.post('/signin/google', async (req, res) => {
     const token = Object.keys(req.body)[0];
