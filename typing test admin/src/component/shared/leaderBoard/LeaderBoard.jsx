@@ -23,7 +23,7 @@ const LeaderBoard = () => {
 
     useEffect(() => {
         if (rawAllUserData) {
-            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis}}))
+            setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis, points: value?.overall?.points}}))
             // console.log(rawAllUserData)  
         }
     }, [rawAllUserData]);
@@ -48,7 +48,8 @@ const LeaderBoard = () => {
                 case 'easy':
                     return rawAllUserData?.map(value => ({
                         username: value.username,
-                        profile: value.profile.newname,
+                        points: value?.levels?.easy?.points,
+                        profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]],
                         avgAcc: value?.levels?.easy?.avgAcc,
                         avgWpm: value?.levels?.easy?.avgWpm,
                         avgConsis: value?.levels?.easy?.avgConsis
@@ -56,7 +57,8 @@ const LeaderBoard = () => {
                 case 'medium':
                     return rawAllUserData?.map(value => ({
                         username: value.username,
-                        profile: value.profile.newname,
+                        points: value?.levels?.medium?.points,
+                        profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]],
                         avgAcc: value?.levels?.medium?.avgAcc,
                         avgWpm: value?.levels?.medium?.avgWpm,
                         avgConsis: value?.levels?.medium?.avgConsis
@@ -64,7 +66,8 @@ const LeaderBoard = () => {
                 case 'hard':
                     return rawAllUserData?.map(value => ({
                         username: value.username,
-                        profile: value.profile.newname,
+                        points: value?.levels?.hard?.points,
+                        profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]],
                         avgAcc: value?.levels?.hard?.avgAcc,
                         avgWpm: value?.levels?.hard?.avgWpm,
                         avgConsis: value?.levels?.hard?.avgConsis
@@ -73,7 +76,8 @@ const LeaderBoard = () => {
                 default:
                     return rawAllUserData?.map(value => ({
                         username: value.username,
-                        profile: value.profile.newname,
+                        points: value?.overall?.points,
+                        profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]],
                         avgAcc: value?.overall?.avgAcc,
                         avgWpm: value?.overall?.avgWpm,
                         avgConsis: value?.overall?.avgConsis
@@ -83,18 +87,20 @@ const LeaderBoard = () => {
     
         // Get filtered data for the selected level
         const filteredData = getFilteredData(levelFilter);
+        
+        setDisplayData(filteredData?.filter(user => user.points > 0)?.sort((a, b) => b.points - a.points)); // Update the display data
     
-        // Sort the data based on avgWpm, avgConsis, and avgAcc
-        const rankedData = filteredData
-            ?.filter(item => item.avgWpm && item.avgConsis && item.avgAcc) // Ensure valid data
-            .sort((a, b) => {
-                if (b.avgWpm !== a.avgWpm) return b.avgWpm - a.avgWpm; // Primary: avgWpm
-                if (b.avgConsis !== a.avgConsis) return b.avgConsis - a.avgConsis; // Secondary: avgConsis
-                return b.avgAcc - a.avgAcc; // Tertiary: avgAcc
-            });
+        // // Sort the data based on avgWpm, avgConsis, and avgAcc
+        // const rankedData = filteredData
+        //     ?.filter(item => item.avgWpm && item.avgConsis && item.avgAcc) // Ensure valid data
+        //     .sort((a, b) => {
+        //         if (b.avgWpm !== a.avgWpm) return b.avgWpm - a.avgWpm; // Primary: avgWpm
+        //         if (b.avgConsis !== a.avgConsis) return b.avgConsis - a.avgConsis; // Secondary: avgConsis
+        //         return b.avgAcc - a.avgAcc; // Tertiary: avgAcc
+        //     });
     
-        // Update the display data
-        setDisplayData(rankedData);
+        // // Update the display data
+        // setDisplayData(rankedData);
     };
     
 

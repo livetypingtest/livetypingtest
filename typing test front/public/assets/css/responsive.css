@@ -363,4 +363,7 @@
     .notice-bar .notice p{
         font-size: 10px;
     }
+    .blinking-cursor{
+        height: 28px;
+    }
 }
