@@ -2085,6 +2085,7 @@ button.google-sign-btn img {
     font-weight: 400;
     font-size: 35px ;
     line-height: 40px;
+    letter-spacing: 3px;
     height: 182px;
     gap: 30px;
     color: #fff;
@@ -2259,3 +2260,25 @@ button.google-sign-btn img {
 .position-rel {
     position: relative;
 }
+
+.blinking-cursor {
+    display: inline-block;
+    /* position: absolute; */
+    width: 3px;
+    height: 40px;
+    background-color: #71CAC7;
+    vertical-align: text-bottom; /* Aligns with text baseline */
+    animation: blink 1.5s linear infinite;
+    margin: 0; /* Prevent spacing issues */
+  }
+  
+  @keyframes blink {
+    0%, 100% {
+        background-color: #71CAC7;
+    }
+    50% {
+        background-color: #334a4a;
+    }
+  }
+  
+  
