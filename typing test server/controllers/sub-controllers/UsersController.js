@@ -62,7 +62,7 @@ route.get('/', async (req, res) => {
 
     try {
         // Get the total count of users
-        const totalUsers = await userModel.countDocuments();
+        const totalUsers = await userModel.find();
 
         // Fetch the users for the current page
         const paginatedUsers = await userModel
@@ -70,7 +70,7 @@ route.get('/', async (req, res) => {
             .skip(skip)
             .limit(limit);
 
-            const filteredData = paginatedUsers?.map(value => {
+            const filteredData = totalUsers?.map(value => {
                 return {
                     username : value?.username,
                     profile : value?.profileimage,
@@ -86,7 +86,7 @@ route.get('/', async (req, res) => {
             data: filteredData,
             totalUsers,
             currentPage: page,
-            totalPages: Math.ceil(totalUsers / limit),
+            totalPages: Math.ceil(totalUsers?.length / limit),
         });
     } catch (error) {
         console.error('Error fetching users:', error);

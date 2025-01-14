@@ -14,22 +14,26 @@ import { profileExtractor } from "../../../../util/Extractor";
 
 const AllUsers = () => {
     const dispatch = useDispatch();
+
     const rawAllUsersData = useSelector(state => state.AdminDataSlice.allUserData);
     const isFullfilled = useSelector((state) => state.AdminDataSlice.isFullfilled);
     const fullFillMsg = useSelector((state) => state.AdminDataSlice.fullFillMsg);
-    const [loader, setLoader] = useState(false);
     const isProcessing = useSelector((state) => state.AdminDataSlice.isProcessing);
     const processingMsg = useSelector((state) => state.AdminDataSlice.processingMsg);
+
     const [deleteUsername, setDeleteUsername] = useState([]);
-    const [users, setUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [loader, setLoader] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
+    const [limit, setLimit] = useState(50);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         fetchUsers(currentPage);
-    }, [currentPage]);
+    }, []);
 
     const fetchUsers = async (page) => {
         setLoader(true);
@@ -46,14 +50,38 @@ const AllUsers = () => {
     };
 
     useEffect(() => {
-        if (rawAllUsersData?.length !== 0) {
-            // console.log(rawAllUsersData)
-            setUsers(rawAllUsersData);
+        // Filter data based on search query
+        const filteredData = rawAllUsersData.filter(user =>
+            user.username.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        // Pagination logic
+        const start = (currentPage - 1) * limit;
+        const end = start + limit;
+        setUsers(filteredData.slice(start, end));
+
+        // Update total pages
+        setTotalPages(Math.ceil(filteredData.length / limit));
+    }, [rawAllUsersData, searchQuery, currentPage, limit]);
+
+    const handleSearchChange = e => {
+        setSearchQuery(e.target.value); // Update search query state
+        setCurrentPage(1); // Reset to first page on new search
+    };
+
+    useEffect(() => {
+        if (rawAllUsersData?.length > 0) {
+            const start = (currentPage - 1) * limit; // Calculate start index
+            const end = start + limit;              // Calculate end index
+            // console.log(rawAllUsersData.slice(start, end));
+            setUsers(rawAllUsersData.slice(start, end)); // Set sliced data
         }
-    }, [dispatch, rawAllUsersData]);
+    }, [rawAllUsersData, currentPage, limit]);
+    
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+
     };
 
     useEffect(() => {
@@ -144,6 +172,13 @@ const AllUsers = () => {
                                     )
                                 }
                                 <div className="bulk-action-layout-btn">
+                                    <input
+                                        type="text"
+                                        className="form-control m-0"
+                                        placeholder="Search By Username"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                    />
                                     <button onClick={exportSelectedToExcel} disabled={selectedUsers?.length !== 0 ? false : true} className="btn btn-primary my-3">
                                         Export Selected Users
                                     </button>

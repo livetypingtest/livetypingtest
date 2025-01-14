@@ -1441,10 +1441,11 @@
     width: 45%;
 }
 .bulk-action-layout-btn{
-    display: flex;
+    display: grid;
     align-items: center;
     justify-content: space-evenly;
     gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .cs-blog-category{
