@@ -21,7 +21,7 @@ const Footer = () => {
                                     <li><a target='_blank' href='https://x.com/livetypingtest'><i class="fa-brands fa-lg fa-twitter"></i></a></li>
                                 </ul>
                                 <ul>
-                                    <li className='footer-design'><i class="fa-regular fa-copyright"></i> Copyright 2024 Live Typing Test - All Rights Reserved. </li>
+                                    <li className='footer-design'><i class="fa-regular fa-copyright"></i> Copyright {new Date().getFullYear()} Live Typing Test - All Rights Reserved. </li>
                                 </ul>
                                 {/* <p className='m-0'>Design and Developed By <span>Aerozef Creations</span></p> */}
                             </div>

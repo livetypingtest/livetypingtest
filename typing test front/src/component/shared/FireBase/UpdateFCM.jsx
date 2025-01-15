@@ -23,6 +23,6 @@ const requestPermission = async () => {
     } catch (error) {
         console.error("An error occurred while retrieving token:", error);
     }
-    };
+};
 
 export {requestPermission}

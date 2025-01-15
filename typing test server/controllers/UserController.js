@@ -172,7 +172,7 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     const allUser = await fetchFilteredData(filterType, limit);
 
-    console.log('allUser',allUser?.map((value) => console.log(value?.username, value[matchType]?.length)))
+    // console.log('allUser',allUser?.map((value) => console.log(value?.username, value[matchType]?.length)))
 
     const extractLevelData = (matchData, level) => {
         const filteredData = matchData?.filter(value => value.level === level);

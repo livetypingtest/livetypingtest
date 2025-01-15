@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { handleGetUserData, handleLocalDataCalling, resetState } from '../redux/UserDataSlice';
@@ -24,6 +23,7 @@ const UserModule = () => {
     const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
 
 //  Notification Setup-----------------------------------------------------------------------------------
+
 const shownNotifications = new Set(); // Global Set to track notifications
 
 useEffect(() => {
@@ -65,43 +65,6 @@ useEffect(() => {
 }, []);
 
 //  Notification Setup-----------------------------------------------------------------------------------
-
-
-//  Google Analytics Setup-----------------------------------------------------------------------------------
-    const getGooleAnalyticsId = async () => {
-        const response = await axios.get(`${ADMIN_API_URL}/google-analytics`)
-        const {trackingId} = response.data
-        // console.log(trackingId)
-        if (!trackingId) {
-            return;
-        }
-        const scriptTag = document.createElement("script");
-        scriptTag.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
-        scriptTag.async = true;
-    
-        const inlineScript = document.createElement("script");
-        inlineScript.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${trackingId}');
-        `;
-    
-        document.head.appendChild(scriptTag);
-        document.head.appendChild(inlineScript);
-    
-        return () => {
-        // Cleanup scripts when component unmounts
-        document.head.removeChild(scriptTag);
-        document.head.removeChild(inlineScript);
-        };
-    }
-
-    useEffect(() => {
-        getGooleAnalyticsId();
-    }, []);
-//  Google Analytics Setup-----------------------------------------------------------------------------------
-
 
 
     useEffect(()=>{

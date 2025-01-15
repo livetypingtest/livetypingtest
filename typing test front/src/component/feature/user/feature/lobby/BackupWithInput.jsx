@@ -524,23 +524,47 @@ const BackupWithInput = () => {
 
   const adjustScroll = () => {
     if(!isMobile) {
-      const currentWordRef = wordRefs.current[currentWordIndex];
-      if (currentWordRef) {
-        const rect = currentWordRef.getBoundingClientRect();
-        // console.log(rect.top > 300);
-      
-        if (rect.top > 350) {
-          const wordElement = document.getElementsByClassName('suds');
-          if (wordElement.length > 0) {
-            // Calculate the new marginTop based on the counter value
-            const newMarginTop = `-${70 * (counter)}px`;
-            wordElement[0].style.marginTop = newMarginTop;
-            // console.log(`New marginTop: ${newMarginTop}`);
-      
-            // Increment the counter for the next time
-            setCounter((prevCounter) => prevCounter + 1);
-          } else {
-            console.error('Element with class "suds" not found');
+      if(window.innerWidth <= 1300 && window.innerWidth >= 1024) {
+        const currentWordRef = wordRefs.current[currentWordIndex];
+        if (currentWordRef) {
+          const rect = currentWordRef.getBoundingClientRect();
+          // console.log(rect.top);
+        
+          if (rect.top > 280) {
+            const wordElement = document.getElementsByClassName('suds');
+            if (wordElement.length > 0) {
+              // Calculate the new marginTop based on the counter value
+              const newMarginTop = `-${70 * (counter)}px`;
+              // const newMarginTop = `-${Math.min(65 * counter, 300)}px`
+              wordElement[0].style.marginTop = newMarginTop;
+              // console.log(`New marginTop: ${newMarginTop}`);
+        
+              // Increment the counter for the next time
+              setCounter((prevCounter) => prevCounter + 1);
+            } else {
+              console.error('Element with class "suds" not found');
+            }
+          }
+        }
+      } else {
+        const currentWordRef = wordRefs.current[currentWordIndex];
+        if (currentWordRef) {
+          const rect = currentWordRef.getBoundingClientRect();
+          // console.log(rect.top > 300);
+        
+          if (rect.top > 350) {
+            const wordElement = document.getElementsByClassName('suds');
+            if (wordElement.length > 0) {
+              // Calculate the new marginTop based on the counter value
+              const newMarginTop = `-${70 * (counter)}px`;
+              wordElement[0].style.marginTop = newMarginTop;
+              // console.log(`New marginTop: ${newMarginTop}`);
+        
+              // Increment the counter for the next time
+              setCounter((prevCounter) => prevCounter + 1);
+            } else {
+              console.error('Element with class "suds" not found');
+            }
           }
         }
       }
@@ -761,9 +785,9 @@ const BackupWithInput = () => {
   return (
     <>
 
-      {
+      {/* {
         homePageSEO && (<DynamicTitle title={homePageSEO?.seoTitle} description={homePageSEO.seoDescription} icon={homePageSEO?.imageUrl} />)
-      }
+      } */}
 
       <Header timerRunning={timerRunning} />
       <section className='lobby-area pb-3'>
