@@ -193,7 +193,7 @@ const LeaderBoard = () => {
                                     <tr>
                                     <th>#</th>
                                     <th>name</th>
-                                    <th>Points</th>
+                                    <th>Score</th>
                                     {/* <th>wpm</th>
                                     <th>accuracy</th>
                                     <th>consistency</th> */}

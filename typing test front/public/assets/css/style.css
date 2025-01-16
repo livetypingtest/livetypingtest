@@ -2266,11 +2266,16 @@ button.google-sign-btn img {
     /* position: absolute; */
     width: 3px;
     height: 40px;
+    border-radius: 10px;
     background-color: #71CAC7;
     vertical-align: text-bottom; /* Aligns with text baseline */
-    animation: blink 1.5s linear infinite;
+    /* animation: blink 1.5s linear infinite; */
     margin: 0; /* Prevent spacing issues */
-  }
+}
+
+.blinking-cursor.blink {
+    animation: blink 1.5s linear infinite;
+}
   
   @keyframes blink {
     0%, 100% {
@@ -2280,5 +2285,8 @@ button.google-sign-btn img {
         background-color: #334a4a;
     }
   }
-  
-  
+
+#caret {
+    position: absolute;
+    transition: left 0.1s ease, top 0.1s ease; /* Optional smooth movement */
+}

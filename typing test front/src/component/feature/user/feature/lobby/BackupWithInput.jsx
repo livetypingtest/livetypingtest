@@ -30,6 +30,7 @@ const BackupWithInput = () => {
   const matchHistory = useSelector(state => state.DynamicPagesDataSlice.matchHistory)
 
   const [time, setTime] = useState(60);
+  const [caretPosition, setCaretPosition] = useState(0)
   const [skippedWords, setSkippedWords] = useState(new Set());
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const [blockKey, setBlockKey] = useState({for: '', state: false})
@@ -466,6 +467,8 @@ const BackupWithInput = () => {
     }
   }, [])
 
+  // useEffect(()=>{console.log('level',finalStats.level), console.log('time',finalStats.time)}, [finalStats])
+  
   // handle successfully login toasts-------------------------------------------------------------------
   useEffect(()=>{
     if(localStorage.getItem('isSignin')) {
@@ -654,6 +657,29 @@ const BackupWithInput = () => {
     }
   }
   
+  const updateCaretPosition = (lastChar) => {
+    // const currentLetter = document.querySelector('.letter.current'); // Get the current letter
+    // const caret = document.getElementById('caret'); // Get the caret element
+    
+    
+    // if (currentLetter && caret) {
+    //   // Get the position of the current letter
+    //   const rect = currentLetter.getBoundingClientRect();
+      
+    //   console.log(rect)
+    //   // Update the caret's position to be before the current letter
+    //   caret.style.left = `${rect.left}px`;
+    //   caret.style.top = `${rect.top}px`; // Optional: Adjust the caret's vertical position if needed
+    // } else {
+    //   console.error('Current letter or caret not found');
+    // }
+    // Increment the caret position only if the last character is a letter or space
+    if (lastChar && /\S/.test(lastChar)) {
+      setCaretPosition((prevPosition) => prevPosition + 22); // Increment caret position
+    }
+  };
+  
+
   const handleKeyPress = (e) => {
     if (hasFocus) {
       const input = e.target.value; // Current input value
@@ -685,6 +711,8 @@ const BackupWithInput = () => {
         return; // Exit function to prevent further processing
       }
   
+      // updateCaretPosition(lastChar)
+
       // For other characters (not space)
       if (lastChar) {
         key = lastChar; // Add the character to key array
@@ -911,6 +939,7 @@ const BackupWithInput = () => {
                       setRootFocus(true);
                     }}
                   >
+                    {/* <span id='caret' style={{left: caretPosition}} className={`blinking-cursor ${!timerRunning && 'blink'}`}></span> */}
                     <div id="words">
                       {currentParagraph?.map((word, wordIndex) => {
                         const updatedWord = word;
@@ -954,7 +983,7 @@ const BackupWithInput = () => {
                                   {/* Add cursor at the current typing position */}
                                   {wordIndex === currentWordIndex &&
                                     letterIndex === currentLetterIndex && (
-                                      <span className="blinking-cursor"></span>
+                                      <span className={`blinking-cursor ${!timerRunning && 'blink'}`}></span>
                                     )}
                                   {letter}
                                 </span>
