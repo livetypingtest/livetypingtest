@@ -614,6 +614,12 @@ const BackupWithInput = () => {
       }, 1500);
       return;
     }
+
+    // if (e.key === 'Backspace' || e.key === 'Delete') {
+    //   e.preventDefault(); // Prevent Backspace and Delete actions
+    //   setBlockKey({ for: 'Deleting is disabled', state: true });
+    //   setTimeout(() => { setBlockKey({ for: '', state: false }); }, 1500);
+    // }
   
     // Handle Backspace (deletes the last letter typed)
     if (e.key === "Backspace") {
@@ -656,34 +662,53 @@ const BackupWithInput = () => {
       }
     }
   }
+
+  const handleBackSpaceForMobile = () => {
+    if(currentLetterIndex > 1) {
+      setTypedLetters((prev) => {
+        const updated = prev.filter(
+          (item) =>
+            item.letterIndex !== currentLetterIndex - 1 || item.wordIndex !== currentWordIndex
+        );
+        return updated;
+      });
+      const count = typedLetters[typedLetters?.length - 1]?.letterIndex
+      setCurrentLetterIndex(count)
+      const preStorage = storage?.split("")?.slice(0, currentLetterIndex - 1)?.join("")
+      setStorage(preStorage)
+      // Handle extra letters in the typed word
+      const expectedWord = paraHistory[currentWordIndex]; // Original expected word
+      const typedWord = currentParagraph[currentWordIndex]; // Typed word so far
+
+      if (typedWord.length > expectedWord.length) {
+        // If there are extra letters, remove the last one
+        const correctedWord = typedWord.slice(0, currentLetterIndex - 1); // Remove the last extra character
+        const updatedParagraph = [...currentParagraph];
+        updatedParagraph[currentWordIndex] = correctedWord;
+        setCurrentParagraph(updatedParagraph);
+      }
+    }
+  }
   
   const updateCaretPosition = (lastChar) => {
-    // const currentLetter = document.querySelector('.letter.current'); // Get the current letter
-    // const caret = document.getElementById('caret'); // Get the caret element
-    
-    
-    // if (currentLetter && caret) {
-    //   // Get the position of the current letter
-    //   const rect = currentLetter.getBoundingClientRect();
-      
-    //   console.log(rect)
-    //   // Update the caret's position to be before the current letter
-    //   caret.style.left = `${rect.left}px`;
-    //   caret.style.top = `${rect.top}px`; // Optional: Adjust the caret's vertical position if needed
-    // } else {
-    //   console.error('Current letter or caret not found');
-    // }
-    // Increment the caret position only if the last character is a letter or space
-    if (lastChar && /\S/.test(lastChar)) {
+    if (lastChar && /\S/.test(lastChar) && lastChar !== " ") {
       setCaretPosition((prevPosition) => prevPosition + 22); // Increment caret position
+    } else {
+      setCaretPosition((prevPosition) => prevPosition + 30); // Increment caret position
     }
   };
   
-
   const handleKeyPress = (e) => {
     if (hasFocus) {
       const input = e.target.value; // Current input value
       const lastChar = input[input.length - 1]; // Get the last character typed
+
+      if(isMobile) {
+        if(storage?.length >= input?.length) {
+          handleBackSpaceForMobile()
+          return
+        }
+      }
   
       if (lastChar === " ") {
         // Handle spacebar input (word completion)
@@ -922,11 +947,12 @@ const BackupWithInput = () => {
                   type="text"
                   name=""
                   id=""
+                  onChange={(e) => { handleKeyPress(e); setStorage(e.target.value)}}
                   // Conditional event handler based on screen size
-                  {...(isMobile
-                    ? { onInput: (e) => { handleKeyPress(e); setStorage(e.currentTarget.value) }}
-                    : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value)}}
-                  )}
+                  // {...(isMobile
+                  //   ? { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value) }}
+                  //   : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value)}}
+                  // )}
                 />
                 <div
                   id="game"
