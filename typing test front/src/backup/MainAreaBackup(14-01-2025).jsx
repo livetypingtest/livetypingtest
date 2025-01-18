@@ -1,3 +1,4 @@
+// main typing area backup =======================================================================
 <div
                   id="game"
                   // ref={typingAreaRef}
@@ -56,4 +57,38 @@
                       })}
                     </div>
                   </div>
-                </div>
+</div>
+
+// scroll function backup ======================================================================= 
+
+  // const adjustScroll = () => {
+  //   if (!isMobile) {
+  //     const isSmallDesktop = window.innerWidth <= 1300 && window.innerWidth >= 1024;
+  //     const threshold = isSmallDesktop ? 280 : 350;
+  //     handleScroll(threshold, 70);
+  //   } else {
+  //     handleScroll(390, 55);
+  //   }
+  // };
+  
+  // // Helper function to handle the scrolling logic
+  // const handleScroll = (threshold, offset) => {
+  //   const currentWordRef = wordRefs.current[currentWordIndex];
+  //   if (currentWordRef) {
+  //     const rect = currentWordRef.getBoundingClientRect();
+  
+  //     if (rect.top > threshold) {
+  //       const wordElement = document.getElementsByClassName("suds");
+  //       if (wordElement.length > 0) {
+  //         // Calculate the new marginTop based on the counter value
+  //         const newMarginTop = `-${offset * counter}px`;
+  //         wordElement[0].style.marginTop = newMarginTop;
+  
+  //         // Increment the counter for the next time
+  //         setCounter((prevCounter) => prevCounter + 1);
+  //       } else {
+  //         console.error('Element with class "suds" not found');
+  //       }
+  //     }
+  //   }
+  // };

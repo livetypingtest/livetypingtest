@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleTest, resetState } from '../../../../../redux/UserDataSlice';
 import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
-import { easyWords, generateParagraph, hardWords, mediumWords } from './ParagraphGenerater';
 import DynamicAlert from '../../../../shared/Toast/DynamicAlert'
 import { Helmet } from 'react-helmet';
 import Footer from '../../../../shared/footer/Footer'
@@ -19,6 +18,7 @@ const BackupWithInput = () => {
   const typingAreaRef = useRef(null);
   const containerRef = useRef(null);
   const wordRefs = useRef([])
+  const scrollLock = useRef(false)
   // const isCapsLockOn = useRef(false);
   
   const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
@@ -223,7 +223,8 @@ const BackupWithInput = () => {
 
   // Calculate and update statistics-------------------------------------------------------------------
 
-  const calculateAverage = () => {
+  const calculateWPM = () => {
+
     // Calculate WPM (Words Per Minute)
     let wpm = 0;
 
@@ -231,7 +232,7 @@ const BackupWithInput = () => {
       // Count the number of correctly typed words
       const correctWords = typedLetters
         .reduce((wordCount, letter) => {
-          if (letter.letterIndex === 0) wordCount++; // Count the start of each correctly typed word
+          if (letter.isCorrect) wordCount++; // Count the start of each correctly typed word
           return wordCount;
         }, 0);
 
@@ -246,6 +247,10 @@ const BackupWithInput = () => {
         wpm: [...prevStats.wpm, Math.min(wpm, elapsedTime > 5 ? wpm : 150)], // Cap WPM at 150 for quick tests
       }));
     }
+
+  }
+
+  const calculateAverage = () => {
 
     // Variables for accuracy and consistency calculation
     const totalCorrect = stats.correctChars; // Total number of correct characters typed
@@ -525,76 +530,49 @@ const BackupWithInput = () => {
   };
   // Putting eye on caps lock -----------------------------------------------------------------
 
+
   const adjustScroll = () => {
-    if(!isMobile) {
-      if(window.innerWidth <= 1300 && window.innerWidth >= 1024) {
-        const currentWordRef = wordRefs.current[currentWordIndex];
-        if (currentWordRef) {
-          const rect = currentWordRef.getBoundingClientRect();
-          // console.log(rect.top);
-        
-          if (rect.top > 280) {
-            const wordElement = document.getElementsByClassName('suds');
-            if (wordElement.length > 0) {
-              // Calculate the new marginTop based on the counter value
-              const newMarginTop = `-${70 * (counter)}px`;
-              // const newMarginTop = `-${Math.min(65 * counter, 300)}px`
-              wordElement[0].style.marginTop = newMarginTop;
-              // console.log(`New marginTop: ${newMarginTop}`);
-        
-              // Increment the counter for the next time
-              setCounter((prevCounter) => prevCounter + 1);
-            } else {
-              console.error('Element with class "suds" not found');
-            }
-          }
-        }
-      } else {
-        const currentWordRef = wordRefs.current[currentWordIndex];
-        if (currentWordRef) {
-          const rect = currentWordRef.getBoundingClientRect();
-          // console.log(rect.top > 300);
-        
-          if (rect.top > 350) {
-            const wordElement = document.getElementsByClassName('suds');
-            if (wordElement.length > 0) {
-              // Calculate the new marginTop based on the counter value
-              const newMarginTop = `-${70 * (counter)}px`;
-              wordElement[0].style.marginTop = newMarginTop;
-              // console.log(`New marginTop: ${newMarginTop}`);
-        
-              // Increment the counter for the next time
-              setCounter((prevCounter) => prevCounter + 1);
-            } else {
-              console.error('Element with class "suds" not found');
-            }
-          }
-        }
-      }
+    if (!isMobile) {
+      const isSmallDesktop = window.innerWidth <= 1300 && window.innerWidth >= 1024;
+      const threshold = isSmallDesktop ? 280 : 350;
+      handleScroll(threshold, 70);
     } else {
-      const currentWordRef = wordRefs.current[currentWordIndex];
-      if (currentWordRef) {
-        const rect = currentWordRef.getBoundingClientRect();
-        // console.log(rect.top );
-        // return
-        if (rect.top > 390) {
-          const wordElement = document.getElementsByClassName('suds');
-          if (wordElement.length > 0) {
-            // Calculate the new marginTop based on the counter value
-            const newMarginTop = `-${55 * (counter)}px`;
-            // const newMarginTop = `-${Math.min(65 * counter, 300)}px`
-            wordElement[0].style.marginTop = newMarginTop;
-            // console.log(`New marginTop: ${newMarginTop}`);
-      
-            // Increment the counter for the next time
-            setCounter((prevCounter) => prevCounter + 1);
-          } else {
-            console.error('Element with class "suds" not found');
-          }
+      handleScroll(390, 55);
+    }
+  };
+  
+  // Helper function to handle the scrolling logic with smooth transition
+  const handleScroll = (threshold, offset) => {
+    const currentWordRef = wordRefs.current[currentWordIndex];
+    if (currentWordRef) {
+      const rect = currentWordRef.getBoundingClientRect();
+  
+      if (rect.top > threshold && !scrollLock.current) {
+        const wordElement = document.getElementsByClassName("suds");
+        if (wordElement.length > 0) {
+          // Lock scrolling to prevent multiple triggers
+          scrollLock.current = true;
+  
+          // Add a smooth transition for the margin-top property
+          wordElement[0].style.transition = "margin-top 0.3s ease-in-out";
+  
+          // Calculate the new marginTop based on the counter value
+          const newMarginTop = `-${offset * counter}px`;
+          wordElement[0].style.marginTop = newMarginTop;
+  
+          // Increment the counter for the next time
+          setCounter((prevCounter) => prevCounter + 1);
+  
+          // Unlock scrolling after the transition duration
+          setTimeout(() => {
+            scrollLock.current = false;
+          }, 300); // Match the transition duration
+        } else {
+          console.error('Element with class "suds" not found');
         }
       }
     }
-  }
+  };
 
   const blockRestrictedKeys = (e) => {
     // Handle keydown event for disabling copying and pasting
@@ -624,13 +602,13 @@ const BackupWithInput = () => {
     // Handle Backspace (deletes the last letter typed)
     if (e.key === "Backspace") {
       e.preventDefault();
-      handleBackSpace()
+      handleBackSpace('desktop')
       return; // Prevent default behavior
     }
 
   };
 
-  const handleBackSpace = () => {
+  const handleBackSpace = (check) => {
     if(currentLetterIndex > 1) {
       const lastTypedLetter = typedLetters.filter(
         (item) =>
@@ -646,34 +624,7 @@ const BackupWithInput = () => {
         return updated;
       });
       const count = typedLetters[typedLetters?.length - 1]?.letterIndex
-      setCurrentLetterIndex(count + 1)
-      const preStorage = storage?.split("")?.slice(0, currentLetterIndex - 1)?.join("")
-      setStorage(preStorage)
-      // Handle extra letters in the typed word
-      const expectedWord = paraHistory[currentWordIndex]; // Original expected word
-      const typedWord = currentParagraph[currentWordIndex]; // Typed word so far
-
-      if (typedWord.length > expectedWord.length) {
-        // If there are extra letters, remove the last one
-        const correctedWord = typedWord.slice(0, currentLetterIndex - 1); // Remove the last extra character
-        const updatedParagraph = [...currentParagraph];
-        updatedParagraph[currentWordIndex] = correctedWord;
-        setCurrentParagraph(updatedParagraph);
-      }
-    }
-  }
-
-  const handleBackSpaceForMobile = () => {
-    if(currentLetterIndex > 1) {
-      setTypedLetters((prev) => {
-        const updated = prev.filter(
-          (item) =>
-            item.letterIndex !== currentLetterIndex - 1 || item.wordIndex !== currentWordIndex
-        );
-        return updated;
-      });
-      const count = typedLetters[typedLetters?.length - 1]?.letterIndex
-      setCurrentLetterIndex(count)
+      setCurrentLetterIndex(check === 'desktop' ? count + 1 : count)
       const preStorage = storage?.split("")?.slice(0, currentLetterIndex - 1)?.join("")
       setStorage(preStorage)
       // Handle extra letters in the typed word
@@ -705,7 +656,7 @@ const BackupWithInput = () => {
 
       if(isMobile) {
         if(storage?.length >= input?.length) {
-          handleBackSpaceForMobile()
+          handleBackSpace('mobile')
           return
         }
       }
@@ -833,6 +784,12 @@ const BackupWithInput = () => {
       }
     }
   }, [storage]);
+
+  useEffect(() => {
+    if (timerRunning && elapsedTime > 0) {
+      calculateWPM();
+    }
+  }, [elapsedTime, typedLetters]);
   
 
   return (
@@ -948,11 +905,6 @@ const BackupWithInput = () => {
                   name=""
                   id=""
                   onChange={(e) => { handleKeyPress(e); setStorage(e.target.value)}}
-                  // Conditional event handler based on screen size
-                  // {...(isMobile
-                  //   ? { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value) }}
-                  //   : { onChange: (e) => { handleKeyPress(e); setStorage(e.target.value)}}
-                  // )}
                 />
                 <div
                   id="game"
@@ -1088,7 +1040,6 @@ const BackupWithInput = () => {
         )
       }
 
-      
       {
         hasFocus && rootFocus && isCapsLockOn && (
           <div className="caps-alert">
