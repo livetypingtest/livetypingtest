@@ -695,7 +695,7 @@ const BackupWithInput = () => {
       }
   
       // Start timer if it's not already running
-      if (key.length === 1 && !timerRunning) {
+      if (key?.length === 1 && !timerRunning) {
         setTimerRunning(true);
       }
   
@@ -724,16 +724,24 @@ const BackupWithInput = () => {
         } else {
           const baseWord = historyWord?.slice(0, historyWordLength);
           let extraChars = currentWord?.slice(historyWordLength);
-  
-          if (isCharacterCorrect) {
-            extraChars = extraChars + key; // Append the correct character
-          } else {
-            type = "extra";
-            extraChars =
-              extraChars?.slice(0, currentLetterIndex - historyWordLength) + key;
-          }
-  
-          updatedWord = baseWord + extraChars.replace(/-$/, "");
+          const extraCharCount =
+          currentWord.length > historyWordLength
+            ? currentWord.length - historyWordLength
+            : 0;
+
+            console.log('extraCharCount', extraCharCount)
+
+          if(extraCharCount < 10) {
+            if (isCharacterCorrect) {
+              extraChars = extraChars + key; // Append the correct character
+            } else {
+              type = "extra";
+              extraChars =
+                extraChars?.slice(0, currentLetterIndex - historyWordLength) + key;
+            }
+    
+            updatedWord = baseWord + extraChars.replace(/-$/, "");
+          } else return
         }
   
         // Update the word in currentParagraph

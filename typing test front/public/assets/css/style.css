@@ -585,6 +585,7 @@ button.google-sign-btn img {
 }
 
 .stacs table th, .stacs table td{
+    cursor: default;
     padding: 10px;
 }
 
@@ -1039,6 +1040,7 @@ button.google-sign-btn img {
 }
 
 .leaderboard-table table{
+    cursor: default;
     width: 100%;
 }
 .leaderboard-table table td, .leaderboard-table table th {
@@ -2078,8 +2080,8 @@ button.google-sign-btn img {
 
   #words {
     position: relative;
-    display: flex
-;
+    display: flex;
+    cursor: default;
     font-family: "Roboto Mono", "Roboto Mono", Vazirmatn, monospace;
     font-style: normal;
     font-weight: 400;
