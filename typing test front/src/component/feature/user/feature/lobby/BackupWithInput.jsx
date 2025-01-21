@@ -232,9 +232,14 @@ const BackupWithInput = () => {
       // Count the number of correctly typed words
       const correctWords = typedLetters
         .reduce((wordCount, letter) => {
-          if (letter.isCorrect) wordCount++; // Count the start of each correctly typed word
+          if (letter.letterIndex === 0) wordCount++; // Count the start of each correctly typed word
           return wordCount;
         }, 0);
+      // const correctWords = typedLetters
+      //   .reduce((wordCount, letter) => {
+      //     if (letter.isCorrect) wordCount++; // Count the start of each correctly typed word
+      //     return wordCount;
+      //   }, 0);
 
         
         // Calculate words per minute (1 word = 5 characters)
@@ -845,10 +850,13 @@ const BackupWithInput = () => {
                   </li>
                 </ul>
               </div>
-              <div className="lobby-menu text-center">
+              <div className="lobby-menu cs-timer text-center">
                 <h4 className={`${timerRunning ? 'text-active' : 'text-idle'}`}>
                   {timeLimit - elapsedTime > 0 ? convertSecondsToFormattedTime(timeLimit - elapsedTime) : 0}
                 </h4>
+                
+                  <div className='cs-logo' style={isMobile && timerRunning ? {opacity: 1} : {}}><img src="/assets/images/logo.svg" alt="Logo" /></div>
+                
               </div>
               <div className='lobby-menu'>
                 <ul style={{ visibility: timerRunning ? 'hidden' : 'visible' }}>
@@ -899,6 +907,7 @@ const BackupWithInput = () => {
                 <textarea
                   ref={typingAreaRef}
                   value={storage}
+                  disabled={timeUp}
                   autoCapitalize='off'
                   autoComplete='off'
                   autoCorrect='off'

@@ -343,6 +343,7 @@ const UserDataSlice = createSlice({
         });
         builder.addCase(handleLocalDataCalling.pending, (state, action) => {
             state.isProcessing = true
+            state.isDataPending = true
         });
         builder.addCase(handleSigninUser.fulfilled, (state, action) => {
             if(action.payload.status) {
