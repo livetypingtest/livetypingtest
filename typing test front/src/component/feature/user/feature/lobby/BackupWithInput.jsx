@@ -855,7 +855,9 @@ const BackupWithInput = () => {
                   {timeLimit - elapsedTime > 0 ? convertSecondsToFormattedTime(timeLimit - elapsedTime) : 0}
                 </h4>
                 
-                  <div className='cs-logo' style={isMobile && timerRunning ? {opacity: 1} : {}}><img src="/assets/images/logo.svg" alt="Logo" /></div>
+                {
+                  isMobile && (<div className='cs-logo' style={isMobile && timerRunning ? {opacity: 1} : {}}><img src="/assets/images/logo.svg" alt="Logo" /></div>)
+                }
                 
               </div>
               <div className='lobby-menu'>
