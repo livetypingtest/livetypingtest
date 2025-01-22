@@ -2308,3 +2308,15 @@ button.google-sign-btn img {
     position: absolute;
     transition: left 0.1s ease, top 0.1s ease; /* Optional smooth movement */
 }
+
+@media screen and (min-width: 1140px) {
+    body, html, #root {
+        height: 100vh;
+    }
+    
+    #root {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}

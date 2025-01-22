@@ -30,6 +30,7 @@ const BackupWithInput = () => {
   const matchHistory = useSelector(state => state.DynamicPagesDataSlice.matchHistory)
 
   const [time, setTime] = useState(60);
+  const [dynamicThreshold, setDynamicThreshold] = useState(0)
   const [caretPosition, setCaretPosition] = useState(0)
   const [skippedWords, setSkippedWords] = useState(new Set());
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
@@ -230,21 +231,21 @@ const BackupWithInput = () => {
 
     if (timeLimit > 0) {
       // Count the number of correctly typed words
-      const correctWords = typedLetters
-        .reduce((wordCount, letter) => {
-          if (letter.letterIndex === 0) wordCount++; // Count the start of each correctly typed word
-          return wordCount;
-        }, 0);
       // const correctWords = typedLetters
       //   .reduce((wordCount, letter) => {
-      //     if (letter.isCorrect) wordCount++; // Count the start of each correctly typed word
+      //     if (letter.letterIndex === 0) wordCount++; // Count the start of each correctly typed word
       //     return wordCount;
       //   }, 0);
+      const correctWords = typedLetters
+        .reduce((wordCount, letter) => {
+          if (letter.isCorrect) wordCount++; // Count the start of each correctly typed word
+          return wordCount;
+        }, 0);
 
         
         // Calculate words per minute (1 word = 5 characters)
         if (elapsedTime > 0) {
-          wpm = ((correctWords / elapsedTime) * 60).toFixed(2);
+          wpm = ((correctWords / 5) * (60 / elapsedTime)).toFixed(2);
         }
     
       setStats((prevStats) => ({
@@ -535,11 +536,10 @@ const BackupWithInput = () => {
   };
   // Putting eye on caps lock -----------------------------------------------------------------
 
-
   const adjustScroll = () => {
     if (!isMobile) {
       const isSmallDesktop = window.innerWidth <= 1300 && window.innerWidth >= 1024;
-      const threshold = isSmallDesktop ? 280 : 350;
+      const threshold = isSmallDesktop ? 280 : dynamicThreshold;
       handleScroll(threshold, 70);
     } else {
       handleScroll(390, 55);
@@ -551,6 +551,7 @@ const BackupWithInput = () => {
     const currentWordRef = wordRefs.current[currentWordIndex];
     if (currentWordRef) {
       const rect = currentWordRef.getBoundingClientRect();
+      // console.log(rect.top)
   
       if (rect.top > threshold && !scrollLock.current) {
         const wordElement = document.getElementsByClassName("suds");
@@ -734,8 +735,6 @@ const BackupWithInput = () => {
             ? currentWord.length - historyWordLength
             : 0;
 
-            console.log('extraCharCount', extraCharCount)
-
           if(extraCharCount < 10) {
             if (isCharacterCorrect) {
               extraChars = extraChars + key; // Append the correct character
@@ -803,6 +802,27 @@ const BackupWithInput = () => {
       calculateWPM();
     }
   }, [elapsedTime, typedLetters]);
+
+  const updateHeight = () => {
+    // Get the full height of the document
+    const height = document.documentElement.scrollHeight;
+    console.log("html height : ",height);
+    setDynamicThreshold(((height - ( 119 + 59 + 457 )) / 2) + 350)
+
+  };
+
+  useEffect(() => {
+    // Set initial height
+    updateHeight();
+
+    // Update height on window resize
+    window.addEventListener("resize", updateHeight);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, []);
   
 
   return (
