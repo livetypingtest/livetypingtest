@@ -48,6 +48,7 @@
         z-index: 999; /* Bring it on top */
     }
     
+    
     .menu-slider.open {
         left: 0;
     }

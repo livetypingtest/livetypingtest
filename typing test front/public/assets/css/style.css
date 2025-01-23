@@ -361,6 +361,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.3s all;
     transform: translateX(-50%);
 }
 

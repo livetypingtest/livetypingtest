@@ -806,7 +806,6 @@ const BackupWithInput = () => {
   const updateHeight = () => {
     // Get the full height of the document
     const height = document.documentElement.scrollHeight;
-    console.log("html height : ",height);
     setDynamicThreshold(((height - ( 119 + 59 + 457 )) / 2) + 350)
 
   };
