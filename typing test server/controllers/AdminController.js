@@ -1,4 +1,5 @@
 const route = require('express').Router();
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const sha = require('sha1')
 const adminModel = require('../model/AdminSchema')
@@ -328,15 +329,74 @@ route.post('/para', async (req, res) => {
 //     }
 // });
 
+// route.post("/send-notification", async (req, res) => {
+//     const { title, message, url } = req.body; 
+
+//     try {
+
+//         // Find users with fcmToken
+//         const users = await notificationModel.find({ fcmToken: { $exists: true, $ne: null } });
+
+//         // Remove duplicate tokens (just in case)
+//         const tokens = [...new Set(users.map((user) => user.fcmToken))];
+
+//         if (tokens.length === 0) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: 'No valid tokens available to send notification to.',
+//             });
+//         }
+
+//         // Define the payload
+//         const payload = {
+//             notification: {
+//                 title,
+//                 body: message,
+//             },
+//             data: {
+//                 url: url || 'https://livetypingtest.com', // Add the URL to the `data` property
+//             },
+//         };
+
+//         // Send notifications to each device
+//         const response = await admin.messaging().sendEachForMulticast({
+//             tokens: tokens,
+//             notification: payload.notification,
+//             data: payload.data,
+//         });
+
+//         // Check for individual failed tokens
+//         const failedTokens = [];
+//         response.responses.forEach((resp, idx) => {
+//             if (!resp.success) {
+//                 failedTokens.push(tokens[idx]);
+//                 console.error("Error sending to token:", tokens[idx], resp.error);
+//             }
+//         });
+
+//         // Respond with success and failure counts
+//         res.status(200).json({
+//             success: true,
+//             message: "Notifications sent successfully.",
+//             failedTokens: failedTokens,
+//             successCount: response.successCount,
+//             failureCount: response.failureCount,
+//         });
+//     } catch (error) {
+//         console.error("Error sending notification:", error);
+//         res.status(500).json({ success: false, error: error.message });
+//     }
+// });
+
+
 route.post("/send-notification", async (req, res) => {
-    const { title, message, url } = req.body; 
+    const { title, message, url } = req.body;
 
     try {
-
-        // Find users with fcmToken
+        // Fetch users with valid OneSignal FCM tokens
         const users = await notificationModel.find({ fcmToken: { $exists: true, $ne: null } });
 
-        // Remove duplicate tokens (just in case)
+        // Extract unique tokens from the users
         const tokens = [...new Set(users.map((user) => user.fcmToken))];
 
         if (tokens.length === 0) {
@@ -346,41 +406,58 @@ route.post("/send-notification", async (req, res) => {
             });
         }
 
-        // Define the payload
-        const payload = {
-            notification: {
-                title,
-                body: message,
-            },
-            data: {
-                url: url || 'https://livetypingtest.com', // Add the URL to the `data` property
-            },
+        // Prepare the notification data for OneSignal API
+        const notificationData = {
+            title,
+            message,
+            url: url || 'https://livetypingtest.com',
+            tokens, // FCM Tokens (OneSignal player IDs)
         };
 
-        // Send notifications to each device
-        const response = await admin.messaging().sendEachForMulticast({
-            tokens: tokens,
-            notification: payload.notification,
-            data: payload.data,
-        });
+        // Function to send the push notification via OneSignal
+        const sendPushNotification = async (notificationData) => {
+            try {
+                const response = await axios.post(
+                    'https://onesignal.com/api/v1/notifications',
+                    {
+                        app_id: process.env.ONESIGNAL_APP_ID, // Replace with your App ID
+                        headings: { en: notificationData.title }, // Notification title
+                        contents: { en: notificationData.message }, // Notification message
+                        include_player_ids: 'dAhSnDL0zro:APA91bFJxPgNLnPhdjqIfI3VUH6O_yYf7OuOTZtpwytQVGZCS9Ka_JluDQuohEUWlbDqnC7alWbH3uco-ry6pHQrdV8nQbiqA2CG6MrHCnHJu_Yg1gFOw-55iCl5SkXpWZdz_g4A4E0a',
+                        url: notificationData.url, // Clickable URL
+                    },
+                    {
+                        headers: {
+                            Authorization: `Basic ${process.env.ONESIGNAL_API_KEY}`, // Replace with your REST API Key
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
 
-        // Check for individual failed tokens
-        const failedTokens = [];
-        response.responses.forEach((resp, idx) => {
-            if (!resp.success) {
-                failedTokens.push(tokens[idx]);
-                console.error("Error sending to token:", tokens[idx], resp.error);
+                console.log('Notification sent:', response.data);
+                return response.data;
+            } catch (error) {
+                console.error('Error sending notification:', error);
+                throw error; // Rethrow the error for the catch block in the route
             }
-        });
+        };
 
-        // Respond with success and failure counts
+        // Send the notification and collect analytics
+        const response = await sendPushNotification(notificationData);
+
+        console.log(response)
+
+        // Respond with success and analytics
         res.status(200).json({
             success: true,
-            message: "Notifications sent successfully.",
-            failedTokens: failedTokens,
-            successCount: response.successCount,
-            failureCount: response.failureCount,
+            message: "Notification sent successfully.",
+            analytics: {
+                successCount: response.successful,
+                failureCount: response.failed,
+                totalSent: response.total_sent,
+            },
         });
+
     } catch (error) {
         console.error("Error sending notification:", error);
         res.status(500).json({ success: false, error: error.message });

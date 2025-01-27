@@ -19,7 +19,7 @@ const BackupWithInput = () => {
   const containerRef = useRef(null);
   const wordRefs = useRef([])
   const scrollLock = useRef(false)
-  // const isCapsLockOn = useRef(false);
+  const letterRef = useRef([]);
   
   const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
   const paragraphs = useSelector(state => state.UserDataSlice.paragraphs)
@@ -31,7 +31,8 @@ const BackupWithInput = () => {
 
   const [time, setTime] = useState(60);
   const [dynamicThreshold, setDynamicThreshold] = useState(0)
-  const [caretPosition, setCaretPosition] = useState(0)
+  const [caretPosition, setCaretPosition] = useState({left: 0, top: 0})
+  const [prevCaretPosition, setPrevCaretPosition] = useState({ left: 0, top: 0 });
   const [skippedWords, setSkippedWords] = useState(new Set());
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
   const [blockKey, setBlockKey] = useState({for: '', state: false})
@@ -370,22 +371,37 @@ const BackupWithInput = () => {
   // updation Difficulty in stats-------------------------------------------------------------------
   
   // After test Done-------------------------------------------------------------------
-  useEffect(()=>{
-    if(showModal) {
-      const result = {
-        data : finalStats,
-        date : new Date()
+  useEffect(() => {
+    if (!showModal) return; 
+  
+    setFinalStats((prev) => {
+      // Only update if time or level is missing in finalStats
+      if (!prev?.time && !prev?.level) {
+        return { ...prev, time, level: difficulty };
       }
-      // console.log(result)
-      localStorage.setItem('stats', JSON.stringify(result))
-      dispatch(handleMatchHistory({state: true, time : result.data.time, level : result.data.level}))
-      if(localStorage.getItem('userToken')) {
-          dispatch(handleTest(result))
-      } else {
-          navigate(`/stats`)
-      }
+      return prev; 
+    });
+  
+    // Prepare the result object
+    const result = {
+      data: finalStats?.time && finalStats?.level ? finalStats : { ...finalStats, time, level: difficulty },
+      date: new Date(),
+    };
+  
+    // Store result in localStorage
+    localStorage.setItem('stats', JSON.stringify(result));
+  
+    // Dispatch actions
+    dispatch(handleMatchHistory({ state: true, time: result.data.time, level: result.data.level }));
+  
+    // Conditionally dispatch or navigate based on userToken
+    if (localStorage.getItem('userToken')) {
+      dispatch(handleTest(result));
+    } else {
+      navigate('/stats');
     }
-  },[showModal])
+  }, [showModal, finalStats, time, difficulty, dispatch, navigate]);
+  
   // After test Done-------------------------------------------------------------------
   
   // Action after the test fullfilled-------------------------------------------------------------------
@@ -536,6 +552,7 @@ const BackupWithInput = () => {
   };
   // Putting eye on caps lock -----------------------------------------------------------------
 
+  // Manage the Paragraph Scrolling ---------------------------------------------------------
   const adjustScroll = () => {
     if (!isMobile) {
       const isSmallDesktop = window.innerWidth <= 1300 && window.innerWidth >= 1024;
@@ -579,7 +596,9 @@ const BackupWithInput = () => {
       }
     }
   };
+  // Manage the Paragraph Scrolling ---------------------------------------------------------
 
+  // Manage Blocking the Restricted Keys ---------------------------------------------------------
   const blockRestrictedKeys = (e) => {
     // Handle keydown event for disabling copying and pasting
     if (e.ctrlKey && e.key === "c") {
@@ -613,7 +632,9 @@ const BackupWithInput = () => {
     }
 
   };
+  // Manage Blocking the Restricted Keys ---------------------------------------------------------
 
+  // Manage Backspace Triggering ---------------------------------------------------------
   const handleBackSpace = (check) => {
     if(currentLetterIndex > 1) {
       const lastTypedLetter = typedLetters.filter(
@@ -646,15 +667,9 @@ const BackupWithInput = () => {
       }
     }
   }
+  // Manage Backspace Triggering ---------------------------------------------------------
   
-  const updateCaretPosition = (lastChar) => {
-    if (lastChar && /\S/.test(lastChar) && lastChar !== " ") {
-      setCaretPosition((prevPosition) => prevPosition + 22); // Increment caret position
-    } else {
-      setCaretPosition((prevPosition) => prevPosition + 30); // Increment caret position
-    }
-  };
-  
+  // Manage User Inputs  ---------------------------------------------------------
   const handleKeyPress = (e) => {
     if (hasFocus) {
       const input = e.target.value; // Current input value
@@ -777,6 +792,7 @@ const BackupWithInput = () => {
       }
     }
   };
+  // Manage User Inputs  ---------------------------------------------------------
   
   useEffect(()=>{
     if(timerRunning) {
@@ -822,6 +838,44 @@ const BackupWithInput = () => {
       window.removeEventListener("resize", updateHeight);
     };
   }, []);
+
+  // Function to calculate and update the caret position
+  const catchCursor = () => {
+    const currentLetter =
+      letterRef?.current[currentWordIndex]?.[currentLetterIndex]; // Get the current letter reference
+
+    if (currentLetter) {
+      const rect = currentLetter.getBoundingClientRect(); // Get the bounding rectangle
+      const newPosition = {
+        left: rect.left + window.scrollX, // Add scroll offset for accurate positioning
+        top: rect.top + window.scrollY,
+      };
+      setCaretPosition(newPosition);
+      setPrevCaretPosition(newPosition); // Update the previous position
+    } else {
+      // Fallback to the previous position if currentLetter is undefined
+      setCaretPosition({...prevCaretPosition, left: prevCaretPosition?.left + 22});
+    }
+  };
+
+  // Update caret position when currentWordIndex or currentLetterIndex changes
+  // useEffect(() => {
+  //   catchCursor();
+  // }, [currentWordIndex, currentLetterIndex]);
+
+  // // Initial caret positioning at the start of the app
+  // useEffect(() => {
+  //   if (currentParagraph?.length > 0 && letterRef?.current[0]?.[0]) {
+  //     const firstRect = letterRef.current[0][0].getBoundingClientRect();
+  //     const initialPosition = {
+  //       left: firstRect.left + window.scrollX,
+  //       top: firstRect.top + window.scrollY,
+  //     };
+  //     setCaretPosition(initialPosition);
+  //     setPrevCaretPosition(initialPosition); // Set initial position as the previous position
+  //   }
+  // }, [currentParagraph]);
+
   
 
   return (
@@ -831,7 +885,10 @@ const BackupWithInput = () => {
         homePageSEO && (<DynamicTitle title={homePageSEO?.seoTitle} description={homePageSEO.seoDescription} icon={homePageSEO?.imageUrl} />)
       } */}
 
+      <DynamicTitle />
+
       <Header timerRunning={timerRunning} />
+      {/* <span id='caret' style={{left: caretPosition.left, top: caretPosition.top}} className={`blinking-cursor ${!timerRunning && 'blink'}`}></span> */}
       <section className='lobby-area pb-3'>
         <div className="container">
           <div 
@@ -955,7 +1012,6 @@ const BackupWithInput = () => {
                       setRootFocus(true);
                     }}
                   >
-                    {/* <span id='caret' style={{left: caretPosition}} className={`blinking-cursor ${!timerRunning && 'blink'}`}></span> */}
                     <div id="words">
                       {currentParagraph?.map((word, wordIndex) => {
                         const updatedWord = word;
@@ -995,11 +1051,23 @@ const BackupWithInput = () => {
                               }
 
                               return (
-                                <span key={letterIndex} className={`${classNames}`}>
+                                <span 
+                                  key={letterIndex}
+                                  ref={(el) => {
+                                    if (!letterRef.current[wordIndex]) {
+                                      letterRef.current[wordIndex] = []; // Initialize array for letters
+                                    }
+                                    letterRef.current[wordIndex][letterIndex] = el; // Assign ref for the letter
+                                  }}
+                                  className={`${classNames}`}>
                                   {/* Add cursor at the current typing position */}
                                   {wordIndex === currentWordIndex &&
                                     letterIndex === currentLetterIndex && (
-                                      <span className={`blinking-cursor ${!timerRunning && 'blink'}`}></span>
+                                      <span 
+                                        className={`blinking-cursor ${!timerRunning && 'blink'}`}
+                                      >
+
+                                      </span>
                                     )}
                                   {letter}
                                 </span>

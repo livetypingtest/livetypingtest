@@ -299,6 +299,7 @@ const UserDataSlice = createSlice({
             state.isFullfilled = false;
             state.errorMsg = {},
             state.fullFillMsg = {}
+            state.isDataPending = false
             state.processingMsg = {}
         },
         handleClearState : (state) => {

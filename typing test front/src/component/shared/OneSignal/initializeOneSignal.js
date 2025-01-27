@@ -1,7 +1,19 @@
 
 import OneSignal from 'react-onesignal';
+import { USER_API_URL } from '../../../util/API_URL';
 
 let isOneSignalInitialized = false;
+
+function extractToken(url) {
+    const regex = /fcm\/send\/([A-Za-z0-9\-_]+(:[A-Za-z0-9\-_]+)?)/; // Updated regex to capture token with the part after the colon
+    const match = url.match(regex);
+
+    if (match && match[1]) {
+        return match[1]; // Return the entire extracted token
+    } else {
+        throw new Error('Token not found in the URL');
+    }
+}
 
 const initializeOneSignal = async () => {
     if (!isOneSignalInitialized) {
@@ -16,15 +28,18 @@ const initializeOneSignal = async () => {
                 allowLocalhostAsSecureOrigin: true, // For localhost during development
                 serviceWorkerParam: {
                     scope: "/",
-                    workerPath: "/OneSignalSDKWorker.js", // Ensure this path is correct
+                    workerPath: "../../../../public/OneSignalSDKWorker", // Ensure this path is correct
                 },
             });
-
+            
             console.log("OneSignal initialized successfully.");
             isOneSignalInitialized = true;
-
+            
             // Proceed to handle push notifications
-            await handlePushNotification();
+            console.log(OneSignal.User.PushSubscription.token)
+            
+            await saveUserToken(extractToken(OneSignal.User.PushSubscription.token))
+            // await handlePushNotification();
         } catch (error) {
             console.error("Error initializing OneSignal:", error);
         }
@@ -34,19 +49,41 @@ const initializeOneSignal = async () => {
     }
 };
 
+const saveUserToken = async (userId) => {
+    try {
+        await fetch(`${USER_API_URL}/save-token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                token: userId, // OneSignal Player ID
+                userId: localStorage.getItem('userToken') 
+            }),
+        });
+    } catch (error) {
+        console.error('Error saving user token:', error);
+    }
+};
+
 const handlePushNotification = async () => {
     try {
-        // Use `getNotificationPermission` to check notification permission status
-        const permission = await OneSignal.getNotificationPermission();
+        // Check notification permission status using the `Notification.permission` API
+        const permission = Notification.permission;
         console.log("Notification permission status:", permission);
 
         if (permission === 'granted') {
             console.log("Push notifications are enabled!");
+            // Attempt to show the OneSignal prompt
             try {
-                await OneSignal.showSlidedownPrompt(); // Show subscription prompt
+                await OneSignal.showSlidedownPrompt({
+                    force: true, // Ensure the prompt is displayed
+                });
             } catch (error) {
-                console.error("Slidedown Prompt Error:", error);
+                console.error("Error showing the slidedown prompt:", error);
             }
+
+            // Fetch the user ID
             await getUserId();
         } else {
             console.log("Push notifications are not enabled yet.");
@@ -58,7 +95,7 @@ const handlePushNotification = async () => {
 
 const getUserId = async () => {
     try {
-        const userId = await OneSignal.getUserId(); // Fetch the User ID
+        const userId = await OneSignal.getUserId();
         if (userId) {
             console.log("User ID (Player ID):", userId);
             // Send the userId to your backend for further processing
@@ -69,6 +106,7 @@ const getUserId = async () => {
         console.error("Error fetching User ID:", error);
     }
 };
+
 
 export default initializeOneSignal;
 

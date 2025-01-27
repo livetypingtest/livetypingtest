@@ -251,7 +251,7 @@ const TypingTestStats = () => {
                                 </div>
                                 <div>
                                     <h4>Consistency</h4>
-                                    <h1>{Math.round(calculateAverage(consistency))}%</h1>
+                                    <h1>{Math.round(calculateAverage(consistency))}</h1>
                                 </div>
                                 <div>
                                     <h4>Time Taken</h4>
