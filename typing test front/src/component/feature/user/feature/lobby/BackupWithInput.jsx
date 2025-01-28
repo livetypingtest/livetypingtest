@@ -427,6 +427,7 @@ const BackupWithInput = () => {
     setTimerRunning(false);
     setCurrentLetterIndex(0)
     setSkippedWords(new Set())
+    resetCaretPosition()
     setStorage("")
     setCurrentWordIndex(0)
     setCounter(0)
@@ -858,23 +859,33 @@ const BackupWithInput = () => {
     }
   };
 
-  // Update caret position when currentWordIndex or currentLetterIndex changes
-  // useEffect(() => {
-  //   catchCursor();
-  // }, [currentWordIndex, currentLetterIndex]);
 
-  // // Initial caret positioning at the start of the app
-  // useEffect(() => {
-  //   if (currentParagraph?.length > 0 && letterRef?.current[0]?.[0]) {
-  //     const firstRect = letterRef.current[0][0].getBoundingClientRect();
-  //     const initialPosition = {
-  //       left: firstRect.left + window.scrollX,
-  //       top: firstRect.top + window.scrollY,
-  //     };
-  //     setCaretPosition(initialPosition);
-  //     setPrevCaretPosition(initialPosition); // Set initial position as the previous position
-  //   }
-  // }, [currentParagraph]);
+let isCaretSet = false; // Declare a flag to ensure the function runs only once
+
+const resetCaretPosition = () => {
+  if (letterRef?.current?.[0]?.[0]) {
+    const firstRect = letterRef.current[0][0].getBoundingClientRect();
+    const initialPosition = {
+      left: firstRect.left + window.scrollX,
+      top: firstRect.top + window.scrollY,
+    };
+
+    setCaretPosition(initialPosition);
+    setPrevCaretPosition(initialPosition);
+    isCaretSet = true; // Mark the caret as set to prevent further executions
+  }
+};
+
+useEffect(() => {
+  if (!timerRunning) {
+    resetCaretPosition(); 
+  } else {
+    catchCursor();
+  }
+});
+
+
+
 
   
 
@@ -888,7 +899,7 @@ const BackupWithInput = () => {
       <DynamicTitle />
 
       <Header timerRunning={timerRunning} />
-      {/* <span id='caret' style={{left: caretPosition.left, top: caretPosition.top}} className={`blinking-cursor ${!timerRunning && 'blink'}`}></span> */}
+      <span id='caret' style={{left: caretPosition.left, top: caretPosition.top}} className={`blinking-cursor ${!timerRunning && 'blink'}`}></span>
       <section className='lobby-area pb-3'>
         <div className="container">
           <div 
@@ -1061,24 +1072,23 @@ const BackupWithInput = () => {
                                   }}
                                   className={`${classNames}`}>
                                   {/* Add cursor at the current typing position */}
-                                  {wordIndex === currentWordIndex &&
+                                  {/* {wordIndex === currentWordIndex &&
                                     letterIndex === currentLetterIndex && (
                                       <span 
                                         className={`blinking-cursor ${!timerRunning && 'blink'}`}
                                       >
-
                                       </span>
-                                    )}
+                                    )} */}
                                   {letter}
                                 </span>
                               );
                             })}
 
                             {/* If the cursor is at the end of the word, add a blinking cursor */}
-                            {wordIndex === currentWordIndex &&
+                            {/* {wordIndex === currentWordIndex &&
                               currentLetterIndex === updatedWord.length && (
                                 <span className="blinking-cursor"></span>
-                              )}
+                              )} */}
                           </div>
                         );
                       })}
