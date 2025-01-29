@@ -11,7 +11,7 @@ import Certificate from '../../../../shared/certificate/Certificate';
 import DownloadButton from '../../../../shared/certificate/DownloadCertificate';
 import MetaUpdater from '../../../../../util/MetaUpdater'
 
-// ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const TypingTestStats = () => {
 
