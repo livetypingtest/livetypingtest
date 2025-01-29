@@ -6,21 +6,21 @@ import sitemap from 'vite-plugin-sitemap';
 export default defineConfig({
   plugins: [
     react(),
-    sitemap({
-      hostname: 'https://livetypingtest.com', // Replace with your site's URL
-      routes: [
-        '/',          // Home page
-        '/about',     // Example: About page
-        '/stats',  // Example: Services page
-        '/contact',   // Example: Contact page
-        '/leaderboard',   // Example: Contact page
-        '/blog',   // Example: Contact page
-        '/privacy',   // Example: Contact page
-        '/term-condition',   // Example: Contact page
-        '/dashboard',   // Example: Contact page
-      ],
-      generateRobotsTxt: true
-    }),
+    // sitemap({
+    //   hostname: 'https://livetypingtest.com', // Replace with your site's URL
+    //   routes: [
+    //     '/',          // Home page
+    //     '/about',     // Example: About page
+    //     '/stats',  // Example: Services page
+    //     '/contact',   // Example: Contact page
+    //     '/leaderboard',   // Example: Contact page
+    //     '/blog',   // Example: Contact page
+    //     '/privacy',   // Example: Contact page
+    //     '/term-condition',   // Example: Contact page
+    //     '/dashboard',   // Example: Contact page
+    //   ],
+    //   generateRobotsTxt: true
+    // }),
   ],
   esbuild: {
     jsxInject: `import React from 'react'`,
