@@ -267,7 +267,7 @@ const BackupWithInput = () => {
     const totalTyped = totalCorrect + totalIncorrect + totalSkiped; // Total characters typed (correct + incorrect)
     
     // Calculate accuracy: (correctChars / totalTypedChars) * 100
-    let accuracy = 0;
+    let accuracy = 100;
     if (totalTyped > 0) {
       accuracy = Math.floor((totalCorrect / totalTyped) * 100); // Accuracy as an integer
     }
@@ -843,12 +843,12 @@ const BackupWithInput = () => {
   // Function to calculate and update the caret position
   const catchCursor = () => {
     const currentLetter =
-      letterRef?.current[currentWordIndex]?.[currentLetterIndex]; // Get the current letter reference
-
+      letterRef?.current[currentWordIndex]?.[currentLetterIndex]; 
+      // console.log(currentLetter)
     if (currentLetter) {
-      const rect = currentLetter.getBoundingClientRect(); // Get the bounding rectangle
+      const rect = currentLetter.getBoundingClientRect(); 
       const newPosition = {
-        left: rect.left + window.scrollX, // Add scroll offset for accurate positioning
+        left: rect.left + window.scrollX, 
         top: rect.top + window.scrollY,
       };
       setCaretPosition(newPosition);
@@ -859,35 +859,26 @@ const BackupWithInput = () => {
     }
   };
 
+  const resetCaretPosition = () => {
+    if (letterRef?.current?.[0]?.[0]) {
+      const firstRect = letterRef.current[0][0].getBoundingClientRect();
+      const initialPosition = {
+        left: firstRect.left + window.scrollX,
+        top: firstRect.top + window.scrollY,
+      };
 
-let isCaretSet = false; // Declare a flag to ensure the function runs only once
+      setCaretPosition(initialPosition);
+      setPrevCaretPosition(initialPosition);
+    }
+  };
 
-const resetCaretPosition = () => {
-  if (letterRef?.current?.[0]?.[0]) {
-    const firstRect = letterRef.current[0][0].getBoundingClientRect();
-    const initialPosition = {
-      left: firstRect.left + window.scrollX,
-      top: firstRect.top + window.scrollY,
-    };
-
-    setCaretPosition(initialPosition);
-    setPrevCaretPosition(initialPosition);
-    isCaretSet = true; // Mark the caret as set to prevent further executions
-  }
-};
-
-useEffect(() => {
-  if (!timerRunning) {
-    resetCaretPosition(); 
-  } else {
-    catchCursor();
-  }
-});
-
-
-
-
-  
+  useEffect(() => {
+    if (!timerRunning) {
+      resetCaretPosition(); 
+    } else {
+      catchCursor();
+    }
+  });
 
   return (
     <>
@@ -1103,16 +1094,16 @@ useEffect(() => {
                 <div className="status">
                   <div>
                     <h4>WPM</h4>
-                    <h1>{stats.wpm[stats?.wpm?.length - 1] || 0}</h1>
+                    <h1>{parseInt(stats.wpm[stats?.wpm?.length - 1]) || 0}</h1>
                   </div>
                   <div>
                     <h4>Accuracy</h4>
                     <h1>{stats.accuracy[stats?.accuracy?.length - 1] || 0}<span>%</span></h1>
                   </div>
-                  <div>
+                  {/* <div>
                     <h4>Consistency</h4>
                     <h1>{stats.consistency[stats?.consistency?.length - 1] || 0}<span>%</span></h1>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               {/* <div className="col-md-5 custom-footer-lobby">

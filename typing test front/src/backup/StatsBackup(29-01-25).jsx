@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import Header from '../../../../shared/header/Header'
+import Header from '../../../../shared/header/Header';
 import Footer from '../../../../shared/footer/Footer';
 import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
@@ -10,8 +8,18 @@ import DynamicAlert from '../../../../shared/Toast/DynamicAlert';
 import Certificate from '../../../../shared/certificate/Certificate';
 import DownloadButton from '../../../../shared/certificate/DownloadCertificate';
 import MetaUpdater from '../../../../../util/MetaUpdater'
+import {
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip as TooltipChart,
+    ResponsiveContainer,
+    Bar,
+    ComposedChart,
+  } from "recharts";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
 
 const TypingTestStats = () => {
 
@@ -29,77 +37,6 @@ const TypingTestStats = () => {
     const navigate = useNavigate();
     const {wpm, consistency, accuracy, correctChars, incorrectChars, timeOfCompletion, isCompleted, extraChars, time, level} = stats?.data;
     // console.log("WPM:", wpm, "Consistency:", consistency, "Accuracy:", accuracy);
-
-    const getEvenlySpacedData = (array, numPoints) => {
-        const step = Math.floor(array.length / numPoints); // Determine the spacing between points
-        let result = [];
-      
-        // Collect evenly spaced values
-        for (let i = 0; i < numPoints; i++) {
-          result.push(array[i * step]);
-        }
-      
-        return result;
-      };
-
-    const calculateTicks = (totalTime) => {
-        // Dynamically calculate tick intervals
-        if (totalTime <= 60) return Array.from({ length: 12 }, (_, i) => i * 5); // 5-second gap
-        if (totalTime <= 180) return Array.from({ length: 19 }, (_, i) => i * 10); // 10-second gap
-        return Array.from({ length: 13 }, (_, i) => i * 25); // 25-second gap
-    };
-
-    const data = {
-        labels: calculateTicks(time), // X-axis label based on data length
-        datasets: [
-            {
-                label: 'WPM',
-                data: getEvenlySpacedData(wpm, time),
-                borderColor: 'rgba(255, 127, 80, 1)',
-                backgroundColor: 'rgba(255, 127, 80, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(255, 127, 80, 1)',
-            },
-            // {
-            //     label: 'Consistency (%)',
-            //     data: getEvenlySpacedData(consistency, time),
-            //     borderColor: 'rgba(113, 202, 199, 1)',
-            //     backgroundColor: 'rgba(113, 202, 199, 0.2)',
-            //     fill: false,
-            //     tension: 0.4,
-            //     pointBackgroundColor: 'rgba(113, 202, 199, 1)',
-            // },
-            {
-                label: 'Accuracy (%)',
-                data: getEvenlySpacedData(accuracy, time),
-                borderColor: 'rgba(255, 255, 255, 1)',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(255, 255, 255, 1)',
-            },
-        ],
-    };
-
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: true,
-            },
-            title: {
-                display: true,
-                text: 'Typing Test Statistics',
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 150, // Assuming percentages and WPM are capped at 100%
-            },
-        },
-    };
 
     const repeatTest = () => {
         localStorage.removeItem('stats')
@@ -136,8 +73,102 @@ const TypingTestStats = () => {
             });
         }
     };
-    
-    
+
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+          const { wpm, accuracy } = payload[0].payload;
+          return (
+            <div
+              style={{
+                background: "#1f1d21",
+                border: "1px solid #71CAC7",
+                opacity: 0.9,
+                padding: "10px",
+                borderRadius: "5px",
+                color: "#fff",
+                fontSize: "12px",
+              }}
+            >
+              <p>{`Time: ${label}s`}</p>
+              <p style={{ color: "#FFD700" }}>{`WPM: ${wpm}`}</p>
+              <p style={{ color: "#71CAC7" }}>{`Accuracy: ${accuracy}%`}</p>
+            </div>
+          );
+        }
+        return null;
+      };
+      
+      const calculateTicks = (totalTime) => {
+        // Dynamically calculate tick intervals
+        if (totalTime <= 60) return Array.from({ length: 12 }, (_, i) => i * 5); // 5-second gap
+        if (totalTime <= 180) return Array.from({ length: 19 }, (_, i) => i * 10); // 10-second gap
+        return Array.from({ length: 13 }, (_, i) => i * 25); // 25-second gap
+      };
+      
+      const data = wpm?.map((history, index) => ({
+        wpm: history || 0,
+        accuracy: accuracy[index] || 0,
+        time: Math.round((time / wpm.length) * (index + 1)), // Calculate time intervals
+      }));
+      
+      const Chart = ({ totalTime }) => {
+        const ticks = calculateTicks(totalTime);
+        // console.log(ticks)
+      
+        return (
+          <ResponsiveContainer
+            width="100%"
+            minHeight={250}
+            maxHeight={250}
+            height="100%"
+          >
+            <ComposedChart
+              width="100%"
+              height="100%"
+              data={data.filter((d) => d.time > 0)} // Filter valid time values
+              margin={{
+                top: 12,
+                right: 12,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <CartesianGrid
+                vertical={false}
+                horizontal={false}
+                stroke="#71CAC7"
+                opacity={0.15}
+              />
+                <XAxis
+                dataKey="time"
+                stroke="#706d6d"
+                tickMargin={10}
+                opacity={0.80}
+                ticks={ticks} // Use precomputed ticks for gaps
+                tickFormatter={(tick) => `${tick}s`} // Display as seconds
+                />
+              <YAxis stroke="#706d6d" tickMargin={10} opacity={0.80} />
+              <TooltipChart cursor content={<CustomTooltip />} />
+              <Line
+                type="monotone"
+                dataKey="accuracy"
+                stroke="#71CAC7"
+                dot={true}
+                activeDot={true}
+              />
+              <Line
+                type="monotone"
+                dataKey="wpm"
+                stroke="#FFD700"
+                dot={true}
+                activeDot={true}
+              />
+              {/* Add the bar for errors if required */}
+            </ComposedChart>
+          </ResponsiveContainer>
+        );
+      };
+
 
     useEffect(()=>{
         if(localStorage.getItem('newRecord')) {
@@ -156,7 +187,6 @@ const TypingTestStats = () => {
         localStorage.removeItem('newRecord'); // Clear local storage
         setShowAlert(false); // Set showAlert to false
     };
-
 
     const calculateAverage = (numbers) => {
         if (numbers.length === 0) return 0; // Avoid division by zero
@@ -200,7 +230,10 @@ const TypingTestStats = () => {
                             </div>
                         </div>
                         <div className="col-md-10 ">
-                        <Line data={data} options={options}  height={window.innerWidth <= 767 ? 100 : 30} width={"100%"}  />
+                            <div style={{width: '100%', minHeight: '280px'}}>
+                              {Chart({totalTime: time})}
+                            </div>
+                        {/* <Line data={data} options={options}  height={window.innerWidth <= 767 ? 100 : 30} width={"100%"}  /> */}
                         </div>
                         <div className="col-md-12 p-custom">
                             <div className="below-graph">
@@ -225,7 +258,7 @@ const TypingTestStats = () => {
                         <div className="col-md-12 p-custom">
                             <div className="below-graph-btn">
                                 <div className='item'><span>Download Certificate</span><DownloadButton onDownload={handleDownload} /></div>
-                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /></button></div>
+                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /><p className='mt-2 font-idle'>Repeat</p></button></div>
                             </div>
                         </div>
                     </div>
