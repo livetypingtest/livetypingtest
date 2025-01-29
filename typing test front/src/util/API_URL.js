@@ -1,5 +1,5 @@
 // const ADMIN_API_URL = "http://localhost:8080/admin";
-// const ADMIN_API_URL = "https://typing-test-server-z0yx.onrender.com/admin" //render;
+// const ADMIN_API_URL = "https://typing-test-server-z0yx.onrender.com/admin" ;
 // const ADMIN_API_URL = "http://54.147.134.149:8080/admin";
 const ADMIN_API_URL = "https://api.livetypingtest.com/admin";
 
