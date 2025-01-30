@@ -42,9 +42,23 @@ const LeaderBoard = () => {
         setTimeFilter(time)
         const obj = {
             onLoadLimit : onLoadLimit,
-            timeFilter : time
+            timeFilter : time,
+            level : levelFilter
         }
         dispatch(handleGetLeaderboardData(obj))
+    }
+
+    // const handleFilterLevel = (level) =>{
+    //     setLevelFilter(level)
+    //     const obj = {
+    //         onLoadLimit : onLoadLimit,
+    //         timeFilter : timeFilter,
+    //         level : level
+    //     }
+    //     dispatch(handleGetLeaderboardData(obj))
+    // }
+    const handleFilterLevel = (level) =>{
+        setLevelFilter(level)
     }
 
     const updateDataOnLevels = () => {
@@ -113,14 +127,11 @@ const LeaderBoard = () => {
         updateDataOnLevels()
     }, [timeFilter, levelFilter])
 
-    const handleFilterLevel = (level) =>{
-        setLevelFilter(level)
-    }
-
     useEffect(()=>{
         const obj = {
             onLoadLimit : onLoadLimit,
-            timeFilter : timeFilter
+            timeFilter : timeFilter,
+            level : levelFilter
         }
         dispatch(handleGetLeaderboardData(obj))
     }, [])

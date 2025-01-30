@@ -27,61 +27,66 @@ const TypingTestStats = () => {
     let stats = localStorage.getItem('stats')
     stats = JSON.parse(stats)
     const navigate = useNavigate();
-    const {wpm, consistency, accuracy, correctChars, incorrectChars, timeOfCompletion, isCompleted, extraChars, time, level} = stats?.data;
+    const {wpm, consistency, accuracy, correctChars, incorrectChars, extraChars, time, level} = stats?.data;
     // console.log("WPM:", wpm, "Consistency:", consistency, "Accuracy:", accuracy);
 
-    const getEvenlySpacedData = (array, numPoints) => {
-        const step = Math.floor(array.length / numPoints); // Determine the spacing between points
+    const getEvenlySpacedData = (array, numPoints, step) => {
         let result = [];
       
-        // Collect evenly spaced values
+        // Collect evenly spaced values based on the step interval
         for (let i = 0; i < numPoints; i++) {
-          result.push(array[i * step]);
+            result.push(array[i * step]); // Skip points based on the step
         }
       
         return result;
-      };
-
+    };
+    
     const calculateTicks = (totalTime) => {
-        // Dynamically calculate tick intervals
-        if (totalTime <= 60) return Array.from({ length: 12 }, (_, i) => i * 5); // 5-second gap
-        if (totalTime <= 180) return Array.from({ length: 19 }, (_, i) => i * 10); // 10-second gap
-        return Array.from({ length: 13 }, (_, i) => i * 25); // 25-second gap
+        // Dynamically calculate tick intervals based on total time
+        if (totalTime <= 60) return Array.from({ length: Math.floor(totalTime / 2) + 1 }, (_, i) => i * 2); // 2-second gap
+        if (totalTime <= 180) return Array.from({ length: Math.floor(totalTime / 6) + 1 }, (_, i) => i * 4); // 4-second gap
+        if (totalTime <= 300) return Array.from({ length: Math.floor(totalTime / 10) + 1 }, (_, i) => i * 5); // 5-second gap
+        return [];
     };
-
-    const data = {
-        labels: calculateTicks(time), // X-axis label based on data length
-        datasets: [
-            {
-                label: 'WPM',
-                data: getEvenlySpacedData(wpm, time),
-                borderColor: 'rgba(255, 127, 80, 1)',
-                backgroundColor: 'rgba(255, 127, 80, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(255, 127, 80, 1)',
-            },
-            // {
-            //     label: 'Consistency (%)',
-            //     data: getEvenlySpacedData(consistency, time),
-            //     borderColor: 'rgba(113, 202, 199, 1)',
-            //     backgroundColor: 'rgba(113, 202, 199, 0.2)',
-            //     fill: false,
-            //     tension: 0.4,
-            //     pointBackgroundColor: 'rgba(113, 202, 199, 1)',
-            // },
-            {
-                label: 'Accuracy (%)',
-                data: getEvenlySpacedData(accuracy, time),
-                borderColor: 'rgba(255, 255, 255, 1)',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(255, 255, 255, 1)',
-            },
-        ],
+    
+    const generateData = (time, wpm, accuracy, consistency) => {
+        const tickInterval = time <= 60 ? 2 : (time <= 180 ? 6 : 10); // Determine the appropriate tick interval
+        const numPoints = Math.floor(time / tickInterval);
+    
+        return {
+            labels: calculateTicks(time), // X-axis label based on the calculated ticks
+            datasets: [
+                {
+                    label: 'WPM',
+                    data: getEvenlySpacedData(wpm, numPoints, tickInterval),
+                    borderColor: 'rgba(255, 127, 80, 1)',
+                    backgroundColor: 'rgba(255, 127, 80, 0.2)',
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(255, 127, 80, 1)',
+                },
+                // {
+                //     label: 'Consistency (%)',
+                //     data: getEvenlySpacedData(consistency, numPoints, tickInterval),
+                //     borderColor: 'rgba(113, 202, 199, 1)',
+                //     backgroundColor: 'rgba(113, 202, 199, 0.2)',
+                //     fill: false,
+                //     tension: 0.4,
+                //     pointBackgroundColor: 'rgba(113, 202, 199, 1)',
+                // },
+                {
+                    label: 'Accuracy (%)',
+                    data: getEvenlySpacedData(accuracy, numPoints, tickInterval),
+                    borderColor: 'rgba(255, 255, 255, 1)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(255, 255, 255, 1)',
+                },
+            ],
+        };
     };
-
+    
     const options = {
         responsive: true,
         plugins: {
@@ -100,6 +105,8 @@ const TypingTestStats = () => {
             },
         },
     };
+
+    const data = generateData(time, wpm, accuracy, consistency);
 
     const repeatTest = () => {
         localStorage.removeItem('stats')
@@ -187,7 +194,7 @@ const TypingTestStats = () => {
             <section>
                 <div className="container p-custom">
                     <div className="row align-items-center py-4">
-                        <div className="col-md-2">
+                        {/* <div className="col-md-2">
                             <div className="statistics-layout">
                                 <div>
                                     <h4>WPM</h4>
@@ -198,8 +205,8 @@ const TypingTestStats = () => {
                                     <h1>{Math.round(calculateAverage(accuracy))}<span>%</span></h1>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-md-10 ">
+                        </div> */}
+                        <div className="col-md-12 ">
                         <Line data={data} options={options}  height={window.innerWidth <= 767 ? 100 : 30} width={"100%"}  />
                         </div>
                         <div className="col-md-12 p-custom">
@@ -211,6 +218,14 @@ const TypingTestStats = () => {
                                 <div>
                                     <h4>Characters</h4>
                                     <div className='item'><span>Correct/Incorrect/Extra</span><h1>{`${correctChars}/${incorrectChars}/${extraChars}`}</h1></div>
+                                </div>
+                                <div>
+                                    <h4>WPM</h4>
+                                    <h1>{Math.round(calculateAverage(wpm))}</h1>
+                                </div>
+                                <div>
+                                    <h4>Accuracy</h4>
+                                    <h1>{Math.round(calculateAverage(accuracy))}<span>%</span></h1>
                                 </div>
                                 <div>
                                     <h4>Consistency</h4>
@@ -225,7 +240,7 @@ const TypingTestStats = () => {
                         <div className="col-md-12 p-custom">
                             <div className="below-graph-btn">
                                 <div className='item'><span>Download Certificate</span><DownloadButton onDownload={handleDownload} /></div>
-                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /></button></div>
+                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /><p className='mt-2 font-idle'>Repeat</p></button></div>
                             </div>
                         </div>
                     </div>

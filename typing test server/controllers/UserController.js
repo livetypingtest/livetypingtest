@@ -132,7 +132,7 @@ const calculatePoints = (metrics) => {
     return avgWpm * 0.5 + avgConsis * 0.3 + avgAcc * 0.2;
 };
 
-route.get('/dashdata/:limit/:type', async (req, res) => {
+route.get('/dashdata/:limit/:type/:level', async (req, res) => {
     const fetchFilteredData = async (filterType, limit) => {
         const levels = ['all', 'easy', 'medium', 'hard'];
         const queries = levels.map(level => ({
@@ -150,6 +150,9 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     const limit = parseInt(req.params.limit, 10);
     const type = req.params.type;
+    const level = req.params.level
+
+    console.log(limit, type, level)
 
     const typeMap = {
         '1': 'top1minavg',
@@ -170,34 +173,42 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
         return res.status(400).send({ message: 'Invalid type provided' });
     }
 
-    const allUser = await fetchFilteredData(filterType, limit);
+    // const allUser = await fetchFilteredData(filterType, limit);
+    const allUser = await userModel
+            .find({
+                [`${filterType}.${level}.points`]: { $gte: 0 }, // Ensuring we fetch users with points
+            })
+            .sort({ [`${filterType}.${level}.points`]: -1 }) // Sort by points in descending order
+            .limit(limit); // Limit the results to top `limit` users
+
+        // console.log(users)
 
     // console.log('allUser',allUser?.map((value) => console.log(value?.username, value[matchType]?.length)))
 
-    const extractLevelData = (matchData, level) => {
+    const extractLevelData = (matchData, level, user) => {
         const filteredData = matchData?.filter(value => value.level === level);
         const avgWpm = calculateAverage(filteredData.map(value => parseFloat(value.avgwpm)));
         const avgAcc = calculateAverage(filteredData.map(value => parseFloat(value.avgacc)));
         const avgConsis = calculateAverage(filteredData.map(value => parseFloat(value.avgconsis)));
 
         // Calculate points for the level
-        const points = calculatePoints({ avgWpm, avgConsis, avgAcc });
+        // const points = calculatePoints({ avgWpm, avgConsis, avgAcc });
         return {
             avgWpm,
             avgAcc,
             avgConsis,
-            points, // Add points for each level
+            points: user?.[filterType]?.[level]?.points, // Add points for each level
         };
     };
 
-    const filteredData = allUser.map(user => {
+    const filteredData = allUser?.map(user => {
         const matchData = user[matchType] || [];
         const matchCount = matchData?.length;
 
         // Extract data for easy, medium, and hard levels
-        const easyData = extractLevelData(matchData, 'easy');
-        const mediumData = extractLevelData(matchData, 'medium');
-        const hardData = extractLevelData(matchData, 'hard');
+        const easyData = extractLevelData(matchData, 'easy', user);
+        const mediumData = extractLevelData(matchData, 'medium', user);
+        const hardData = extractLevelData(matchData, 'hard', user);
 
         // Extract overall data
         const overallData = {
@@ -206,13 +217,13 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
             avgConsis: calculateAverage(matchData.map(value => parseFloat(value.avgconsis))),
         };
         const overallPoints = calculatePoints(overallData);
-
+        console.log(user?.[filterType])
         // Return the structured response with overall and levels data
         return {
             username: user?.username,
             profile: user?.profileimage,
             matchCount,
-            overall: { ...overallData, points: overallPoints }, // Include overall points
+            overall: { ...overallData, points: user?.[filterType]?.all?.points }, // Include overall points
             levels: {
                 easy: easyData,
                 medium: mediumData,
@@ -220,6 +231,8 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
             }
         };
     });
+
+    console.dir(filteredData, {depth: null})
 
     // Filter users with more than 10 matches
     const eligibleUsers = filteredData.filter(user => user.matchCount > 10);
@@ -242,7 +255,6 @@ route.get('/dashdata/:limit/:type', async (req, res) => {
 
     res.send({ status: 200, userData: rankedData, type: "leaderboard", message: "Leaderboard Data" });
 });
-
 
 route.post('/signin/google', async (req, res) => {
     const token = Object.keys(req.body)[0];
@@ -631,6 +643,10 @@ route.post('/', async (req, res) => {
             return res.status(400).send({ status: 400, message: "Invalid data payload", type: "validation" });
         }
 
+        const WPM_WEIGHT = 0.5;
+        const ACCURACY_WEIGHT = 0.3;
+        const CONSISTENCY_WEIGHT = 0.2;
+
         // Destructure data fields with default fallback values
         const {
             wpm = [],
@@ -660,6 +676,8 @@ route.post('/', async (req, res) => {
             return res.status(400).send({ status: 400, message: "Invalid average calculations, check input data", type: "calculation" });
         }
 
+        const totalPoints = (avgWpm * WPM_WEIGHT) + (avgAcc * ACCURACY_WEIGHT) + (avgConsis * CONSISTENCY_WEIGHT);
+        console.log('current match points: ', totalPoints)
         const testData = {
             accuracy,
             consistency,
@@ -667,6 +685,7 @@ route.post('/', async (req, res) => {
             avgwpm: avgWpm,
             avgacc: avgAcc,
             avgconsis: avgConsis,
+            points: totalPoints,
             matchdate: date,
             time,
             level: level || "easy",
@@ -708,7 +727,7 @@ route.post('/', async (req, res) => {
         const checkDataPresent = getUserData?.[matchProperty] || [];
         let finalAvgResult;
 
-        if (checkDataPresent.length > 0) {
+        if (checkDataPresent?.length > 0) {
             const getTotalAvgData = getUserData?.[findProperty] || {};
             const dataLength = checkDataPresent.length;
 
@@ -727,18 +746,22 @@ route.post('/', async (req, res) => {
                 avgwpm: calculateNewAverage(getTotalAvgData?.all?.avgwpm, avgWpm, dataLength),
                 avgacc: calculateNewAverage(getTotalAvgData?.all?.avgacc, avgAcc, dataLength),
                 avgconsis: calculateNewAverage(getTotalAvgData?.all?.avgconsis, avgConsis, dataLength),
+                points: getTotalAvgData?.all?.points + totalPoints
             };
-
+            
             const levelData = {
                 avgwpm: calculateNewAverage(getTotalAvgData?.[level]?.avgwpm, avgWpm, levelDataLength),
                 avgacc: calculateNewAverage(getTotalAvgData?.[level]?.avgacc, avgAcc, levelDataLength),
                 avgconsis: calculateNewAverage(getTotalAvgData?.[level]?.avgconsis, avgConsis, levelDataLength),
+                points: getTotalAvgData?.[level]?.points + totalPoints
             };
 
             finalAvgResult = {
                 all: allData,
                 [level]: levelData,
             };
+
+            console.dir(finalAvgResult, { depth: null })
 
             // Update averages in DB
             await userModel.updateMany(
