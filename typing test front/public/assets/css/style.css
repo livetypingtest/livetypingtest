@@ -1,29 +1,35 @@
-.body{
+.body {
     background: #15131A;
-    
 }
+
+
 /* width */
+
 ::-webkit-scrollbar {
     width: 10px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
+}
+
+
+/* Track */
+
+ ::-webkit-scrollbar-track {
     /* box-shadow: inset 0 0 5px grey; */
     border-radius: 10px;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
+}
+
+
+/* Handle */
+
+ ::-webkit-scrollbar-thumb {
     background: #71CAC7;
     border-radius: 10px;
-  }
+}
 
-.header img{
+.header img {
     width: 60%;
 }
 
-.header ul{
+.header ul {
     display: flex;
     list-style: none !important;
     align-items: center;
@@ -33,7 +39,7 @@
     margin: 0;
 }
 
-.header li{
+.header li {
     color: #FFF;
     font-family: Inter;
     font-size: 16px;
@@ -42,20 +48,23 @@
     line-height: normal;
     transition: ease 0.2s;
 }
-.header li:hover{
+
+.header li:hover {
     color: #71CAC7;
 }
 
-.m-0{
+.m-0 {
     margin: 0 !important;
 }
 
-  /* Dropdown container */
-  .menu .dropdown .dropdown-menu {
+
+/* Dropdown container */
+
+.menu .dropdown .dropdown-menu {
     display: none;
     background-color: #1F1D21;
     position: absolute;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     top: 100%;
     left: 0;
     list-style: none;
@@ -66,7 +75,7 @@
     transition: ease 0.2s;
 }
 
-.custom-align{
+.custom-align {
     align-items: center !important;
 }
 
@@ -74,31 +83,31 @@
     display: block;
 }
 
+
 /* Dropdown items */
+
 .dropdown-menu li {
     transition: ease 0.2s;
     padding: 10px 20px;
     white-space: nowrap;
-  }
-  
-  .dropdown-menu li a {
+}
+
+.dropdown-menu li a {
     color: #fff;
     font-size: 14px;
     text-decoration: none;
     display: block;
-  }
-  
-  .dropdown-menu li:hover{
+}
+
+.dropdown-menu li:hover {
     color: #71CAC7;
     background-color: #15131A;
-    
-  }
-  
-  .lobby-menu.cs-timer {
+}
+
+.lobby-menu.cs-timer {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-
     .cs-logo {
         transition: 0.3s all;
         opacity: 0;
@@ -108,9 +117,9 @@
             object-fit: cover;
         }
     }
-  }
+}
 
-  .lobby-menu ul {
+.lobby-menu ul {
     list-style: none;
     display: flex;
     gap: 10px;
@@ -120,7 +129,7 @@
     padding: 15px 0px;
 }
 
-.lobby-menu button{
+.lobby-menu button {
     padding: 10px;
     color: #8C8C8C;
     font-family: Inter;
@@ -129,7 +138,8 @@
     font-weight: 400;
     line-height: normal;
 }
-.lobby-menu button.active{
+
+.lobby-menu button.active {
     padding: 10px;
     color: #15131A;
     background-color: #71CAC7;
@@ -140,7 +150,8 @@
     font-weight: 400;
     line-height: normal;
 }
-.lobby-menu li{
+
+.lobby-menu li {
     color: #71CAC7;
     font-family: Inter;
     font-size: 15px;
@@ -149,14 +160,14 @@
     line-height: normal;
 }
 
-.lobby-menu button:hover{
+.lobby-menu button:hover {
     color: #15131A;
     background-color: #71CAC7;
     /* padding: 10px; */
     border-radius: 5px;
 }
 
-.lobby-menu h4{
+.lobby-menu h4 {
     color: #71CAC7;
     font-family: Inter;
     font-size: 27px;
@@ -165,11 +176,12 @@
     line-height: normal;
     text-transform: capitalize;
 }
-.lobby-menu h4 span{
+
+.lobby-menu h4 span {
     font-size: 20px;
 }
 
-.typing-area{
+.typing-area {
     border-radius: 28px;
     /* background: #1F1D21; */
     width: 100%;
@@ -178,7 +190,7 @@
     position: relative;
 }
 
-.typing-area-cursor{
+.typing-area-cursor {
     border-left: 2px solid white;
     animation: blink 1s infinite;
     margin-left: 2px;
@@ -187,64 +199,67 @@
 
 @keyframes blink {
     0% {
-      opacity: 1;
+        opacity: 1;
     }
     50% {
-      opacity: 0;
+        opacity: 0;
     }
     100% {
-      opacity: 1;
+        opacity: 1;
     }
-  }
+}
 
 .typing-area::-webkit-scrollbar {
     width: 0px;
-  }
+}
 
-.lobby-area{
+.lobby-area {
     padding: 0px 100px 0px 100px;
 }
 
-.typing-area{
+.typing-area {
     cursor: "text";
     padding: 0 24px;
 }
 
-.text-active{
+.text-active {
     color: #71CAC7 !important;
 }
 
-.text-wrong{
+.text-wrong {
     color: #FF5B42 !important;
 }
-.text-idle{
+
+.text-idle {
     color: #8C8C8C !important;
 }
-.bg-idle{
+
+.bg-idle {
     background-color: #8C8C8C !important;
 }
 
-.underline{
+.underline {
     text-decoration: underline;
 }
 
-.reset span{
+.reset span {
     font-family: Inter;
     font-size: 18px;
     font-style: normal;
     font-weight: 300;
     line-height: normal;
 }
+
 .reset {
     font-size: 19px;
 }
+
 .reset {
     padding: 14px 14px 0px 0px;
     text-align: right;
 }
 
-
-.footer ul{
+.footer ul {
     list-style: none;
     display: flex;
     align-items: center;
@@ -252,22 +267,13 @@
     padding: 0;
     margin: 3px;
 }
-.footer .custom{
-    
+
+.footer .custom {
     justify-content: flex-start;
     gap: 15px;
-
 }
 
-.footer ul a{
-    color: #8C8C8C;
-    font-family: Inter;
-    font-size: 11px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-.footer ul .footer-design{
+.footer ul a {
     color: #8C8C8C;
     font-family: Inter;
     font-size: 11px;
@@ -276,17 +282,26 @@
     line-height: normal;
 }
 
-.footer ul a:hover{
+.footer ul .footer-design {
+    color: #8C8C8C;
+    font-family: Inter;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.footer ul a:hover {
     color: #71CAC7;
 }
 
-.status div{
+.status div {
     height: 100px;
     width: 20%;
     text-align: center !important;
 }
 
-.status div h4{
+.status div h4 {
     color: #71CAC7;
     font-family: Inter;
     font-size: 20px;
@@ -295,7 +310,8 @@
     line-height: normal;
     text-transform: capitalize;
 }
-.status div h1{
+
+.status div h1 {
     color: #FFF;
     text-align: center;
     font-family: Inter;
@@ -305,7 +321,8 @@
     line-height: normal;
     text-transform: uppercase;
 }
-.status div h1 span{
+
+.status div h1 span {
     color: #686772;
     font-family: Inter;
     font-size: 20px;
@@ -323,7 +340,7 @@
     /* padding: 100px 0px 30px 0px; */
 }
 
-.profile-layout{
+.profile-layout {
     border-radius: 28px;
     background: #1F1D21;
     position: relative;
@@ -333,12 +350,13 @@
     flex-direction: column;
 }
 
-.profile-layout .profile-sec1{
+.profile-layout .profile-sec1 {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.profile-layout .profile-sec1 img{
+
+.profile-layout .profile-sec1 img {
     border-radius: 50%;
     position: absolute;
     width: 100px;
@@ -347,7 +365,8 @@
     right: 50%;
     transform: translateX(50%);
 }
-.profile-upload{
+
+.profile-upload {
     opacity: 0;
     position: absolute;
     top: -75px;
@@ -365,12 +384,12 @@
     transform: translateX(-50%);
 }
 
-.profile-layout .profile-upload-main{
+.profile-layout .profile-upload-main {
     position: relative;
     width: 100%;
 }
 
-.profile-layout .profile-upload-main .profile-upload:hover{
+.profile-layout .profile-upload-main .profile-upload:hover {
     position: absolute;
     top: -75px;
     right: 0;
@@ -388,19 +407,19 @@
     backdrop-filter: blur(5px);
 }
 
-.font-active{
+.font-active {
     color: #71CAC7;
-text-align: center;
-font-family: Inter;
-font-size: 27px;
-font-style: normal;
-font-weight: 500;
-line-height: normal;
-text-transform: capitalize;
-margin: 0;
+    text-align: center;
+    font-family: Inter;
+    font-size: 27px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: capitalize;
+    margin: 0;
 }
 
-.font-idle{
+.font-idle {
     color: #8C8C8C;
     font-family: Inter;
     font-size: 15px;
@@ -408,29 +427,30 @@ margin: 0;
     font-weight: 400;
     line-height: normal;
     margin: 0;
-
 }
 
-.mt-12{
+.mt-12 {
     margin-top: 12px;
 }
-.mt-24{
+
+.mt-24 {
     margin-top: 24px;
 }
 
-.profile-input div:first-child{
+.profile-input div:first-child {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.profile-input{
+.profile-input {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
-.profile-input label{
+
+.profile-input label {
     color: #71CAC7;
     font-family: Inter;
     font-size: 15px;
@@ -443,7 +463,7 @@ margin: 0;
     background: #333036 !important;
 }
 
-.profile-input input{
+.profile-input input {
     width: 100%;
     background-color: transparent;
     border-radius: 8px;
@@ -456,20 +476,21 @@ margin: 0;
     font-weight: 400;
     line-height: normal;
 }
-.profile-input input:focus-visible{
+
+.profile-input input:focus-visible {
     border: none !important;
     box-shadow: none;
     outline: none;
 }
 
-.profile-sec3{
+.profile-sec3 {
     display: flex;
     align-items: center;
     flex-direction: column;
     gap: 20px;
 }
 
-.theme-btn{
+.theme-btn {
     background: #71CAC7;
     border-radius: 10px;
     color: #15131A;
@@ -482,7 +503,8 @@ margin: 0;
     padding: 10px 40px;
     text-align: center;
 }
-.theme-btn-danger{
+
+.theme-btn-danger {
     background: #b40101 !important;
     color: #fff !important;
     border-radius: 10px;
@@ -496,10 +518,10 @@ margin: 0;
     text-align: center;
 }
 
-.add-more-para .theme-btn{
+.add-more-para .theme-btn {
     background: transparent;
     border-radius: 10px;
-    color: #8C8C8C ;
+    color: #8C8C8C;
     font-family: Inter;
     font-size: 16px;
     font-style: normal;
@@ -511,13 +533,13 @@ margin: 0;
     /* width: 14%; */
 }
 
-.add-more-para{
+.add-more-para {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.add-para-btn{
+.add-para-btn {
     background: #71CAC7;
     border-radius: 10px;
     color: #15131A;
@@ -531,9 +553,7 @@ margin: 0;
     text-align: center;
 }
 
-
-
-.theme-btn-danger.sm{
+.theme-btn-danger.sm {
     background: #b40101 !important;
     color: #fff !important;
     border-radius: 10px;
@@ -546,7 +566,8 @@ margin: 0;
     padding: 10px 14px;
     text-align: center;
 }
-.theme-btn.lg{
+
+.theme-btn.lg {
     border-radius: 10px;
     background: #71CAC7;
     color: #15131A;
@@ -559,14 +580,16 @@ margin: 0;
     padding: 15px 30px;
     text-align: center;
 }
+
 button.google-sign-btn img {
     width: 25px;
 }
-.auth-input input::placeholder{
+
+.auth-input input::placeholder {
     font-size: 16px;
 }
 
-.theme-btn.sm{
+.theme-btn.sm {
     border-radius: 10px;
     background: #71CAC7;
     color: #15131A;
@@ -580,7 +603,7 @@ button.google-sign-btn img {
     text-align: center;
 }
 
-.delete-btn{
+.delete-btn {
     color: #E94235;
     font-family: Inter;
     font-size: 15px;
@@ -589,23 +612,24 @@ button.google-sign-btn img {
     line-height: normal;
 }
 
-.width-100{
+.width-100 {
     width: 100%;
 }
 
-.profile-stacs{
+.profile-stacs {
     display: flex;
     flex-direction: column;
     gap: 20px;
     /* padding: 20px; */
 }
 
-.stacs table th, .stacs table td{
+.stacs table th,
+.stacs table td {
     cursor: default;
     padding: 10px;
 }
 
-.stacs table th{
+.stacs table th {
     color: #71CAC7;
     font-family: Inter;
     font-size: 18px;
@@ -615,7 +639,8 @@ button.google-sign-btn img {
     text-transform: capitalize;
     margin: 0;
 }
-.stacs table td{
+
+.stacs table td {
     color: #8C8C8C;
     text-align: center;
     font-family: Inter;
@@ -627,7 +652,7 @@ button.google-sign-btn img {
     margin: 0;
 }
 
-.profile-stacs .stacs{
+.profile-stacs .stacs {
     padding: 20px;
     border-radius: 28px;
     background: #1F1D21;
@@ -638,11 +663,13 @@ button.google-sign-btn img {
     border: 1px solid transparent;
     transition: 0.5s all;
 }
+
 .profile-stacs>a:hover .stacs.mob {
     border: 1px solid #71cac7;
     box-shadow: 0px 0px 20px -6px #71cac757;
 }
-.profile-stacs .stacs h4{
+
+.profile-stacs .stacs h4 {
     color: #71CAC7;
     font-family: Inter;
     font-size: 18px;
@@ -652,7 +679,8 @@ button.google-sign-btn img {
     text-transform: capitalize;
     margin: 0;
 }
-.profile-stacs .stacs h2{
+
+.profile-stacs .stacs h2 {
     color: #FFF;
     font-family: Inter;
     font-size: 36px;
@@ -662,7 +690,8 @@ button.google-sign-btn img {
     text-transform: uppercase;
     margin: 0;
 }
-.profile-stacs .stacs p{
+
+.profile-stacs .stacs p {
     color: #8C8C8C;
     text-align: center;
     font-family: Inter;
@@ -674,7 +703,7 @@ button.google-sign-btn img {
     margin: 0;
 }
 
-.profile-stacs .stacs div{
+.profile-stacs .stacs div {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -682,17 +711,18 @@ button.google-sign-btn img {
     gap: 10px;
 }
 
-.footer-layout{
+.footer-layout {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
-.footer-layout div{
+
+.footer-layout div {
     width: 28%;
 }
 
-.footer p{
+.footer p {
     color: #D9D9D9;
     font-family: Inter;
     font-size: 12px;
@@ -701,39 +731,43 @@ button.google-sign-btn img {
     line-height: normal;
     text-align: left;
 }
-.footer span{
+
+.footer span {
     color: #71CAC7;
 }
-.width-80{
+
+.width-80 {
     width: 80%;
 }
-.bg-popup{
+
+.bg-popup {
     background-color: #1F1D21 !important;
 }
 
-.pass-modal .pass-header{
+.pass-modal .pass-header {
     display: flex;
     align-items: center;
     justify-content: flex-start;
 }
-.pass-modal .prof-header{
+
+.pass-modal .prof-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-
-.pass-modal .pass-footer{
+.pass-modal .pass-footer {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 10px;
 }
 
-.text-left{
+.text-left {
     text-align: left !important;
 }
-.auth-input .auth{
+
+.auth-input .auth {
     border-radius: 10px;
     background: #1F1D21;
     width: 90%;
@@ -749,9 +783,10 @@ button.google-sign-btn img {
     padding: 18px;
     display: flex;
     justify-content: space-between;
-    align-items:center ;
+    align-items: center;
 }
-.auth-input .auth input{
+
+.auth-input .auth input {
     background-color: transparent;
     width: 90%;
     height: 55px;
@@ -765,21 +800,19 @@ button.google-sign-btn img {
     line-height: normal;
 }
 
-.auth-input{
+.auth-input {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: flex-start;
     gap: 20px;
-
 }
 
-
-.width-90{
+.width-90 {
     width: 90%;
 }
 
-.google-sign-btn{
+.google-sign-btn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -795,7 +828,8 @@ button.google-sign-btn img {
     padding: 2px 20px;
     border: 1px solid #71CAC7;
 }
-.stats-layout{
+
+.stats-layout {
     position: fixed;
     z-index: 9999;
     top: 50%;
@@ -815,13 +849,15 @@ button.google-sign-btn img {
     padding: 50px;
 }
 
-.statistics-layout{
+.statistics-layout {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 35px;
+    margin-bottom: 30px;
+    gap: 155px;
+    justify-content: center;
 }
-.statistics-layout h4{
+
+.statistics-layout h4 {
     color: rgb(113, 202, 199);
     font-family: Inter;
     font-size: 32px;
@@ -830,7 +866,8 @@ button.google-sign-btn img {
     line-height: normal;
     text-transform: capitalize;
 }
-.statistics-layout h1{
+
+.statistics-layout h1 {
     color: #FFF;
     text-align: center;
     font-family: Inter;
@@ -841,19 +878,20 @@ button.google-sign-btn img {
     text-transform: uppercase;
 }
 
-.below-graph{
+.below-graph {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.below-graph-btn{
+
+.below-graph-btn {
     display: flex;
     justify-content: center;
     gap: 30px;
     align-items: center;
 }
 
-.below-graph h4{
+.below-graph h4 {
     color: rgb(113, 202, 199);
     font-family: Inter;
     font-size: 20px;
@@ -862,7 +900,8 @@ button.google-sign-btn img {
     line-height: normal;
     text-transform: capitalize;
 }
-.below-graph h1{
+
+.below-graph h1 {
     color: #FFF;
     text-align: center;
     font-family: Inter;
@@ -873,7 +912,7 @@ button.google-sign-btn img {
     text-transform: uppercase;
 }
 
-.statistics-main{
+.statistics-main {
     position: fixed;
     top: 0;
     right: 0;
@@ -895,9 +934,9 @@ button.google-sign-btn img {
     justify-content: center;
     z-index: 2;
     cursor: pointer;
-  }
-  
-  .overlay-message {
+}
+
+.overlay-message {
     display: flex;
     color: #4bfff9;
     text-align: center;
@@ -912,13 +951,13 @@ button.google-sign-btn img {
     justify-content: center;
     align-items: center;
     gap: 18px;
-  }
+}
 
-.font-50{
+.font-50 {
     font-size: 50px !important;
 }
 
-.leaderboard-head h1{
+.leaderboard-head h1 {
     color: #71CAC7;
     /* text-align: center; */
     font-family: Inter;
@@ -930,7 +969,7 @@ button.google-sign-btn img {
     margin: 0;
 }
 
-.leaderboard-head .filter button{
+.leaderboard-head .filter button {
     padding: 10px;
     color: #8C8C8C;
     font-family: Inter;
@@ -952,27 +991,27 @@ button.google-sign-btn img {
     line-height: normal;
 }
 
-.leaderboard-head .filter button:hover{
+.leaderboard-head .filter button:hover {
     color: #15131A;
     background-color: #71CAC7;
     /* padding: 10px; */
     border-radius: 10px;
 }
 
-.leaderboard-head{
+.leaderboard-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.leaderboard-head.admin{
+.leaderboard-head.admin {
     display: flex;
     justify-content: space-between;
     gap: 40px;
     align-items: center;
 }
 
-.leaderboard-head .filter{
+.leaderboard-head .filter {
     display: flex;
     /* flex-direction: column; */
     align-items: center;
@@ -980,7 +1019,7 @@ button.google-sign-btn img {
     gap: 20px;
 }
 
-.leaderboard-head .filter .filter-btn{
+.leaderboard-head .filter .filter-btn {
     display: flex;
     border: 1px solid #71CAC7;
     justify-content: space-evenly;
@@ -995,18 +1034,20 @@ button.google-sign-btn img {
     align-items: center;
     gap: 12px;
 }
-.profile img{
+
+.profile img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-
 }
 
-.leaderboard-table table tbody tr:nth-child(odd){
-    background-color:#ffffff24 ;
+.leaderboard-table table tbody tr:nth-child(odd) {
+    background-color: #ffffff24;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
+
+
 /* .leaderboard-table table tbody tr:nth-child(odd) .fa-solid, .leaderboard-table table tbody tr:nth-child(odd) .fa-regular{
     color:#1f1d21 ;
 }
@@ -1024,10 +1065,9 @@ button.google-sign-btn img {
     line-height: normal;
     text-transform: capitalize;
     margin: 0;
-    
 }
 
-.leaderboard-table table th{
+.leaderboard-table table th {
     color: #1f1d21;
     /* text-align: center; */
     font-family: Inter;
@@ -1040,7 +1080,7 @@ button.google-sign-btn img {
     margin: 0;
 }
 
-.leaderboard-table table tr:nth-child(odd) td{
+.leaderboard-table table tr:nth-child(odd) td {
     color: #fff;
     /* text-align: center; */
     font-family: Inter;
@@ -1051,36 +1091,41 @@ button.google-sign-btn img {
     text-transform: capitalize;
     margin: 0;
 }
-.leaderboard-table table tbody tr:nth-child(even) td{
+
+.leaderboard-table table tbody tr:nth-child(even) td {
     background-color: #1f1d21;
 }
 
-.leaderboard-table table{
+.leaderboard-table table {
     cursor: default;
     width: 100%;
 }
-.leaderboard-table table td, .leaderboard-table table th {
+
+.leaderboard-table table td,
+.leaderboard-table table th {
     padding: 20px;
 }
 
-.leaderboard-table{
+.leaderboard-table {
     /* border: 1px solid #71CAC7; */
     border-radius: 10px;
     overflow: hidden;
     min-height: 250px;
 }
 
-.swal2-popup{
+.swal2-popup {
     background-color: #1F1D21 !important;
 }
-.swal2-title{
+
+.swal2-title {
     color: #71CAC7 !important;
 }
-.swal2-html-container{
+
+.swal2-html-container {
     color: #fff !important;
 }
 
-.swal2-custom-btn{
+.swal2-custom-btn {
     display: inline-block;
     border: 1px solid #71CAC7;
     background-color: #71CAC7;
@@ -1088,21 +1133,22 @@ button.google-sign-btn img {
     border-radius: 10px;
 }
 
-.swal2-timer-progress-bar{
+.swal2-timer-progress-bar {
     background: #71cac778 !important;
 }
 
-.swal2-confirm{
+.swal2-confirm {
     background-color: #71CAC7;
 }
 
-.p-30{
+.p-30 {
     padding: 30px !important;
 }
 
+
 /* tooltip */
 
-.item{
+.item {
     padding: 5px 12px;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
@@ -1112,89 +1158,96 @@ button.google-sign-btn img {
     transform: translateY(0);
     transition: 0.1s;
     position: relative;
-    span{
-      position: absolute;
-      bottom: calc(100% + 12px);
-      width: max-content;
-      left: 50%;
-      pointer-events: none;
-      transform: translateX(-50%);
-      opacity: 0;
-      font-weight: 400;
-      font-size: 16px;
-      background: #1F1D21;
-      padding: 6px 10px;
-      color: #71CAC7;
-      border-radius: 4px;
-      &::before{
-        content: '';
+    span {
         position: absolute;
-        top: 100%;
+        bottom: calc(100% + 12px);
+        width: max-content;
         left: 50%;
+        pointer-events: none;
         transform: translateX(-50%);
-        width: 0;
-        height: 0;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
-        border-top: 8px solid #1F1D21;
-      }
+        opacity: 0;
+        font-weight: 400;
+        font-size: 16px;
+        background: #1F1D21;
+        padding: 6px 10px;
+        color: #71CAC7;
+        border-radius: 4px;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 8px solid #1F1D21;
+        }
     }
-&:hover,&.active{
-  /* transform: translateY(-2px); */
-    span{
-    animation: show-tool-tip 10s;
-    animation-delay: 0.1s;
-  }
+    &:hover,
+    &.active {
+        /* transform: translateY(-2px); */
+        span {
+            animation: show-tool-tip 10s;
+            animation-delay: 0.1s;
+        }
+    }
 }
+
+@keyframes show-tool-tip {
+    0% {
+        opacity: 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    95% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
-@keyframes show-tool-tip{
-  0%{
-    opacity: 0;
-  }
-  5%{
-    opacity: 1;
-  }
-  95%{
-    opacity: 1;
-  }
-  100%{
-    opacity: 0;
-  }
-}
+
 
 /* tooltip */
 
+
 /* Spinner */
+
 .loading {
     width: 54px;
     height: 54px;
     position: relative;
     transform: rotate(15deg);
     transition: all .3s ease;
-  }
-  
-  .loading .orange {
+}
+
+.loading .orange {
     position: absolute;
     stroke-width: 4;
     stroke: #71CAC7;
     stroke-dasharray: 20, 180;
     animation: dash 1s linear infinite;
-  }
-  
-  @keyframes dash {
+}
+
+@keyframes dash {
     0% {
-      stroke-dashoffset: 0;
+        stroke-dashoffset: 0;
     }
     100% {
-      stroke-dashoffset: -200;
+        stroke-dashoffset: -200;
     }
-  }
-  
+}
+
+
 /* Spinner */
 
 
 /* Loader for leaderboard */
-.rl-loading-container{
+
+.rl-loading-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1233,15 +1286,19 @@ button.google-sign-btn img {
         transform: scale(1);
     }
 }
+
+
 /* Loader for leaderboard */
 
-.show-filter{
+.show-filter {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
+
 /* Loader for Delete button */
+
 .wrapper-cs {
     display: flex;
     justify-content: center;
@@ -1249,28 +1306,33 @@ button.google-sign-btn img {
     gap: 1em;
     transition: 2s ease;
     cursor: progress;
-  }
-  .wrapper-cs:hover {
-     transform: scale(1.2);
-  }
-  .dot-cs {
+}
+
+.wrapper-cs:hover {
+    transform: scale(1.2);
+}
+
+.dot-cs {
     background: white;
     height: 0.65em;
     width: 0.65em;
     border-radius: 50%;
     animation: move 0.6s ease infinite;
-  }
-  @keyframes move {
+}
+
+@keyframes move {
     0% {
-      transform: translateX(50%);
+        transform: translateX(50%);
     }
     50% {
-      transform: translateX(-50%);
+        transform: translateX(-50%);
     }
     100% {
-      transform: translateX(50%);
+        transform: translateX(50%);
     }
-  }
+}
+
+
 /* Loader for Delete button */
 
 .blog-post {
@@ -1286,17 +1348,17 @@ button.google-sign-btn img {
     box-shadow: rgb(255 255 255 / 9%) 1px 1px 20px 5px;
 }
 
-.blog-post .blog-img{
+.blog-post .blog-img {
     width: 100%;
 }
 
-.blog-post .blog-img img{
+.blog-post .blog-img img {
     width: 100%;
     height: 220px;
     border-radius: 20px;
 }
 
-.blog-post .blog-content h1{
+.blog-post .blog-content h1 {
     color: #71CAC7;
     font-family: Inter;
     font-size: 24px;
@@ -1307,9 +1369,7 @@ button.google-sign-btn img {
     margin-bottom: 16px;
 }
 
-
-
-.blog-post .blog-content p{
+.blog-post .blog-content p {
     color: #8C8C8C;
     font-family: Inter;
     font-size: 12px;
@@ -1319,12 +1379,12 @@ button.google-sign-btn img {
     margin-bottom: 0;
 }
 
-.blog-content a{
+.blog-content a {
     color: #71CAC7 !important;
     text-decoration: underline;
 }
 
-.blog-post a{
+.blog-post a {
     color: #71CAC7;
     font-family: Inter;
     font-size: 16px;
@@ -1334,27 +1394,28 @@ button.google-sign-btn img {
     margin: 0;
 }
 
-.blog-layout{
+.blog-layout {
     display: grid;
     min-height: 400px;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 40px;
 }
 
-.blog-header{
+.blog-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.blog-header h1{
+.blog-header h1 {
     width: 80%;
 }
-.blog-header h6{
+
+.blog-header h6 {
     width: 20%;
 }
 
-.blog-header .heading{
+.blog-header .heading {
     color: #71CAC7;
     font-family: Inter;
     font-size: 35px;
@@ -1364,7 +1425,7 @@ button.google-sign-btn img {
     text-transform: capitalize;
 }
 
-.blog-header .post-time{
+.blog-header .post-time {
     color: #8C8C8C;
     text-align: right;
     font-family: Inter;
@@ -1374,7 +1435,7 @@ button.google-sign-btn img {
     line-height: normal;
 }
 
-.blog-banner img{
+.blog-banner img {
     width: 100%;
     border-radius: 18px;
     height: 500px;
@@ -1388,16 +1449,20 @@ button.google-sign-btn img {
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
-    line-height: 38px; /* 172.727% */
+    line-height: 38px;
+    /* 172.727% */
     text-transform: capitalize;
 }
 
 .p-10-15 {
     padding: 10px 15px !important;
 }
-.p-0{padding: 0 !important;}
 
-.para-layout{
+.p-0 {
+    padding: 0 !important;
+}
+
+.para-layout {
     border-radius: 28px;
     /* border: 1px solid rgb(113, 202, 199); */
     padding: 30px;
@@ -1407,7 +1472,7 @@ button.google-sign-btn img {
     gap: 30px;
 }
 
-.para-layout .form{
+.para-layout .form {
     border-radius: 28px;
     /* background: #26212c; */
     /* border: 1px solid #71CAC7; */
@@ -1416,7 +1481,7 @@ button.google-sign-btn img {
     flex-direction: column;
 }
 
-.add-para{
+.add-para {
     border-radius: 10px;
     background: #334a4a;
     padding: 20px;
@@ -1424,11 +1489,16 @@ button.google-sign-btn img {
     display: flex;
     flex-direction: column;
 }
-.add-para .para-writer{
-    width: 100%; /* Full width */
-    resize: none; /* Disable manual resizing */
-    overflow: hidden; /* Hide scrollbars */
-    min-height: 50px; /* Minimum height */
+
+.add-para .para-writer {
+    width: 100%;
+    /* Full width */
+    resize: none;
+    /* Disable manual resizing */
+    overflow: hidden;
+    /* Hide scrollbars */
+    min-height: 50px;
+    /* Minimum height */
     background: #334a4a;
     flex-shrink: 0;
     outline: none;
@@ -1439,22 +1509,23 @@ button.google-sign-btn img {
     font-weight: 400;
     line-height: normal;
 }
+
 .para-layout .form .add-para {
-    
     background: #1F1D21;
     border: 1px solid #71cac7b5;
-    
 }
-.para-layout .form .add-para .para-writer{
+
+.para-layout .form .add-para .para-writer {
     background: #1F1D21;
 }
 
-.add-para .para-btns{
+.add-para .para-btns {
     display: flex;
     justify-content: end;
     gap: 10px;
     align-items: center;
 }
+
 
 /* Custom Loader */
 
@@ -1464,15 +1535,20 @@ button.google-sign-btn img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Slightly dark background */
-    backdrop-filter: blur(5px); /* Blur effect for background */
+    background: rgba(0, 0, 0, 0.5);
+    /* Slightly dark background */
+    backdrop-filter: blur(5px);
+    /* Blur effect for background */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999; /* Ensures overlay is on top of all elements */
+    z-index: 9999;
+    /* Ensures overlay is on top of all elements */
 }
 
+
 /* Loader container */
+
 .loader-cs {
     position: relative;
     width: 80px;
@@ -1528,42 +1604,51 @@ button.google-sign-btn img {
     }
 }
 
+
 /* Custom Loader */
 
+
 /* Blog Editor */
+
 .blog-editor {
     max-width: 800px;
     margin: auto;
     padding: 20px;
     background: #fff;
-  }
-  
-  .blog-editor .header {
+}
+
+.blog-editor .header {
     text-align: center;
-  }
-  
-  .blog-editor .ql-container {
+}
+
+.blog-editor .ql-container {
     height: 300px;
-  }
-  
-  .blog-editor button {
+}
+
+.blog-editor button {
     display: block;
     margin: 20px auto;
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #4caf50; /* Green background */
-    color: white;              /* White text */
-    border: none;              /* No border */
-    border-radius: 4px;       /* Rounded corners */
-    cursor: pointer;           /* Pointer cursor on hover */
-  }
-  
-  .blog-editor button:hover {
-    background-color: #45a049; /* Darker green on hover */
-  }
+    background-color: #4caf50;
+    /* Green background */
+    color: white;
+    /* White text */
+    border: none;
+    /* No border */
+    border-radius: 4px;
+    /* Rounded corners */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+}
 
-  .blog-form-cs {
-    background-color:transparent ;
+.blog-editor button:hover {
+    background-color: #45a049;
+    /* Darker green on hover */
+}
+
+.blog-form-cs {
+    background-color: transparent;
     /* border: 1px solid #71CAC7; */
     background-color: #1F1D21;
     border-radius: 20px;
@@ -1572,8 +1657,9 @@ button.google-sign-btn img {
     flex-direction: column;
     justify-content: stretch;
     align-items: start;
-  }
-  .blog-form-cs input{
+}
+
+.blog-form-cs input {
     background-color: #1f1d21;
     border: 1px solid #71CAC7;
     border-radius: 20px;
@@ -1587,26 +1673,27 @@ button.google-sign-btn img {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-  }
-  .blog-form-cs .featured-image-layout{
+}
+
+.blog-form-cs .featured-image-layout {
     border: 1px solid #71CAC7;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 10px;
-  }
+}
 
-  .blog-form-cs .featured-image-layout img{
+.blog-form-cs .featured-image-layout img {
     width: 100%;
-  }
+}
 
-  .blog-form-cs .font-active {
+.blog-form-cs .font-active {
     font-size: 18px !important;
     margin-bottom: 10px;
-  }
+}
 
-  .add-blog-btn{
+.add-blog-btn {
     border: 3px dashed #71CAC7;
     border-radius: 20px;
     padding: 20px;
@@ -1616,84 +1703,107 @@ button.google-sign-btn img {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-  }
+}
+
+
 /* Blog Editor */
 
-.table-equal{
+.table-equal {
     table-layout: fixed;
 }
 
-.table-equal td{
+.table-equal td {
     width: 33%;
 }
 
-.switcher{
+.switcher {
     gap: 20px !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-.display-para-sec .add-para{
+.display-para-sec .add-para {
     width: 95% !important;
 }
 
-.display-para-sec{
+.display-para-sec {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.display-para-sec .para-btns{
+.display-para-sec .para-btns {
     display: flex;
     flex-direction: column;
     gap: 10px;
     /* width: 5% !important; */
 }
-.display-para-sec .para-btns button{
+
+.display-para-sec .para-btns button {
     border: 1px solid #71CAC7;
     border-radius: 50%;
 }
 
-.blog-main-header{
+.blog-main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .select-container {
-    position: relative; /* Position relative for absolute positioning of the arrow */
-    width: 25%; /* Same width as the select */
+    position: relative;
+    /* Position relative for absolute positioning of the arrow */
+    width: 25%;
+    /* Same width as the select */
 }
 
 .blog-main-header select {
-    width: 100%; /* Make select take the full width of the container */
-    background-color: #1f1d21; /* Dark background */
+    width: 100%;
+    /* Make select take the full width of the container */
+    background-color: #1f1d21;
+    /* Dark background */
     border: none;
-    color: #ffffff; /* Text color */
-    padding: 15px; /* Add padding for better spacing */
-    border-radius: 4px; /* Rounded corners */
-    appearance: none; /* Remove default styling for better control */
-    padding-right: 30px; /* Add padding on the right to make space for the arrow */
+    color: #ffffff;
+    /* Text color */
+    padding: 15px;
+    /* Add padding for better spacing */
+    border-radius: 4px;
+    /* Rounded corners */
+    appearance: none;
+    /* Remove default styling for better control */
+    padding-right: 30px;
+    /* Add padding on the right to make space for the arrow */
 }
 
 .blog-main-header select:focus {
-    color: #ffffff; /* Text color */
-    background-color: #1f1d21; /* Keep the same dark background on focus */
-    border: none;   
-    outline: none; /* Remove default outline */
+    color: #ffffff;
+    /* Text color */
+    background-color: #1f1d21;
+    /* Keep the same dark background on focus */
+    border: none;
+    outline: none;
+    /* Remove default outline */
     box-shadow: none;
 }
 
 .arrow {
-    position: absolute; /* Position the arrow absolutely */
-    top: 50%; /* Center vertically */
-    right: 10px; /* Position from the right */
-    transform: translateY(-50%); /* Adjust for vertical centering */
-    color: #71CAC7; /* Arrow color */
-    pointer-events: none; /* Prevent mouse events on the arrow */
-    font-size: 22px; /* Size of the arrow */
+    position: absolute;
+    /* Position the arrow absolutely */
+    top: 50%;
+    /* Center vertically */
+    right: 10px;
+    /* Position from the right */
+    transform: translateY(-50%);
+    /* Adjust for vertical centering */
+    color: #71CAC7;
+    /* Arrow color */
+    pointer-events: none;
+    /* Prevent mouse events on the arrow */
+    font-size: 22px;
+    /* Size of the arrow */
 }
 
-.p-custom{
+.p-custom {
     padding: 40px 0px !important;
 }
 
@@ -1701,51 +1811,54 @@ button.google-sign-btn img {
     display: none !important;
 }
 
-.cutom-lobby-head{
+.cutom-lobby-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.custom-footer-lobby{
+
+.custom-footer-lobby {
     display: flex;
     justify-content: flex-end;
 }
-.profile-loader{
+
+.profile-loader {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
-.dynamic-paglayout{
+
+.dynamic-paglayout {
     border-radius: 10px;
     background: #1F1D21;
     padding: 20px;
     overflow-y: scroll;
-    min-height: 200px; 
-    max-height : 550px;
+    min-height: 200px;
+    max-height: 550px;
     color: #fff !important;
 }
 
-.header-dynamic-page{
+.header-dynamic-page {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.about-section{
+.about-section {
     color: #fff;
     padding: 40px 0px;
 }
 
-.contact-section{
+.contact-section {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content:center ;
+    justify-content: center;
     gap: 16px;
 }
 
-.contact-div{
+.contact-div {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1756,7 +1869,8 @@ button.google-sign-btn img {
 .cd-heigth-200 {
     height: 200px !important;
 }
-.contact-section .auth{
+
+.contact-section .auth {
     border-radius: 10px;
     background: #1F1D21;
     width: 100%;
@@ -1772,17 +1886,19 @@ button.google-sign-btn img {
     padding: 18px;
     display: flex;
     justify-content: space-between;
-    align-items:center ;
+    align-items: center;
     flex: 1;
 }
 
-.contact-section .auth-cs{
+.contact-section .auth-cs {
     width: 100%;
 }
+
 .contact-section button {
     width: 50%;
 }
-.contact-section .auth input{
+
+.contact-section .auth input {
     background-color: transparent;
     height: 55px;
     flex-shrink: 0;
@@ -1794,7 +1910,8 @@ button.google-sign-btn img {
     font-weight: 400;
     line-height: normal;
 }
-.contact-section .auth-cs textarea{
+
+.contact-section .auth-cs textarea {
     background-color: transparent;
     flex-shrink: 0;
     height: 190px;
@@ -1821,33 +1938,32 @@ button.google-sign-btn img {
     padding: 18px;
 }
 
-.contact-section{
+.contact-section {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: flex-start;
     gap: 20px;
-
 }
 
-.about-img img{
+.about-img img {
     width: 100%;
-    border-radius: 10px ;
+    border-radius: 10px;
 }
 
-.about-section a{
+.about-section a {
     font-size: 16px !important;
 }
 
-.header-dynamic-page h4{
+.header-dynamic-page h4 {
     font-size: 50px !important;
 }
 
-.about-main .about-section:nth-child(even) .row{
+.about-main .about-section:nth-child(even) .row {
     flex-direction: row-reverse;
 }
 
-.caps-alert{
+.caps-alert {
     position: absolute;
     background-color: #71CAC7;
     border-radius: 10px;
@@ -1872,16 +1988,20 @@ button.google-sign-btn img {
         opacity: 1;
     }
 }
-.text-dec-none{
+
+.text-dec-none {
     text-decoration: none !important;
 }
 
+
 /* Notification container */
+
 .cs-notification {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    display: none; /* Initially hidden */
+    display: none;
+    /* Initially hidden */
     background-color: #333;
     color: white;
     border-radius: 8px;
@@ -1890,78 +2010,80 @@ button.google-sign-btn img {
     z-index: 9999;
     max-width: 400px;
     width: 100%;
-    animation: slide-in 0.5s forwards; /* Animation to slide in */
-  }
-  
-  .cs-notification-show {
-    display: block; /* Show when triggered */
-  }
-  
-  .cs-notification-content {
+    animation: slide-in 0.5s forwards;
+    /* Animation to slide in */
+}
+
+.cs-notification-show {
+    display: block;
+    /* Show when triggered */
+}
+
+.cs-notification-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-  
-  .cs-notification-text {
-    max-width: 250px; /* Limit the width for text */
-  }
-  
-  .cs-notification-title {
+}
+
+.cs-notification-text {
+    max-width: 250px;
+    /* Limit the width for text */
+}
+
+.cs-notification-title {
     font-size: 18px;
     margin: 0;
-  }
-  
-  .cs-notification-body {
+}
+
+.cs-notification-body {
     font-size: 14px;
     margin: 5px 0;
-  }
-  
-  .cs-notification-url {
+}
+
+.cs-notification-url {
     font-size: 14px;
     color: #4c90e3;
     text-decoration: none;
-  }
-  
-  .cs-notification-image {
+}
+
+.cs-notification-image {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 50%;
     margin-left: 10px;
-  }
-  
-  @keyframes slide-in {
+}
+
+@keyframes slide-in {
     0% {
-      transform: translateX(100%);
-      opacity: 0;
+        transform: translateX(100%);
+        opacity: 0;
     }
     100% {
-      transform: translateX(0);
-      opacity: 1;
+        transform: translateX(0);
+        opacity: 1;
     }
-  }
-  
-  .badge-icon.cs {
-    font-size: 25px !important;
-  }
+}
 
-  .header-profile{
+.badge-icon.cs {
+    font-size: 25px !important;
+}
+
+.header-profile {
     display: flex;
     align-items: center;
-    justify-content:flex-start ;
+    justify-content: flex-start;
     gap: 5px;
+}
 
-  }
-
-  .header-profile img{
+.header-profile img {
     width: 30px;
     border-radius: 50%;
     height: 30px;
     object-fit: cover;
-  }
+}
 
-  .main-input-cs{
+.main-input-cs {
     opacity: 0;
     position: absolute;
     top: 0;
@@ -1972,18 +2094,20 @@ button.google-sign-btn img {
     overflow: hidden;
     resize: none;
     line-height: 1.5;
-  }
+}
 
-  
-.leaderboard-profile-font{
+.leaderboard-profile-font {
     margin: 0;
     font-size: 18px;
 }
-.custom-width{
+
+.custom-width {
     width: 90%;
 }
 
+
 /* Blur Effect Overlay */
+
 .typing-overlay {
     position: absolute;
     top: 50%;
@@ -1993,8 +2117,7 @@ button.google-sign-btn img {
     height: 100%;
     background: rgb(0 0 0 / 26%);
     color: white;
-    display: flex
-;
+    display: flex;
     justify-content: center;
     align-items: center;
     background-color: #15131a59;
@@ -2005,34 +2128,34 @@ button.google-sign-btn img {
     font-size: 18px;
     padding: 10px;
     cursor: pointer;
-  }
+}
 
-  .z-10{
+.z-10 {
     z-index: 10;
     position: relative;
-  }
-  
-  /* Blur Effect for Text */
-  .text-blur {
+}
+
+
+/* Blur Effect for Text */
+
+.text-blur {
     /* filter: blur(5px); */
     opacity: 0.5;
-  }
+}
 
-  .paragraph-container {
+.paragraph-container {
     position: relative;
-    white-space: pre-wrap; /* Preserve spaces and line breaks */
+    white-space: pre-wrap;
+    /* Preserve spaces and line breaks */
     /* font-family: "Roboto Mono", "Roboto Mono", Vazirmatn, monospace;
   font-style: normal;
   font-weight: 400; */
-  /* font-size: 30px; */
-  height: 182px;
-  /* line-height: 48px; */
+    /* font-size: 30px; */
+    height: 182px;
+    /* line-height: 48px; */
+}
 
-
-  }
-
-
-  .blog-categories {
+.blog-categories {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -2055,54 +2178,56 @@ button.google-sign-btn img {
     background-color: #ddd;
 }
 
-.img-404 img{
+.img-404 img {
     width: 100%;
 }
-.img-404{
+
+.img-404 {
     display: flex;
     justify-content: center;
     flex-direction: column;
     gap: 20px;
 }
 
-.custom-alert{
+.custom-alert {
     background-color: #ffc10729 !important;
     border: 1px solid #ffc107;
     color: #fff;
 }
 
-.cs-border{
+.cs-border {
     border: 1px solid #fff;
 }
 
 
-
 /*----------------------------- */
+
 .cursor {
     position: absolute;
     width: 2px;
     height: 1.5em;
     background-color: red;
     animation: blink 0.8s infinite;
-  }
+}
 
-  #game{
-    overflow:hidden ;
-  }
-  #game:focus-visible{
+#game {
+    overflow: hidden;
+}
+
+#game:focus-visible {
     border: none !important;
     box-shadow: none !important;
     outline: none !important;
-  }
+}
 
-  #words {
+#words {
     position: relative;
     display: flex;
     cursor: default;
     font-family: "Roboto Mono", "Roboto Mono", Vazirmatn, monospace;
     font-style: normal;
     font-weight: 400;
-    font-size: 35px ;
+    font-size: 35px;
     line-height: 40px;
     letter-spacing: 3px;
     height: 182px;
@@ -2111,22 +2236,23 @@ button.google-sign-btn img {
     flex: 1;
     flex-wrap: wrap;
     transition: 0.3s all;
-  
-  .letter.correct {
-    color: #71CAC7; /* Or any color to indicate correct input */
-  }
-  
-  .letter.incorrect {
-    color: red; /* Color for incorrect input */
-  }
-  .letter.extra {
-    color: rgba(251, 8, 8, 0.783); /* Extra characters will be in red */
-  }
-  
-  .word.current .letter {
-    text-decoration: underline; /* Optional for current word emphasis */
-    transition: 0.3s all !important;
-  }
+    .letter.correct {
+        color: #71CAC7;
+        /* Or any color to indicate correct input */
+    }
+    .letter.incorrect {
+        color: red;
+        /* Color for incorrect input */
+    }
+    .letter.extra {
+        color: rgba(251, 8, 8, 0.783);
+        /* Extra characters will be in red */
+    }
+    .word.current .letter {
+        text-decoration: underline;
+        /* Optional for current word emphasis */
+        transition: 0.3s all !important;
+    }
 }
 
 .tooltip {
@@ -2139,9 +2265,9 @@ button.google-sign-btn img {
 
 .custom-tooltip {
     position: relative;
-    }
-    
-    .custom-tooltip::before {
+}
+
+.custom-tooltip::before {
     content: "";
     position: absolute;
     width: 100%;
@@ -2151,53 +2277,53 @@ button.google-sign-btn img {
     z-index: -1;
     border: 1px solid #71CAC7;
     opacity: .9;
-    }
+}
 
-    .skip-underline{
-        text-decoration: underline !important;
-        text-decoration-color: red !important;
-        transition: 0.3s all;
-    }
+.skip-underline {
+    text-decoration: underline !important;
+    text-decoration-color: red !important;
+    transition: 0.3s all;
+}
 
-    .radio-options {
-        display: flex;
-        justify-content: space-around;
-        margin-bottom: 20px;
-      }
-      
-      .radio-box {
-        width: 100px;
-        height: 100px;
-        border: 3px solid #71CAC7;
-        border-radius: 50%;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        overflow: hidden;
-      }
-      
-      .radio-box.selected {
-        border-color: #45a049 !important;
-        box-shadow: 0px 0px 10px 4px #45a04957;
-      }
-      
-      .radio-content {
-        margin-top: 10px;
-        font-size: 14px;
-        font-weight: bold;
-      }
-      
-      .cropper-modal {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
+.radio-options {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.radio-box {
+    width: 100px;
+    height: 100px;
+    border: 3px solid #71CAC7;
+    border-radius: 50%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.radio-box.selected {
+    border-color: #45a049 !important;
+    box-shadow: 0px 0px 10px 4px #45a04957;
+}
+
+.radio-content {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.cropper-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 .cropper-actions {
@@ -2224,7 +2350,8 @@ button.google-sign-btn img {
     margin-top: 20px;
     text-align: center;
 }
-.crop-controls{
+
+.crop-controls {
     position: absolute;
     display: flex;
     align-items: center;
@@ -2232,13 +2359,13 @@ button.google-sign-btn img {
     bottom: -45px;
     right: 0;
 }
-    
-.reactEasyCrop_Container{
+
+.reactEasyCrop_Container {
     background: #000;
     border: 1px solid #71CAC7;
 }
 
-.notice-bar{
+.notice-bar {
     background-color: #e65900c4;
     width: 100%;
     /* height: 50px; */
@@ -2247,14 +2374,16 @@ button.google-sign-btn img {
     align-items: center;
     justify-content: space-between;
 }
-.notice-bar .notice{
+
+.notice-bar .notice {
     width: 85%;
     display: flex;
     align-items: center;
     justify-content: start;
     gap: 8px;
 }
-.notice-bar .notice h3{
+
+.notice-bar .notice h3 {
     color: #fff;
     font-family: Inter;
     font-size: 20px;
@@ -2263,7 +2392,8 @@ button.google-sign-btn img {
     line-height: normal;
     margin: 0;
 }
-.notice-bar .notice p{
+
+.notice-bar .notice p {
     color: #fff;
     font-family: Inter;
     font-size: 18px;
@@ -2272,10 +2402,12 @@ button.google-sign-btn img {
     line-height: normal;
     margin: 0;
 }
-.notice-bar .button{
+
+.notice-bar .button {
     width: 15%;
     text-align: end;
 }
+
 .position-rel {
     position: relative;
 }
@@ -2287,34 +2419,39 @@ button.google-sign-btn img {
     height: 40px;
     border-radius: 10px;
     background-color: #71CAC7;
-    vertical-align: text-bottom; /* Aligns with text baseline */
+    vertical-align: text-bottom;
+    /* Aligns with text baseline */
     /* animation: blink 1.5s linear infinite; */
-    margin: 0; /* Prevent spacing issues */
+    margin: 0;
+    /* Prevent spacing issues */
 }
 
 .blinking-cursor.blink {
     animation: blink 1.5s linear infinite;
 }
-  
-  @keyframes blink {
-    0%, 100% {
+
+@keyframes blink {
+    0%,
+    100% {
         background-color: #71CAC7;
     }
     50% {
         background-color: #334a4a;
     }
-  }
+}
 
 #caret {
     position: absolute;
-    transition: left 0.1s ease, top 0.1s ease; /* Optional smooth movement */
+    transition: left 0.1s ease, top 0.1s ease;
+    /* Optional smooth movement */
 }
 
 @media screen and (min-width: 1140px) {
-    body, html, #root {
+    body,
+    html,
+    #root {
         height: 100vh;
     }
-    
     #root {
         display: flex;
         flex-direction: column;

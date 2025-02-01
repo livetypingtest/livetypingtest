@@ -160,8 +160,8 @@ const handleTest = createAsyncThunk('handleTest', async(stats)=>{
 });
 
 const handleGetLeaderboardData = createAsyncThunk('handleGetLeaderboardData', async(data)=>{
-    const { onLoadLimit, timeFilter } = data
-    const response = await axios.get(`${USER_API_URL}/dashdata/${onLoadLimit}/${timeFilter}`)
+    const { onLoadLimit, timeFilter, level } = data
+    const response = await axios.get(`${USER_API_URL}/dashdata/${onLoadLimit}/${timeFilter}/${level}`)
     // console.log(response.data.userData)
     if(response.data.status === 200) {
         let checkMsg = {
@@ -173,6 +173,20 @@ const handleGetLeaderboardData = createAsyncThunk('handleGetLeaderboardData', as
         return checkMsg
     }
 })
+// const handleGetLeaderboardData = createAsyncThunk('handleGetLeaderboardData', async(data)=>{
+//     const { onLoadLimit, timeFilter } = data
+//     const response = await axios.get(`${USER_API_URL}/dashdata/${onLoadLimit}/${timeFilter}`)
+//     // console.log(response.data.userData)
+//     if(response.data.status === 200) {
+//         let checkMsg = {
+//             status : true,
+//             message : response.data.message,
+//             type : response.data.type,
+//             data : response.data.userData,
+//         }
+//         return checkMsg
+//     }
+// })
 
 const handleUploadProfile = createAsyncThunk('handleUploadProfile', async(formData) => {
     const ID = localStorage.getItem('userToken')

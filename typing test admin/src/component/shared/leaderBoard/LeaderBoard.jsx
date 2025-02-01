@@ -37,7 +37,18 @@ const LeaderBoard = () => {
         setTimeFilter(time)
         const obj = {
             onLoadLimit : onLoadLimit,
-            timeFilter : time
+            timeFilter : time,
+            level : levelFilter
+        }
+        dispatch(handleGetLeaderboardData(obj))
+    }
+
+    const handleFilterLevel = (level) =>{
+        setLevelFilter(level)
+        const obj = {
+            onLoadLimit : onLoadLimit,
+            timeFilter : timeFilter,
+            level : level
         }
         dispatch(handleGetLeaderboardData(obj))
     }
@@ -105,19 +116,18 @@ const LeaderBoard = () => {
     
 
     useEffect(()=>{
-        updateDataOnLevels()
+        // updateDataOnLevels()
     }, [timeFilter, levelFilter])
 
-    const handleFilterLevel = (level) =>{
-        setLevelFilter(level)
-    }
 
     useEffect(()=>{
         const obj = {
             onLoadLimit : onLoadLimit,
-            timeFilter : timeFilter
+            timeFilter : timeFilter,
+            level : levelFilter
         }
         dispatch(handleGetLeaderboardData(obj))
+
     }, [])
 
     useEffect(()=>{
@@ -192,9 +202,11 @@ const LeaderBoard = () => {
                                         <th>wpm</th>
                                         <th>accuracy</th>
                                         <th>consistency</th>
+                                        <th>Score</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+
                                     {displayData?.map((value, index) => (
                                         <tr key={index}>
                                             <td>{index + 1}</td>
@@ -213,6 +225,7 @@ const LeaderBoard = () => {
                                             <td>{Math.round(value?.avgWpm)}</td>
                                             <td>{Math.round(value?.avgAcc)}</td>
                                             <td>{Math.round(value?.avgConsis)}</td>
+                                            <td><p className="leaderboard-profile-font">{Math.round(value?.points)}</p></td>
                                         </tr>
                                     ))}
                                 </tbody>

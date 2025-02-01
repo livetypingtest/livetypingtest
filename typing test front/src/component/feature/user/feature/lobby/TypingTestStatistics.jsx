@@ -194,7 +194,7 @@ const TypingTestStats = () => {
             <section>
                 <div className="container p-custom">
                     <div className="row align-items-center py-4">
-                        {/* <div className="col-md-2">
+                        <div className="col-md-12">
                             <div className="statistics-layout">
                                 <div>
                                     <h4>WPM</h4>
@@ -205,7 +205,7 @@ const TypingTestStats = () => {
                                     <h1>{Math.round(calculateAverage(accuracy))}<span>%</span></h1>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
                         <div className="col-md-12 ">
                         <Line data={data} options={options}  height={window.innerWidth <= 767 ? 100 : 30} width={"100%"}  />
                         </div>
@@ -218,14 +218,6 @@ const TypingTestStats = () => {
                                 <div>
                                     <h4>Characters</h4>
                                     <div className='item'><span>Correct/Incorrect/Extra</span><h1>{`${correctChars}/${incorrectChars}/${extraChars}`}</h1></div>
-                                </div>
-                                <div>
-                                    <h4>WPM</h4>
-                                    <h1>{Math.round(calculateAverage(wpm))}</h1>
-                                </div>
-                                <div>
-                                    <h4>Accuracy</h4>
-                                    <h1>{Math.round(calculateAverage(accuracy))}<span>%</span></h1>
                                 </div>
                                 <div>
                                     <h4>Consistency</h4>

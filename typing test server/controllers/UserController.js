@@ -152,7 +152,6 @@ route.get('/dashdata/:limit/:type/:level', async (req, res) => {
     const type = req.params.type;
     const level = req.params.level
 
-    console.log(limit, type, level)
 
     const typeMap = {
         '1': 'top1minavg',
@@ -176,7 +175,7 @@ route.get('/dashdata/:limit/:type/:level', async (req, res) => {
     // const allUser = await fetchFilteredData(filterType, limit);
     const allUser = await userModel
             .find({
-                [`${filterType}.${level}.points`]: { $gte: 0 }, // Ensuring we fetch users with points
+                [`${filterType}.${level}.points`]: { $gte: 10 }, // Ensuring we fetch users with points
             })
             .sort({ [`${filterType}.${level}.points`]: -1 }) // Sort by points in descending order
             .limit(limit); // Limit the results to top `limit` users
@@ -205,34 +204,38 @@ route.get('/dashdata/:limit/:type/:level', async (req, res) => {
         const matchData = user[matchType] || [];
         const matchCount = matchData?.length;
 
-        // Extract data for easy, medium, and hard levels
-        const easyData = extractLevelData(matchData, 'easy', user);
-        const mediumData = extractLevelData(matchData, 'medium', user);
-        const hardData = extractLevelData(matchData, 'hard', user);
-
+        let levelData ;
+        
+        if(level !== 'all') {
+            levelData = extractLevelData(matchData, level, user);
+        } else {
+            levelData = {
+                avgWpm: calculateAverage(matchData.map(value => parseFloat(value.avgwpm))),
+                avgAcc: calculateAverage(matchData.map(value => parseFloat(value.avgacc))),
+                avgConsis: calculateAverage(matchData.map(value => parseFloat(value.avgconsis))),
+                points: user?.[filterType]?.all?.points
+            }
+        }
+        console.log(levelData)
         // Extract overall data
+
         const overallData = {
+
             avgWpm: calculateAverage(matchData.map(value => parseFloat(value.avgwpm))),
             avgAcc: calculateAverage(matchData.map(value => parseFloat(value.avgacc))),
             avgConsis: calculateAverage(matchData.map(value => parseFloat(value.avgconsis))),
         };
         const overallPoints = calculatePoints(overallData);
-        console.log(user?.[filterType])
         // Return the structured response with overall and levels data
         return {
             username: user?.username,
             profile: user?.profileimage,
             matchCount,
-            overall: { ...overallData, points: user?.[filterType]?.all?.points }, // Include overall points
-            levels: {
-                easy: easyData,
-                medium: mediumData,
-                hard: hardData,
-            }
+            overall: levelData, // Include overall points
         };
     });
 
-    console.dir(filteredData, {depth: null})
+    // console.dir(filteredData, {depth: null})
 
     // Filter users with more than 10 matches
     const eligibleUsers = filteredData.filter(user => user.matchCount > 10);
@@ -677,7 +680,7 @@ route.post('/', async (req, res) => {
         }
 
         const totalPoints = (avgWpm * WPM_WEIGHT) + (avgAcc * ACCURACY_WEIGHT) + (avgConsis * CONSISTENCY_WEIGHT);
-        console.log('current match points: ', totalPoints)
+        // console.log('current match points: ', totalPoints)
         const testData = {
             accuracy,
             consistency,
@@ -761,7 +764,7 @@ route.post('/', async (req, res) => {
                 [level]: levelData,
             };
 
-            console.dir(finalAvgResult, { depth: null })
+            // console.dir(finalAvgResult, { depth: null })
 
             // Update averages in DB
             await userModel.updateMany(
@@ -967,8 +970,44 @@ route.post("/save-token", async (req, res) => {
     }
 });
 
+route.post('/clear-matches', async (req, res) => {
+    try {
+        // Update all users to clear their match arrays
+        const result = await userModel.updateMany(
+            {}, // Empty filter to match all documents
+            {
+                $set: {
+                    match_1: [],
+                    match_3: [],
+                    match_5: [],
+                    // Reset averages and records
+                    top1minavg: {},
+                    top3minavg: {},
+                    top5minavg: {},
+                    highestrecord1min: {},
+                    highestrecord3min: {},
+                    highestrecord5min: {}
+                }
+            }
+        );
+
+        res.status(200).send({
+            status: 200,
+            message: "All match data cleared successfully",
+            modifiedCount: result.modifiedCount
+        });
+    } catch (error) {
+        console.error("Error clearing match data:", error);
+        res.status(500).send({
+            status: 500,
+            message: "Error clearing match data",
+            error: error.message
+        });
+    }
+});
 
 module.exports = route;
+
 
 
 // route.post('/', async (req, res) => {

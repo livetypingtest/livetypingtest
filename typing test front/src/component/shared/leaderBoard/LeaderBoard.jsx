@@ -28,7 +28,7 @@ const LeaderBoard = () => {
     useEffect(() => {
         if (rawAllUserData) {
             setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis, points: value?.overall?.points}}))
-            // console.log(rawAllUserData)  
+            console.log(rawAllUserData)  
             // rawAllUserData?.map(value => console.log(value?.username + ":" +value.profile?.googleProfile))
         }
     }, [rawAllUserData]);
@@ -48,18 +48,18 @@ const LeaderBoard = () => {
         dispatch(handleGetLeaderboardData(obj))
     }
 
-    // const handleFilterLevel = (level) =>{
-    //     setLevelFilter(level)
-    //     const obj = {
-    //         onLoadLimit : onLoadLimit,
-    //         timeFilter : timeFilter,
-    //         level : level
-    //     }
-    //     dispatch(handleGetLeaderboardData(obj))
-    // }
     const handleFilterLevel = (level) =>{
         setLevelFilter(level)
+        const obj = {
+            onLoadLimit : onLoadLimit,
+            timeFilter : timeFilter,
+            level : level
+        }
+        dispatch(handleGetLeaderboardData(obj))
     }
+    // const handleFilterLevel = (level) =>{
+    //     setLevelFilter(level)
+    // }
 
     const updateDataOnLevels = () => {
         const getFilteredData = (level) => {
@@ -124,7 +124,7 @@ const LeaderBoard = () => {
 
 
     useEffect(()=>{
-        updateDataOnLevels()
+        // updateDataOnLevels()
     }, [timeFilter, levelFilter])
 
     useEffect(()=>{
