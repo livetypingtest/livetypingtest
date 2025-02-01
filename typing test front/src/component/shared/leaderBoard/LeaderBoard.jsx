@@ -23,12 +23,13 @@ const LeaderBoard = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [displayData, setDisplayData] = useState([])
     const [timeFilter, setTimeFilter] = useState('1')
+    const [tooltipActive, setTooltipActive] = useState('1')
     const [levelFilter, setLevelFilter] = useState('all')
 
     useEffect(() => {
         if (rawAllUserData) {
             setDisplayData(rawAllUserData?.map(value => {return {username : value.username, profile : value.profile?.display === 'empty' ? '/assets/images/profile.png' : value.profile?.[profileExtractor[value.profile?.display]], avgAcc : value?.overall?.avgAcc, avgWpm : value?.overall?.avgWpm, avgConsis : value?.overall?.avgConsis, points: value?.overall?.points}}))
-            console.log(rawAllUserData)  
+            // console.log(rawAllUserData)  
             // rawAllUserData?.map(value => console.log(value?.username + ":" +value.profile?.googleProfile))
         }
     }, [rawAllUserData]);
@@ -189,7 +190,15 @@ const LeaderBoard = () => {
                 <div className="row">
                     <div className="col-md-12">
                         <div className="show-filter py-2">
-                            <h1 className='font-active text-left'>0{timeFilter} Min {levelFilter} Mode</h1>
+                            <h1 className='font-active text-left cs-tooltip-container'>
+                                0{timeFilter} Min {levelFilter} Mode  &nbsp;
+                                <span onMouseEnter={()=>{document.getElementById('cs-tooltip').classList.add('active')}} onMouseLeave={()=>{document.getElementById('cs-tooltip').classList.remove('active')}}><i className="fa-regular fa-circle-info"></i></span> 
+                                <div id="cs-tooltip" className="cs-tooltip">
+                                    <div className="layout">
+                                        
+                                    </div>
+                                </div>
+                            </h1>
                             {
                                 isLoading && (<div class="rl-loading-container">
                                     <div class="rl-loading-thumb rl-loading-thumb-1"></div>
@@ -246,6 +255,8 @@ const LeaderBoard = () => {
         </section>
 
         <Footer />
+
+        
     </>
   )
 }

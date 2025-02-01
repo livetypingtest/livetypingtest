@@ -152,12 +152,23 @@ const BackupWithInput = () => {
     return '';
   };
 
+  const shuffleArray = (array) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+  
   const getParagraph = () => {
-    const paragraph = settingTheParagraphs()
-    // console.log(paragraph?.split(" "))
-    setCurrentParagraph(paragraph?.split(" "))
-    setParasHistory(paragraph?.split(" "))
-  }
+    const paragraph = settingTheParagraphs();
+    let wordsArray = paragraph?.split(" ");
+  
+    if (wordsArray) {
+      wordsArray = shuffleArray(wordsArray);
+    }
+  
+    // console.log(wordsArray);
+    setCurrentParagraph(wordsArray);
+    setParasHistory(wordsArray);
+  };
+  
 
   useEffect(() => {
     getParagraph()
