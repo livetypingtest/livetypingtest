@@ -18,10 +18,15 @@ const Blog = () => {
     const [category, setCategory] = useState('all')
     
     useEffect(() => {
+        let sortedData;
         if (category === 'all') {
-            setDisplayData(blogData);
+            sortedData = [...blogData].sort((a, b) => new Date(b.createdat) - new Date(a.createdat));
+            setDisplayData(sortedData);
         } else {
-            setDisplayData(blogData?.filter(value => value.category?.includes(category)));
+            sortedData = blogData
+                ?.filter(value => value.category?.includes(category))
+                .sort((a, b) => new Date(b.createdat) - new Date(a.createdat));
+            setDisplayData(sortedData);
         }
     }, [category, blogData, blogCategory]);
     
