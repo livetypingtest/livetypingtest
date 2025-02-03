@@ -437,12 +437,14 @@ const UserDataSlice = createSlice({
         handlePostNotice: (state, action) => {
             // Check if the payload indicates a successful operation
             
-                const { title, description, createdat } = action.payload
+                const { title, description, createdat, button, buttonLink } = action.payload
                 state.notice = {
                     title,
                     description,
                     state :  action.payload.state, 
-                    createdat
+                    createdat,
+                    button,
+                    buttonLink
                 }
         }
     },
