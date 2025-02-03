@@ -976,12 +976,14 @@ const UserDataSlice = createSlice({
                     type: action.payload.type,
                     message: action.payload.message,
                 };
-                const {createdat, title, description} = action.payload?.data
+                const {createdat, title, description, button, buttonLink} = action.payload?.data
                 state.notice = {
                     description,
                     title,
                     createdat,
-                    state: action.payload?.data?.state
+                    state: action.payload?.data?.state,
+                    button,
+                    buttonLink
                 }
                 // Reset error state
                 state.isError = false;

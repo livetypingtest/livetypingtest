@@ -1,6 +1,5 @@
-
 import OneSignal from 'react-onesignal';
-import { USER_API_URL } from '../../../util/API_URL';
+import { USER_API_URL } from '../../../util/API_URL'
 
 let isOneSignalInitialized = false;
 
@@ -36,9 +35,9 @@ const initializeOneSignal = async () => {
             isOneSignalInitialized = true;
             
             // Proceed to handle push notifications
-            console.log(OneSignal.User.PushSubscription.token)
+            console.log('ID: ', OneSignal.User)
             
-            await saveUserToken(extractToken(OneSignal.User.PushSubscription.token))
+            await saveUserToken(OneSignal.User.PushSubscription.id)
             // await handlePushNotification();
         } catch (error) {
             console.error("Error initializing OneSignal:", error);

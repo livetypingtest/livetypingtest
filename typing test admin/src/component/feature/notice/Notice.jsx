@@ -28,6 +28,8 @@ const Notice = () => {
                 description: notice.description || '',
                 createdat: notice.createdat || Date.now(),
                 state: notice.state || false,
+                button: notice.button || '',
+                buttonLink: notice.buttonLink || '',
             });
             setIsSwitchOn(notice.state || false);
         }
@@ -146,7 +148,54 @@ const Notice = () => {
                                                     </div>
                                                 )}
                                         </div>
+
+                                        <div className="my-3 grid-cs gtc-2-1">
+                                            <div>
+                                                <label htmlFor="button">Button</label>
+                                                <input
+                                                    type="text"
+                                                    className={`form-control ${
+                                                        formik.touched.button && formik.errors.button
+                                                            ? 'is-invalid'
+                                                            : ''
+                                                    }`}
+                                                    placeholder="Enter button"
+                                                    name="button"
+                                                    value={formik.values.button}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                />
+                                                {formik.touched.button && formik.errors.button && (
+                                                    <div className="text-danger invalid-feedback">
+                                                        {formik.errors.button}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label htmlFor="buttonLink">Button Link</label>
+                                                <input
+                                                    type="text"
+                                                    className={`form-control ${
+                                                        formik.touched.buttonLink && formik.errors.buttonLink
+                                                            ? 'is-invalid'
+                                                            : ''
+                                                    }`}
+                                                    placeholder="Enter buttonLink"
+                                                    name="buttonLink"
+                                                    value={formik.values.buttonLink}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
+                                                />
+                                                {formik.touched.buttonLink && formik.errors.buttonLink && (
+                                                    <div className="text-danger invalid-feedback">
+                                                        {formik.errors.buttonLink}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        
                                     </div>
+
 
                                     <div className="card-footer text-start">
                                         {/* Submit Button */}

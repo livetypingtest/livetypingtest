@@ -53,6 +53,8 @@ const DynamicPagesDataSchema = mongoose.Schema({
     notice: {
         title: { type: String, default: '' },
         description: { type: String, default: '' },
+        button: { type: String, default: '' },
+        buttonLink: { type: String, default: '' },
         createdat: { type: Date, default: Date.now() },
         state: { type: Boolean, default: false },
     }

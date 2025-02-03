@@ -195,7 +195,7 @@ const LeaderBoard = () => {
                                 <span onMouseEnter={()=>{document.getElementById('cs-tooltip').classList.add('active')}} onMouseLeave={()=>{document.getElementById('cs-tooltip').classList.remove('active')}}><i className="fa-regular fa-circle-info"></i></span> 
                                 <div id="cs-tooltip" className="cs-tooltip">
                                     <div className="layout">
-                                        
+                                        <p className='font-active fs-14'>Points are awarded based on the number of matches played. Each game contributes a specific number of points, which determine your ranking on the leaderboard.</p>
                                     </div>
                                 </div>
                             </h1>

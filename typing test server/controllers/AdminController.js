@@ -423,7 +423,7 @@ route.post("/send-notification", async (req, res) => {
                         app_id: process.env.ONESIGNAL_APP_ID, // Replace with your App ID
                         headings: { en: notificationData.title }, // Notification title
                         contents: { en: notificationData.message }, // Notification message
-                        include_player_ids: ['dAhSnDL0zro:APA91bFJxPgNLnPhdjqIfI3VUH6O_yYf7OuOTZtpwytQVGZCS9Ka_JluDQuohEUWlbDqnC7alWbH3uco-ry6pHQrdV8nQbiqA2CG6MrHCnHJu_Yg1gFOw-55iCl5SkXpWZdz_g4A4E0a'],
+                        include_player_ids: ['3a247551-88ed-44b3-9ea8-8527a30f2239'],
                         url: notificationData.url, // Clickable URL
                     },
                     {
@@ -650,4 +650,4 @@ route.get('/google-analytics', async (req, res) => {
 
 
 
-module.exports = route;
+module.exports = route; 
