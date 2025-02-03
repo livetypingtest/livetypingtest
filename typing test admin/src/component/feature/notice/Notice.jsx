@@ -46,6 +46,8 @@ const Notice = () => {
             title: '',
             description: '',
             createdat: Date.now(),
+            button: '',
+            buttonLink: '',
             state: false,
         },
         validationSchema: Yup.object({
@@ -193,7 +195,7 @@ const Notice = () => {
                                                 )}
                                             </div>
                                         </div>
-                                        
+
                                     </div>
 
 

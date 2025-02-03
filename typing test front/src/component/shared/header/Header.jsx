@@ -26,7 +26,11 @@ const Header = ({ timerRunning }) => {
                             <div className="notice">
                                 <h3>{notice?.title} :</h3>
                                 <p>{notice?.description}</p>
-                                <a className='btn btn-light text-danger' href={notice?.buttonLink} target='_blank'>{notice?.button}</a>
+                                {
+                                    notice?.button && (
+                                        <a className='btn btn-light text-danger' href={notice?.buttonLink} target='_blank'>{notice?.button}</a>
+                                    )
+                                }
                             </div>
                             <div className="button">
                                 <button className='btn' onClick={()=>dsipatch(handleSetNoticeState())}><i class="fa-solid fa-xl fa-xmark" style={{color: "#fff"}} /></button>
