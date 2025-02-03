@@ -29,6 +29,7 @@ const AdminSignin = () => {
   const [message, setMessage] = useState('');
   const [eye, setEye] = useState(false)
   const [loader, setLoader] = useState(false)
+  const [showPassword, setShowPassword] = useState(false); // Add this state
 
 
   const adminSigninForm = useFormik({
@@ -90,55 +91,6 @@ const AdminSignin = () => {
     <>
 
 
-      {/* <section>
-        <div className="container">
-          <div className="row">
-            <div className="offset-md-2 col-md-8">
-            <form onSubmit={adminSigninForm.handleSubmit}>
-            <h4 className='font-active text-left'>Signin To Admin Dashboard</h4>
-            {
-              errorMsg?.type === 'signin' ? (<small className='text-danger'>{errorMsg?.message}</small>) : null
-            }
-            <div className='auth-input my-4'>
-              
-              <div className="auth">
-              <input onChange={handleSigninChange} // Custom handler for changing schema
-                onBlur={adminSigninForm.handleBlur}
-                value={adminSigninForm.values.signin}
-                required
-                name='signin' type="text" placeholder='Email' />
-              </div>
-
-              <div className="auth">
-              <input onChange={adminSigninForm.handleChange}
-                onBlur={adminSigninForm.handleBlur}
-                value={adminSigninForm.values.password}
-                required
-                name='password' type={eye ? 'text' : 'password'} placeholder='Password' />
-                <button
-                    type="button"
-                    onClick={() => setEye(!eye)}
-                  >
-                    {eye ? (
-                      <i className="fa-solid fa-eye fa-sm" style={{ color: "#8c8c8c" }} />
-                    ) : (
-                      <i className="fa-solid fa-eye-slash fa-sm" style={{ color: "#8c8c8c" }} />
-                    )}
-                  </button>
-              </div>
-
-              <div className='d-flex align-items-center justify-content-between width-90'>
-                <div><input type='checkbox' /> <label className='font-idle'> &nbsp; Remember Me</label></div>
-                <NavLink to='' className='font-idle'>Forgot Password?</NavLink>
-              </div>
-              <button type='submit' className='theme-btn lg width-90'>Sign In  { loader ? <i className="fa-solid fa-circle-notch fa-spin" style={{ color: "#15131a" }} /> : null }</button>
-            </div>
-            </form>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
     <DynamicTitle title={"Live Typing Test | Authentication"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Authentication"}  />
 
 
@@ -157,73 +109,87 @@ const AdminSignin = () => {
               <div className="col-md-8 col-lg-8 col-xxl-3">
                 <div className="card mb-0">
                   <form onSubmit={adminSigninForm.handleSubmit}>
-                  <div className="card-body">
-                    <a
-                      href="./index.html"
-                      className="text-nowrap logo-img text-center d-block py-3 w-100"
-                    >
-                      <img
-                        src="./assets/images/logo.svg"
-                        width={180}
-                        alt=""
-                      />
-                    </a>
-                    <p className="text-center">Login to Admin Panel</p>
-                  
-                      <div className="mb-3">
-                        <label htmlFor="exampleInputEmail1" className="form-label">
-                          Username
-                        </label>
-                        <input
-                          className="form-control"
-                          onChange={handleSigninChange} // Custom handler for changing schema
-                          onBlur={adminSigninForm.handleBlur}
-                          value={adminSigninForm.values.signin}
-                          required
-                          name='signin' type="text"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label htmlFor="exampleInputPassword1" className="form-label">
-                          Password
-                        </label>
-                        <input
-                          className="form-control"
-                          onChange={adminSigninForm.handleChange}
-                          onBlur={adminSigninForm.handleBlur}
-                          value={adminSigninForm.values.password}
-                          required
-                          name='password'
-                        />
-                      </div>
-                      <div className="d-flex align-items-center justify-content-between mb-4">
-                        <div className="form-check">
-                          <input
-                            className="form-check-input primary"
-                            type="checkbox"
-                            defaultValue=""
-                            id="flexCheckChecked"
-                            defaultChecked=""
-                          />
-                          <label
-                            className="form-check-label text-dark"
-                            htmlFor="flexCheckChecked"
-                          >
-                            Remeber this Device
-                          </label>
-                        </div>
-                        <a className="text-primary fw-bold" href="./index.html">
-                          Forgot Password ?
-                        </a>
-                      </div>
-                      <button
-                        type='submit'
-                        className="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2"
+                    <div className="card-body">
+                      <a
+                        href="./index.html"
+                        className="text-nowrap logo-img text-center d-block py-3 w-100"
                       >
-                        Sign In
-                      </button>
-                   
-                  </div>
+                        <img
+                          src="./assets/images/logo.svg"
+                          width={180}
+                          alt=""
+                        />
+                      </a>
+                      <p className="text-center">Login to Admin Panel</p>
+                    
+                        <div className="mb-3">
+                          <label htmlFor="exampleInputEmail1" className="form-label">
+                            Username
+                          </label>
+                          <input
+                            className="form-control"
+                            onChange={handleSigninChange} // Custom handler for changing schema
+                            onBlur={adminSigninForm.handleBlur}
+                            value={adminSigninForm.values.signin}
+                            required
+                            name='signin' type="text"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label htmlFor="exampleInputPassword1" className="form-label">
+                            Password
+                          </label>
+                          <div className="position-relative">
+                            <input
+                              className="form-control"
+                              onChange={adminSigninForm.handleChange}
+                              onBlur={adminSigninForm.handleBlur}
+                              value={adminSigninForm.values.password}
+                              required
+                              name='password'
+                              type={showPassword ? "text" : "password"}
+                            />
+                            <button 
+                              type="button"
+                              className="btn position-absolute end-0 top-50 translate-middle-y"
+                              onClick={() => setShowPassword(!showPassword)}
+                              style={{ background: 'none', border: 'none' }}
+                            >
+                              {showPassword ? (
+                                <i className="fas fa-eye-slash"></i>
+                              ) : (
+                                <i className="fas fa-eye"></i>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                        <div className="d-flex align-items-center justify-content-between mb-4">
+                          <div className="form-check">
+                            <input
+                              className="form-check-input primary"
+                              type="checkbox"
+                              defaultValue=""
+                              id="flexCheckChecked"
+                              defaultChecked=""
+                            />
+                            <label
+                              className="form-check-label text-dark"
+                              htmlFor="flexCheckChecked"
+                            >
+                              Remeber this Device
+                            </label>
+                          </div>
+                          {/* <a className="text-primary fw-bold" href="./index.html">
+                            Forgot Password ?
+                          </a> */}
+                        </div>
+                        <button
+                          type='submit'
+                          className="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2"
+                        >
+                          Sign In
+                        </button>
+                    </div>
                   </form>
                 </div>
               </div>

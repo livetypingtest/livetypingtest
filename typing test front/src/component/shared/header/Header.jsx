@@ -24,16 +24,18 @@ const Header = ({ timerRunning }) => {
                     !timerRunning && notice?.state && (
                         <div className="notice-bar">
                             <div className="notice">
-                                <h3>{notice?.title} :</h3>
-                                <p>{notice?.description}</p>
+                                <div className='notice-content'>
+                                    <h3>{notice?.title} :</h3>
+                                    <p>{notice?.description}</p>
+                                </div>
                                 {
                                     notice?.button && (
-                                        <a className='btn btn-light text-danger' href={notice?.buttonLink} target='_blank'>{notice?.button}</a>
+                                        <a className='cs-btn-notice' href={notice?.buttonLink} target='_blank'>{notice?.button}</a>
                                     )
                                 }
                             </div>
                             <div className="button">
-                                <button className='btn' onClick={()=>dsipatch(handleSetNoticeState())}><i class="fa-solid fa-xl fa-xmark" style={{color: "#fff"}} /></button>
+                                <button className='btn' onClick={()=>dsipatch(handleSetNoticeState())}><i className={`fa-solid ${window.innerWidth > 768 ? 'fa-xl' : 'fa-sm'} fa-xmark`} style={{color: "#fff"}} /></button>
                             </div>
                         </div>
                     )
