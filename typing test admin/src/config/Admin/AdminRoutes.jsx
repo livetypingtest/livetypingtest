@@ -24,7 +24,7 @@ const adminRoutes = [
         element : <AdminDashBoard />
     },
     {
-        path : 'users',
+        path : 'users/list/:type',
         element : <AllUsers />
     },
     {

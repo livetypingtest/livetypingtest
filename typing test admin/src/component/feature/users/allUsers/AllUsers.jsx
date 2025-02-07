@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { handleBlockUnblockUser, handleGetAllUsers, resetState } from "../../../../redux/AdminDataSlice";
 import { ADMIN_API_URL } from "../../../../util/API_URL";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { dynamicToast } from "../../../shared/Toast/DynamicToast";
 import StateCircleLoader from "../../../shared/loader/StateCircleLoader";
 import DeleteUserModal from "../modals/DeleteUserModal";
@@ -14,6 +14,8 @@ import { profileExtractor } from "../../../../util/Extractor";
 
 const AllUsers = () => {
     const dispatch = useDispatch();
+    const param = useParams();
+    const { type } = param;
 
     const rawAllUsersData = useSelector(state => state.AdminDataSlice.allUserData);
     const isFullfilled = useSelector((state) => state.AdminDataSlice.isFullfilled);
@@ -51,9 +53,19 @@ const AllUsers = () => {
 
     useEffect(() => {
         // Filter data based on search query
-        const filteredData = rawAllUsersData.filter(user =>
+        const rawFilteredData = rawAllUsersData.filter(user =>
             user.username.toLowerCase().includes(searchQuery.toLowerCase())
         );
+
+        let filteredData;
+
+        if(type === 'block'){
+            filteredData = rawFilteredData.filter(user => user.isblock === true);
+        }else{
+            filteredData = rawFilteredData;
+        }
+
+        console.log(filteredData);
 
         // Pagination logic
         const start = (currentPage - 1) * limit;
@@ -74,9 +86,18 @@ const AllUsers = () => {
             const start = (currentPage - 1) * limit; // Calculate start index
             const end = start + limit;              // Calculate end index
             // console.log(rawAllUsersData.slice(start, end));
-            setUsers(rawAllUsersData.slice(start, end)); // Set sliced data
+            let filteredData;
+
+            if(type === 'block'){
+                filteredData = rawAllUsersData.filter(user => user.isblock === true);
+            }else{
+                filteredData = rawAllUsersData;
+            }
+
+            setUsers(filteredData.slice(start, end)); // Set sliced data
         }
     }, [rawAllUsersData, currentPage, limit]);
+
     
 
     const handlePageChange = (page) => {

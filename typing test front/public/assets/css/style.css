@@ -2475,7 +2475,7 @@ button.google-sign-btn img {
 
 .cs-tooltip {
     width: 300px;
-    height: 100px;
+    /* height: auto; */
     border: 1px solid #71CAC7;
     background-color: #1f1d21;
     position: absolute;
@@ -2508,8 +2508,4 @@ button.google-sign-btn img {
     background-color: #fff;
     color: red;
     text-decoration: none;
-}
-
-text-decoration: none;
-
 }

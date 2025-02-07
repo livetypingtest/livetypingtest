@@ -4,7 +4,7 @@ import Footer from '../../../../shared/footer/Footer'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import UpdatePassModal from './UpdatePassModal'
-import { handleUploadProfile, resetState } from '../../../../../redux/UserDataSlice'
+import { handleUpdateUserProfile, resetState } from '../../../../../redux/UserDataSlice'
 import { dynamicToast } from '../../../../shared/Toast/DynamicToast'
 import MetaUpdater from '../../../../../util/MetaUpdater'
 import DeleteUserModal from './DeleteUserModal'
@@ -31,6 +31,14 @@ const UserDashBoard = () => {
   const [match5MinData, setMatch5MinData] = useState([])
   const [imagePath, setImagePath] = useState('');
   const [loader, setLoader] = useState({state : false, for : ''})
+  const [editableFields, setEditableFields] = useState({
+    bio: false,
+    twitter: false
+  });
+  const [formData, setFormData] = useState({
+    bio: '',
+    twitter: ''
+  });
 
 
 // for finding the total matches----------------------------------------------------
@@ -162,6 +170,7 @@ useEffect(() => {
     if(isFullfilled) {
       if(fullFillMsg?.type === 'profile') {
         setLoader({state : false, for : ''})
+        dynamicToast({ message: 'Updated successfully', timer: 3000, icon: 'success' })
         dispatch(resetState())
       }
       dispatch(resetState())
@@ -195,6 +204,48 @@ useEffect(() => {
     }
   }, [ isProcessing, processingMsg ])
 
+  // Initialize form data when rawUserData changes
+  useEffect(() => {
+    setFormData({
+      bio: rawUserData?.bio || '',
+      twitter: rawUserData?.url?.twitter || ''
+    });
+  }, [rawUserData]);
+
+  const handleEdit = (field) => {
+    setEditableFields(prev => ({
+      ...prev,
+      [field]: true
+    }));
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSave = async (field) => {
+    try {
+      if(field !== 'bio') {
+        dispatch(handleUpdateUserProfile({ url: {[field]: formData[field]} }))
+      } else {
+        dispatch(handleUpdateUserProfile({[field]: formData[field]}))
+      }
+      
+
+      setEditableFields(prev => ({
+        ...prev,
+        [field]: false
+      }));
+      
+      // Show success toast
+    } catch (error) {
+      dynamicToast({ message: 'Failed to update', timer: 3000, icon: 'error' })
+    }
+  };
 
 
   return (
@@ -258,10 +309,75 @@ useEffect(() => {
                       />
                     </div>
 
+                    <div className="profile-input my-3">
+                      <div>
+                        <label htmlFor="bio">Bio :</label>
+                        {!editableFields.bio ? (
+                          <button type="button" onClick={() => handleEdit('bio')}>
+                            <i className="fa-regular text-idle fa-pen-to-square"></i>
+                          </button>
+                        ) : (
+                          <button type="button" onClick={() => handleSave('bio')}>
+                            <i className="fa-regular text-idle fa-save"></i>
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        name="bio"
+                        readOnly={!editableFields.bio}
+                        value={editableFields.bio ? formData.bio : rawUserData?.bio || ''}
+                        onChange={handleChange}
+                        type="text"
+                        placeholder="Bio"
+                      />
+                    </div>
+
+                    <div className="profile-input my-3">
+                      <div>
+                        <label htmlFor="twitter">Twitter :</label>
+                        {!editableFields.twitter ? (
+                          <button type="button" onClick={() => handleEdit('twitter')}>
+                            <i className="fa-regular text-idle fa-pen-to-square"></i>
+                          </button>
+                        ) : (
+                          <button type="button" onClick={() => handleSave('twitter')}>
+                            <i className="fa-regular text-idle fa-save"></i>
+                          </button>
+                        )}
+                      </div>
+                      {editableFields.twitter ? (
+                        <input
+                          name="twitter"
+                          value={formData.twitter}
+                          onChange={handleChange}
+                          type="url"
+                          placeholder="Twitter URL"
+                        />
+                      ) : (
+                        rawUserData?.url?.twitter ? (
+                          <a 
+                            href={rawUserData.url.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary"
+                          >
+                            {rawUserData.url.twitter}
+                          </a>
+                        ) : (
+                          <input
+                            readOnly
+                            value=""
+                            type="url"
+                            placeholder="Twitter URL"
+                          />
+                        )
+                      )}
+                    </div>
+
                     {/* Password Section */}
                     <div className="profile-input my-3">
                       <div>
-                        <label htmlFor="password">Current Password :</label>
+                        <label htmlFor="password">Change Password :</label>
                         <button type="button" data-bs-toggle="modal" data-bs-target="#updatepassword">
                           <i className="fa-regular text-idle fa-pen-to-square"></i>
                         </button>

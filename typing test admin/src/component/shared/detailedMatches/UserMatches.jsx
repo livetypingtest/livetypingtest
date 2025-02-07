@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 import Certificate from "../certificate/Certificate";
 import DynamicTitle from "../helmet/DynamicTitle";
+import { calculateAverage } from "../../../util/calculate";
 
 const UserMatches = () => {
     const param = useParams();
@@ -103,9 +103,12 @@ const UserMatches = () => {
                                             <th>S.No.</th>
                                             <th>Played On</th>
                                             <th>Download Certificate</th>
+                                            <th>WPM</th>
+                                            <th>Accuracy</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                             {displayData.map((value, index) => {
                                                 const rawDate = value.matchdate;
                                                 const parsedDate = new Date(rawDate);
@@ -123,6 +126,8 @@ const UserMatches = () => {
                                                     <tr key={index}>
                                                         <td>{index + 1}</td>
                                                         <td>{formatDate}</td>
+                                                        <td>{parseInt(calculateAverage(value?.wpm)?.toFixed(2))}</td>
+                                                        <td>{calculateAverage(value?.accuracy)?.toFixed(2)}%</td>
                                                         <td>
                                                             <button className="btn" onClick={() => handleUpdateData(value)}>
                                                                 <i className="fa-solid fa-download fa-lg" />

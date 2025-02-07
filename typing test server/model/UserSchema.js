@@ -16,6 +16,15 @@ const UserSchema = mongoose.Schema({
         date : { type : Date, default : Date.now() }
     },
     role : { type : String, default : 'user' },
+    bio : { type : String, default : '' },
+    url : {
+        twitter : { type : String, default : '' },
+        instagram : { type : String, default : '' },
+        facebook : { type : String, default : '' },
+        linkedin : { type : String, default : '' },
+        github : { type : String, default : '' },
+        youtube : { type : String, default : '' },  
+    },
     googleId : { type : String, default : '' },
     authType : { 
         email : { type : Boolean, default : false },

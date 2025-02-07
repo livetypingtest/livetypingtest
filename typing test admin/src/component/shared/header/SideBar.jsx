@@ -63,8 +63,8 @@ const SideBar = () => {
             </li>
             <li className="sidebar-item-cs">
                 <NavLink
-                className={extractedPath === 'admin/users' ? "sidebar-link-cs active" : "sidebar-link-cs"}
-                to='/admin/users'
+                className={extractedPath === 'admin/users/list/all' ? "sidebar-link-cs active" : "sidebar-link-cs"}
+                to='/admin/users/list/all'
                 aria-expanded="false"
                 >
                 <span>

@@ -110,12 +110,14 @@ route.get('/', async(req, res) => {
                 createdate: value?.createdate
             }
         })
+        const blockUser = userData?.filter(value => value.isblocked.status === true)
+
         adminData = {
             email : adminData?.email,
             _id : adminData?.username,
             paragraphs : adminData?.paragraphs,
             blogCount : adminData?.blog?.length,
-            block : adminData?.blockUser,
+            block : blockUser,
             userCount : filteredUserData,
             blogCategory : adminData?.blogCategory,
             profileimage : adminData?.profileimage

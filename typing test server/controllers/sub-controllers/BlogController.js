@@ -161,7 +161,7 @@ route.post('/edit', upload, async (req, res) => {
                 category: parsedCategory,
                 status,
                 tags: parsedTags,
-                createdat: date,
+                updatedat: date,
                 seoDescription,
                 seoTitle,
                 index,
@@ -292,24 +292,31 @@ route.post('/category', async (req, res) => {
 });
 
 route.get('/', async (req, res) => {
-    const page = parseInt(req.query.page) || 1; // Default to page 1
-    const limit = parseInt(req.query.limit) || 10; // Default to 10 items per page
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const category = req.query.category;
 
     try {
-        // Find the admin document
         const admin = await adminModel.findOne();
 
         if (!admin || !admin.blog) {
             return res.status(404).json({ status: 404, message: 'No blogs found' });
         }
 
-        // Filter and paginate blogs within the blog array
-        const publishedBlogs = admin.blog;
-        const totalBlogs = publishedBlogs.length;
+        // Filter blogs by category if specified
+        let filteredBlogs = admin.blog;
+        if (category && category.toLowerCase() !== 'all') {
+            filteredBlogs = admin.blog.filter(blog => 
+                blog.category.some(cat => cat.toLowerCase() === category.toLowerCase())
+            );
+        }
 
-        // Paginate the filtered blogs
-        const paginatedBlogs = publishedBlogs.slice(skip, skip + limit);
+        // Sort blogs by date (newest first)
+        filteredBlogs.sort((a, b) => new Date(b.createdat) - new Date(a.createdat));
+
+        const totalBlogs = filteredBlogs.length;
+        const paginatedBlogs = filteredBlogs.slice(skip, skip + limit);
 
         res.status(200).json({
             status: 200,
@@ -375,8 +382,5 @@ route.delete('/:name', async (req, res) => {
         return res.status(401).send({ status: 401, message: 'Authorization header missing' });
     }
 });
-
-
-
 
 module.exports = route;

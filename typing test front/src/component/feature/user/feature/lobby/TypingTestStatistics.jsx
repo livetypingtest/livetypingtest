@@ -4,12 +4,13 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 import Header from '../../../../shared/header/Header'
 import Footer from '../../../../shared/footer/Footer';
 import { useNavigate } from 'react-router-dom';
-import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { calculateAverage } from '../../../../../util/calculate';
 import DynamicAlert from '../../../../shared/Toast/DynamicAlert';
 import Certificate from '../../../../shared/certificate/Certificate';
 import DownloadButton from '../../../../shared/certificate/DownloadCertificate';
 import MetaUpdater from '../../../../../util/MetaUpdater'
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -162,13 +163,6 @@ const TypingTestStats = () => {
     const handleAlertClose = () => {
         localStorage.removeItem('newRecord'); // Clear local storage
         setShowAlert(false); // Set showAlert to false
-    };
-
-
-    const calculateAverage = (numbers) => {
-        if (numbers.length === 0) return 0; // Avoid division by zero
-        const sum = numbers.reduce((acc, num) => acc + num, 0); // Sum the numbers
-        return sum / numbers.length; // Return the average
     };
 
     //convert the timeer in proper format---------------------------------------------------------------

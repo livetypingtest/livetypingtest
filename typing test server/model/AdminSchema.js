@@ -84,6 +84,7 @@ const AdminSchema = mongoose.Schema({
             permalink : { type : String, default : '' },
             category : { type : Array, default : [] },
             tags : { type : Array, default : [] },
+            updatedat : { type : Date, default : Date.now() },
             createdat : { type : Date, default : Date.now() },
             featuredImage : {
                 name : { type : String, default : '' },

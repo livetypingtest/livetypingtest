@@ -8,6 +8,7 @@ import Footer from "../footer/Footer";
 import Certificate from "../certificate/Certificate";
 import MetaUpdater from "../../../util/MetaUpdater";
 import DynamicTitle from "../helmet/DynamicTitle";
+import { calculateAverage } from "../../../util/calculate";
 
 const UserMatches = () => {
     const param = useParams();
@@ -105,9 +106,11 @@ const UserMatches = () => {
         }, 100); // Adjust the timeout duration as needed
     };
 
+
     return (
         <>
             <DynamicTitle title={"Live Typing Test | Matches"} icon={"/assets/images/favicon.png"} description={"Live Typing Test | Terms & Condition"}  />
+
             <Header />
             <section>
                 <div className="container py-5">
@@ -131,9 +134,12 @@ const UserMatches = () => {
                                             <tr>
                                                 <th>#</th>
                                                 <th>Played On</th>
+                                                <th>WPM</th>
+                                                <th>Accuracy</th>
                                                 <th>Download Certificate</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             {
                                                 displayData?.length !== 0 ? displayData.map((value, index) => {
@@ -153,6 +159,8 @@ const UserMatches = () => {
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
                                                             <td>{formatDate}</td>
+                                                            <td>{parseInt(calculateAverage(value?.wpm)?.toFixed(2))}</td>
+                                                            <td>{calculateAverage(value?.accuracy)?.toFixed(2)}%</td>
                                                             <td>
                                                                 <button onClick={() => handleUpdateData(value)}>
                                                                     <i className="fa-solid fa-download fa-xl" />
@@ -162,6 +170,8 @@ const UserMatches = () => {
                                                     );
                                                 }) : (
                                                     <tr>
+                                                        <td>No Match Played</td>
+                                                        <td>No Match Played</td>
                                                         <td>No Match Played</td>
                                                         <td>No Match Played</td>
                                                         <td>No Match Played</td>

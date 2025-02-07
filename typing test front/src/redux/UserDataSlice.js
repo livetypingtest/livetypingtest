@@ -275,6 +275,32 @@ const handleProfileStatus = createAsyncThunk('handleProfileStatus', async(formDa
     }
 }) 
 
+const handleUpdateUserProfile = createAsyncThunk('handleUpdateUserProfile', async(formData) => {
+    const ID = localStorage.getItem('userToken')
+    const response = await axios.post(`${USER_API_URL}/update-profile`, formData, { headers : { Authorization : ID } })
+    // console.log(response.data)
+    if(response.data.status === 200) {
+        let checkMsg = {
+            status : true,
+            message : response.data.message,
+            type : response.data.type,
+            data : response.data.data,
+        }
+        return checkMsg
+    } else {
+        let checkMsg = {
+            status : false,
+            message : response.data.message,
+            type : response.data.type,
+            data : []
+        }
+        return checkMsg
+    }
+})
+
+
+
+
 
 const initialState = {
     isProcessing : false,
@@ -608,9 +634,32 @@ const UserDataSlice = createSlice({
             state.processingMsg.message = 'Update Profile'
             state.processingMsg.type = 'profile'
         });
+        builder.addCase(handleUpdateUserProfile.fulfilled, (state, action) => {
+            if(action.payload.status) {
+                state.isFullfilled = true
+                state.fullFillMsg.type = action.payload.type,
+                state.fullFillMsg.message = action.payload.message
+                state.userData = {
+                    ...state.userData,
+                    url : action.payload.data.url,
+                    bio : action.payload.data.bio
+                }
+            } else {
+                state.isProcessing = false
+                state.isError = true
+                state.errorMsg.message = action.payload.message
+                state.errorMsg.type = action.payload.type
+            }
+        });
+        builder.addCase(handleUpdateUserProfile.pending, (state, action) => {
+            state.isProcessing = true
+            state.processingMsg.message = 'Updating Profile'
+            state.processingMsg.type = 'profile'
+        });
     }
 })
 
+
 export default UserDataSlice.reducer;
-export {handleGetUserData, handleSigninUser, handleProfileStatus, handleLocalDataCalling, handleCreateUser, handleUploadProfile, handleDeleteUserAccount, handleUpdatePassword, handleSignupWithGoogle, handleTest, handleGetLeaderboardData, handleSigninUserWithGoogle};
+export {handleGetUserData, handleSigninUser, handleProfileStatus, handleLocalDataCalling, handleCreateUser, handleUploadProfile, handleDeleteUserAccount, handleUpdatePassword, handleSignupWithGoogle, handleTest, handleGetLeaderboardData, handleSigninUserWithGoogle, handleUpdateUserProfile };
 export const{ resetState, handleClearState } = UserDataSlice.actions

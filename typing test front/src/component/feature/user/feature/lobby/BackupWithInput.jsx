@@ -612,6 +612,13 @@ const BackupWithInput = () => {
 
   // Manage Blocking the Restricted Keys ---------------------------------------------------------
   const blockRestrictedKeys = (e) => {
+    // Handle ESC key press
+    if (e.key === "Escape") {
+      e.preventDefault();
+      resetTest();
+      return;
+    }
+
     // Handle keydown event for disabling copying and pasting
     if (e.ctrlKey && e.key === "c") {
       e.preventDefault();
