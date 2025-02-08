@@ -14,6 +14,8 @@ import ProfileUpdateModal from './ProfileUpdateModal'
 
 const UserDashBoard = () => {
 
+  const dispatch = useDispatch();
+
   const rawUserData = useSelector(state => state.UserDataSlice.userData) 
   const matches1Min = useSelector(state => state.UserDataSlice.match1) 
   const matches3Min = useSelector(state => state.UserDataSlice.match3) 
@@ -22,8 +24,8 @@ const UserDashBoard = () => {
   const fullFillMsg = useSelector(state => state.UserDataSlice.fullFillMsg) 
   const isProcessing = useSelector(state => state.UserDataSlice.isProcessing) 
   const processingMsg = useSelector(state => state.UserDataSlice.processingMsg) 
+
   const [formattedDate, setFormattedDate] = useState();
-  const dispatch = useDispatch();
   const [totalMatchesCompleted, setTotalMatchesCompleted] = useState(0);
   const [totalTimeOfMatches, setTotalTimeOfMatches] = useState(0);
   const [match1MinData, setMatch1MinData] = useState([])
@@ -43,7 +45,7 @@ const UserDashBoard = () => {
 
 // for finding the total matches----------------------------------------------------
 useEffect(()=>{
-
+  console.log(rawUserData)
   setTotalMatchesCompleted(matches1Min?.length + matches3Min?.length + matches5Min?.length)
 
   // calculate total time of all mathes played----------------------------------------------

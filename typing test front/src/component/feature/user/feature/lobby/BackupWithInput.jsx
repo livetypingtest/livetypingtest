@@ -63,6 +63,7 @@ const BackupWithInput = () => {
   const [stats, setStats] = useState({
     wpm: [],
     accuracy: [],
+    csAccuracy: [],
     consistency: [],
     correctChars: 0,
     incorrectChars: 0,
@@ -77,6 +78,7 @@ const BackupWithInput = () => {
   const [finalStats, setFinalStats] = useState({
     wpm: [],
     accuracy: [],
+    csAccuracy: [],
     consistency: [],
     correctChars: 0,
     incorrectChars: 0,
@@ -301,6 +303,29 @@ const BackupWithInput = () => {
       accuracy: [...prevStats.accuracy, accuracy], // Store accuracy as an integer in the array
       consistency: [...prevStats.consistency, consistency], // Store consistency as a float in the array
     }));
+
+  }
+
+  const calculateCsAccuracy = () => {
+
+    // Variables for accuracy and consistency calculation
+    const totalCorrect = stats.correctChars; // Total number of correct characters typed
+    const totalIncorrect = stats.incorrectChars; // Total number of incorrect characters typed
+    const totalSkiped = stats.missedChars;
+    const totalTyped = totalCorrect + totalIncorrect + totalSkiped; // Total characters typed (correct + incorrect)
+    
+    // Calculate accuracy: (correctChars / totalTypedChars) * 100
+    let accuracy = 100;
+    if (totalTyped > 0) {
+      accuracy = Math.floor((totalCorrect / totalTyped) * 100); // Accuracy as an integer
+    }
+
+    // Update the stats with accuracy and consistency
+    setStats((prevStats) => ({
+      ...prevStats,
+      csAccuracy: [...prevStats.csAccuracy, accuracy], // Store accuracy as an integer in the array
+    }));
+
 
   }
 
@@ -835,6 +860,7 @@ const BackupWithInput = () => {
   useEffect(() => {
     if (timerRunning && elapsedTime > 0) {
       calculateWPM();
+      calculateCsAccuracy();
     }
   }, [elapsedTime, typedLetters]);
 

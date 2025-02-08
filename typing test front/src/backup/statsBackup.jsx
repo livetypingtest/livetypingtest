@@ -1,15 +1,18 @@
+// 10-feb-2025
+
 import { useEffect, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import Header from '../component/shared/header/Header';
-import Footer from '../component/shared/footer/Footer';
+import Header from '../../../../shared/header/Header'
+import Footer from '../../../../shared/footer/Footer';
 import { useNavigate } from 'react-router-dom';
-import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import DynamicAlert from '../component/shared/Toast/DynamicAlert';
-import Certificate from '../component/shared/certificate/Certificate';
-import DownloadButton from '../component/shared/certificate/DownloadCertificate';
-import MetaUpdater from '../util/MetaUpdater'
+import { calculateAverage } from '../../../../../util/calculate';
+import DynamicAlert from '../../../../shared/Toast/DynamicAlert';
+import Certificate from '../../../../shared/certificate/Certificate';
+import DownloadButton from '../../../../shared/certificate/DownloadCertificate';
+import MetaUpdater from '../../../../../util/MetaUpdater'
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -27,54 +30,66 @@ const TypingTestStats = () => {
     let stats = localStorage.getItem('stats')
     stats = JSON.parse(stats)
     const navigate = useNavigate();
-    const {wpm, consistency, accuracy, correctChars, incorrectChars, timeOfCompletion, isCompleted, extraChars, time, level} = stats?.data;
+    const {wpm, consistency, accuracy, correctChars, incorrectChars, extraChars, time, level} = stats?.data;
     // console.log("WPM:", wpm, "Consistency:", consistency, "Accuracy:", accuracy);
 
-    const getEvenlySpacedData = (array, numPoints) => {
-        const step = Math.floor(array.length / numPoints); // Determine the spacing between points
+    const getEvenlySpacedData = (array, numPoints, step) => {
         let result = [];
       
-        // Collect evenly spaced values
+        // Collect evenly spaced values based on the step interval
         for (let i = 0; i < numPoints; i++) {
-          result.push(array[i * step]);
+            result.push(array[i * step]); // Skip points based on the step
         }
       
         return result;
-      };
-
-    const data = {
-        labels: Array.from({ length: time }, (_, i) => i + 1), // X-axis label based on data length
-        datasets: [
-            {
-                label: 'WPM',
-                data: getEvenlySpacedData(wpm, time),
-                borderColor: 'rgba(255, 127, 80, 1)',
-                backgroundColor: 'rgba(255, 127, 80, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(255, 127, 80, 1)',
-            },
-            {
-                label: 'Consistency (%)',
-                data: getEvenlySpacedData(consistency, time),
-                borderColor: 'rgba(113, 202, 199, 1)',
-                backgroundColor: 'rgba(113, 202, 199, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(113, 202, 199, 1)',
-            },
-            {
-                label: 'Accuracy (%)',
-                data: getEvenlySpacedData(accuracy, time),
-                borderColor: 'rgba(255, 255, 255, 1)',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                fill: false,
-                tension: 0.4,
-                pointBackgroundColor: 'rgba(255, 255, 255, 1)',
-            },
-        ],
     };
-
+    
+    const calculateTicks = (totalTime) => {
+        // Dynamically calculate tick intervals based on total time
+        if (totalTime <= 60) return Array.from({ length: Math.floor(totalTime / 2) + 1 }, (_, i) => i * 2); // 2-second gap
+        if (totalTime <= 180) return Array.from({ length: Math.floor(totalTime / 6) + 1 }, (_, i) => i * 4); // 4-second gap
+        if (totalTime <= 300) return Array.from({ length: Math.floor(totalTime / 10) + 1 }, (_, i) => i * 5); // 5-second gap
+        return [];
+    };
+    
+    const generateData = (time, wpm, accuracy, consistency) => {
+        const tickInterval = time <= 60 ? 2 : (time <= 180 ? 6 : 10); // Determine the appropriate tick interval
+        const numPoints = Math.floor(time / tickInterval);
+    
+        return {
+            labels: calculateTicks(time), // X-axis label based on the calculated ticks
+            datasets: [
+                {
+                    label: 'WPM',
+                    data: getEvenlySpacedData(wpm, numPoints, tickInterval),
+                    borderColor: 'rgba(255, 127, 80, 1)',
+                    backgroundColor: 'rgba(255, 127, 80, 0.2)',
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(255, 127, 80, 1)',
+                },
+                // {
+                //     label: 'Consistency (%)',
+                //     data: getEvenlySpacedData(consistency, numPoints, tickInterval),
+                //     borderColor: 'rgba(113, 202, 199, 1)',
+                //     backgroundColor: 'rgba(113, 202, 199, 0.2)',
+                //     fill: false,
+                //     tension: 0.4,
+                //     pointBackgroundColor: 'rgba(113, 202, 199, 1)',
+                // },
+                {
+                    label: 'Accuracy (%)',
+                    data: getEvenlySpacedData(accuracy, numPoints, tickInterval),
+                    borderColor: 'rgba(255, 255, 255, 1)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(255, 255, 255, 1)',
+                },
+            ],
+        };
+    };
+    
     const options = {
         responsive: true,
         plugins: {
@@ -93,6 +108,8 @@ const TypingTestStats = () => {
             },
         },
     };
+
+    const data = generateData(time, wpm, accuracy, consistency);
 
     const repeatTest = () => {
         localStorage.removeItem('stats')
@@ -150,25 +167,6 @@ const TypingTestStats = () => {
         setShowAlert(false); // Set showAlert to false
     };
 
-    // useEffect(()=>{
-    //     if(isCompleted){
-    //         setShowAlert(true)
-    //         setAlertDetail({
-    //             title : 'Congratulations!',
-    //             type : 'Success',
-    //             message : `Hurrey! You have comleted the test before the time`,
-    //             navigateTo : '',
-    //             confirmBtn : true
-    //         })
-    //     }
-    // }, [])
-
-    const calculateAverage = (numbers) => {
-        if (numbers.length === 0) return 0; // Avoid division by zero
-        const sum = numbers.reduce((acc, num) => acc + num, 0); // Sum the numbers
-        return sum / numbers.length; // Return the average
-    };
-
     //convert the timeer in proper format---------------------------------------------------------------
   const convertSecondsToFormattedTime = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60); // Get the number of minutes
@@ -192,7 +190,7 @@ const TypingTestStats = () => {
             <section>
                 <div className="container p-custom">
                     <div className="row align-items-center py-4">
-                        <div className="col-md-2">
+                        <div className="col-md-12">
                             <div className="statistics-layout">
                                 <div>
                                     <h4>WPM</h4>
@@ -204,7 +202,7 @@ const TypingTestStats = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-10 ">
+                        <div className="col-md-12 ">
                         <Line data={data} options={options}  height={window.innerWidth <= 767 ? 100 : 30} width={"100%"}  />
                         </div>
                         <div className="col-md-12 p-custom">
@@ -219,7 +217,7 @@ const TypingTestStats = () => {
                                 </div>
                                 <div>
                                     <h4>Consistency</h4>
-                                    <h1>{Math.round(calculateAverage(consistency))}%</h1>
+                                    <h1>{Math.round(calculateAverage(consistency))}</h1>
                                 </div>
                                 <div>
                                     <h4>Time Taken</h4>
@@ -230,7 +228,7 @@ const TypingTestStats = () => {
                         <div className="col-md-12 p-custom">
                             <div className="below-graph-btn">
                                 <div className='item'><span>Download Certificate</span><DownloadButton onDownload={handleDownload} /></div>
-                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /></button></div>
+                                <div className='item'><span>Repeat Test</span><button onClick={repeatTest}><i className="fa-solid fa-repeat fa-xl" style={{ color: "#8c8c8c" }} /><p className='mt-2 font-idle'>Repeat</p></button></div>
                             </div>
                         </div>
                     </div>
