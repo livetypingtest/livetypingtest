@@ -23,6 +23,7 @@ const AllUsers = () => {
     const isProcessing = useSelector((state) => state.AdminDataSlice.isProcessing);
     const processingMsg = useSelector((state) => state.AdminDataSlice.processingMsg);
 
+
     const [deleteUsername, setDeleteUsername] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [users, setUsers] = useState([]);
@@ -45,6 +46,8 @@ const AllUsers = () => {
                 setLoader(false);
                 dispatch(handleGetAllUsers(response.data.data));
                 setTotalPages(response.data.totalPages);
+            } else {
+                dynamicToast({ message: "Error Fetching Users!", icon: "error" });
             }
         } catch (error) {
             console.error('Error fetching users:', error);

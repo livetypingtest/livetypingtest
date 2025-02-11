@@ -35,6 +35,7 @@ const UserSignup = () => {
     validateOnChange: !isGoogleSignup, // Skip validation on change during Google signup
     onSubmit: async (formData) => {
       formData.createdate = new Date();
+      formData.username = formData.username.trim();
       dispatch(handleCreateUser(formData))
     }
   })
