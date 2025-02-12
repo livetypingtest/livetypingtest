@@ -8,7 +8,7 @@ import Privacy_Policy from '../../component/feature/user/feature/dynamicPages/Pr
 import About from '../../component/feature/user/feature/dynamicPages/About';
 import Terms_Condition from '../../component/feature/user/feature/dynamicPages/Terms_Condition';
 import Contact from '../../component/feature/user/feature/contact/Contact';
-
+import KeyPractice from '../../component/feature/user/feature/practice/KeyPractice';
 
 const rootRoutes = [
     {
@@ -50,7 +50,11 @@ const rootRoutes = [
     {
         path : 'contact',
         element : <Contact />
-    }
+    },
+    // {
+    //     path : 'practice',
+    //     element : <KeyPractice />
+    // }
 ]
 
 export default rootRoutes;

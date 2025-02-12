@@ -257,6 +257,10 @@
 .reset {
     padding: 14px 14px 0px 0px;
     text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
 }
 
 .footer ul {

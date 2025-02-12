@@ -9,8 +9,11 @@ import { Helmet } from 'react-helmet';
 import Footer from '../../../../shared/footer/Footer'
 import { handleMatchHistory } from '../../../../../redux/DynamicPagesDataSlice';
 import DynamicTitle from '../../../../shared/helmet/DynamicTitle';
-
-
+import { SOUND_CHERRY, SOUND_MAP, SOUND_KEYBOARD, SOUND_WRITER } from '../../../../shared/sound/sound';
+import Button from '../../../../shared/sound/Button';
+import useSound from 'use-sound';
+import ShowStats from './ShowStats';
+import LobbyHeader from './LobbyHeader';
 const BackupWithInput = () => {
   
   const navigate = useNavigate();
@@ -19,7 +22,8 @@ const BackupWithInput = () => {
   const containerRef = useRef(null);
   const wordRefs = useRef([])
   const scrollLock = useRef(false)
-  const letterRef = useRef([]);
+  const letterRef = useRef([]); 
+
   
   const isFullfilled = useSelector(state => state.UserDataSlice.isFullfilled)
   const paragraphs = useSelector(state => state.UserDataSlice.paragraphs)
@@ -38,6 +42,8 @@ const BackupWithInput = () => {
   const [blockKey, setBlockKey] = useState({for: '', state: false})
   const [hasFocus, setHasFocus] = useState(true);
   const [storage, setStorage] = useState("")
+  const [soundType, setSoundType] = useState('typewriter')
+  const [soundMode, setSoundMode] = useState(false)
   const [counter, setCounter] = useState(0); // Track the number of times condition is met
   const [difficulty, setDifficulty] = useState("easy");
   const [timeLimit, setTimeLimit] = useState(60); // Default 30 seconds
@@ -89,6 +95,10 @@ const BackupWithInput = () => {
     time: 0,
     level : ''
   })
+
+  const [playCherry] = useSound(SOUND_MAP[SOUND_CHERRY], { volume: 0.5 });
+  const [playKeyboard] = useSound(SOUND_MAP[SOUND_KEYBOARD], { volume: 0.5 });
+  const [playWriter] = useSound(SOUND_MAP[SOUND_WRITER], { volume: 0.5 });
 
   let key = ""; // Local variable for current characters
   let wordArray = []; // Local variable for completed words
@@ -188,18 +198,7 @@ const BackupWithInput = () => {
   }, [hasFocus]);
   // Focus input on load--------------------------------------------------------------------------
 
-  //convert the timeer in proper format---------------------------------------------------------------
-  const convertSecondsToFormattedTime = (totalSeconds) => {
-    const minutes = Math.floor(totalSeconds / 60); // Get the number of minutes
-    const seconds = totalSeconds % 60; // Get the remaining seconds
-
-    // Format the seconds to always be two digits
-    const formattedSeconds = seconds.toString().padStart(2, '0');
-
-    // Return the formatted time
-    return `${minutes}:${formattedSeconds}`;
-  };
-  //convert the timeer in proper format---------------------------------------------------------------
+  
 
   // Update elapsed time and stop timer if time limit is reached------------------------------------
   useEffect(() => {
@@ -471,6 +470,7 @@ const BackupWithInput = () => {
       wpm: [],
       accuracy: [],
       consistency: [],
+      csAccuracy: [],
       correctChars: 0,
       incorrectChars: 0,
       extraChars: 0,
@@ -725,6 +725,10 @@ const BackupWithInput = () => {
           return
         }
       }
+
+      if(soundMode) {
+        playSound()
+      }
   
       if (lastChar === " ") {
         // Handle spacebar input (word completion)
@@ -924,6 +928,21 @@ const BackupWithInput = () => {
     }
   });
 
+  const playSound = () => {
+    switch(soundType) {
+      case 'cherry':
+        playCherry()
+        break
+      case 'keyboard':
+        playKeyboard()
+        break
+      case 'typewriter':
+        playWriter()
+        break
+      default:
+    }
+  }
+
   return (
     <>
 
@@ -942,76 +961,16 @@ const BackupWithInput = () => {
             onKeyUp={handleKeyUp}
             onKeyDown={handleKeyUp}
           >
-            <div ref={containerRef} className="cutom-lobby-head">
-              <div className='lobby-menu'>
-                <ul style={{ visibility: timerRunning ? 'hidden' : 'visible' }}>
-                  <li>Time :</li>
-                  <li>
-                    <button
-                      onMouseDown={(e) => { e.preventDefault(); handleTime(60); }}
-                      className={timeLimit === 60 ? 'active' : ''}
-                    >
-                      01 Min
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onMouseDown={(e) => { e.preventDefault(); handleTime(180); }}
-                      className={timeLimit === 180 ? 'active' : ''}
-                    >
-                      03 Min
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onMouseDown={(e) => { e.preventDefault(); handleTime(300); }}
-                      className={timeLimit === 300 ? 'active' : ''}
-                    >
-                      05 Min
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              <div className="lobby-menu cs-timer text-center">
-                <h4 className={`${timerRunning ? 'text-active' : 'text-idle'}`}>
-                  {timeLimit - elapsedTime > 0 ? convertSecondsToFormattedTime(timeLimit - elapsedTime) : 0}
-                </h4>
-                
-                {
-                  isMobile && (<div className='cs-logo' style={isMobile && timerRunning ? {opacity: 1} : {}}><img src="/assets/images/logo.svg" alt="Logo" /></div>)
-                }
-                
-              </div>
-              <div className='lobby-menu'>
-                <ul style={{ visibility: timerRunning ? 'hidden' : 'visible' }}>
-                  <li>Level :</li>
-                  <li>
-                    <button
-                      onMouseDown={(e) => { e.preventDefault(); handleDifficultyChange('easy'); }}
-                      className={difficulty === 'easy' ? 'active' : ''}
-                    >
-                      Easy
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onMouseDown={(e) => { e.preventDefault(); handleDifficultyChange('medium'); }}
-                      className={difficulty === 'medium' ? 'active' : ''}
-                    >
-                      Medium
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onMouseDown={(e) => { e.preventDefault(); handleDifficultyChange('hard'); }}
-                      className={difficulty === 'hard' ? 'active' : ''}
-                    >
-                      Hard
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <LobbyHeader 
+              ref={containerRef}
+              timerRunning={timerRunning}
+              handleTime={handleTime}
+              timeLimit={timeLimit}
+              difficulty={difficulty}
+              handleDifficultyChange={handleDifficultyChange}
+              isMobile={isMobile}
+              elapsedTime={elapsedTime}
+            />
             <div className="col-md-12 position-rel py-4">
               {/* Overlay for blur effect and user instruction */}
               {!hasFocus && (
@@ -1131,38 +1090,12 @@ const BackupWithInput = () => {
                   </div>
                 </div>
               </div>
-              <div className='reset'><button className='z-10' onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button></div>
-            </div>
-            <div className="row align-items-center">
-              <div className="col-md-7">
-                <div className="status">
-                  <div>
-                    <h4>WPM</h4>
-                    <h1>{parseInt(stats.wpm[stats?.wpm?.length - 1]) || 0}</h1>
-                  </div>
-                  <div>
-                    <h4>Accuracy</h4>
-                    <h1>{stats.accuracy[stats?.accuracy?.length - 1] || 0}<span>%</span></h1>
-                  </div>
-                  {/* <div>
-                    <h4>Consistency</h4>
-                    <h1>{stats.consistency[stats?.consistency?.length - 1] || 0}<span>%</span></h1>
-                  </div> */}
-                </div>
+              <div className='reset'>
+                {/* <Button setSoundMode={setSoundMode} soundMode={soundMode} soundType={setSoundType} typingAreaRef={typingAreaRef} setHasFocus={setHasFocus} setRootFocus={setRootFocus} /> */}
+                <button className='z-10' onClick={resetTest}><i className="fa-solid fa-arrow-rotate-right text-active"></i> <span className='text-idle'>Start Over</span></button>
               </div>
-              {/* <div className="col-md-5 custom-footer-lobby">
-                <div className='width-80'>
-                  <div className="footer">
-                    <ul>
-                      <li><NavLink to={checkUserToken ? '/user/contact' : '/contact'}>Contact Us &nbsp; |</NavLink></li>
-                      <li><NavLink to={checkUserToken ? '/user/about' : '/about'}>About &nbsp; |</NavLink></li>
-                      <li><NavLink to={checkUserToken ? '/user/privacy' : '/privacy'}>Privacy Policy &nbsp; |</NavLink></li>
-                      <li><NavLink to={checkUserToken ? '/user/term-condition' : '/term-condition'}>Terms & Condition</NavLink></li>
-                    </ul>
-                  </div>
-                </div>
-              </div> */}
             </div>
+            <ShowStats stats={stats} />
           </div>
         </div>
       </section>
