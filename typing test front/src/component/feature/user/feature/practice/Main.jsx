@@ -1,4 +1,3 @@
-import React from "react";
 import { useRef, useEffect, useState } from "react";
 import { Box, IconButton } from "@chakra-ui/react";
 // import RestartAltIcon from "@mui/icons-material/RestartAlt";
